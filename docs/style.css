@@ -836,3 +836,7 @@ button:active {
 #departmentHeader {
     gap: 20px !important;
 }
+
+/* Test: separate colors for Department and Employee buttons */
+#allDepartmentsButton { background: #2E8B57 !important; color: #ffffff !important; }
+#allEmployeesButton { background: #4F81BD !important; color: #ffffff !important; }
