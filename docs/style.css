@@ -1186,6 +1186,30 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 }
 
 /* =========================
+   ALL EMPLOYEES PAGE PORTRAIT
+========================= */
+
+#allEmployeesPage {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+}
+
+#allEmployeesPage #employeeList {
+    width: 100% !important;
+    max-width: 600px !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 601px) {
+    #allEmployeesPage {
+        max-width: 600px !important;
+    }
+}
+
+/* =========================
    EMPLOYEE PAGES PORTRAIT LAYOUT
 ========================= */
 
