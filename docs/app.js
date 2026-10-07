@@ -172,6 +172,48 @@ if (hashParams.get("access_token")) {
    DESIGNATION NORMALIZATION
 ========================= */
 
+const DESIGNATION_ORDER = [
+    "Executive Director (ED)",
+    "Chief Financial Officer (CFO)",
+    "Chief Marketing Officer (CMO)",
+    "Head of Operation",
+    "Head of Planning",
+    "Head of Supply Chain Management",
+    "Divisional Head",
+    "Deputy General Manager (DGM)",
+    "Asst. General Manager (AGM)",
+    "Sr. Manager",
+    "Manager",
+    "In Charge",
+    "Deputy Manager",
+    "Asst. Manager",
+    "CS Team Lead",
+    "Team Lead",
+    "Sr. Executive",
+    "Sr. Designer",
+    "Executive",
+    "Designer",
+    "Graphics Designer",
+    "3D Designer",
+    "Fashion Designer",
+    "Interior Designer",
+    "Jr. Executive",
+    "Jr. Merchandiser",
+    "Data Management Officer (DMO)",
+    "Pattern Master",
+    "Messenger",
+    "Office Assistant",
+    "Driver",
+    "Delivery Man",
+    "Intern"
+];
+
+const DESIGNATION_RANK = new Map(
+    DESIGNATION_ORDER.map(
+        (designation, index) => [designation, index]
+    )
+);
+
 function normalizeDesignation(designation) {
 
     const value = String(designation || "").trim();
@@ -226,9 +268,23 @@ function populateDesignationFilter() {
         )
     )].filter(Boolean);
 
-    designations.sort((a, b) =>
-        a.localeCompare(b)
-    );
+    designations.sort((a, b) => {
+        const rankA =
+            DESIGNATION_RANK.has(a)
+                ? DESIGNATION_RANK.get(a)
+                : DESIGNATION_ORDER.length;
+
+        const rankB =
+            DESIGNATION_RANK.has(b)
+                ? DESIGNATION_RANK.get(b)
+                : DESIGNATION_ORDER.length;
+
+        if (rankA !== rankB) {
+            return rankA - rankB;
+        }
+
+        return a.localeCompare(b);
+    });
 
     filter.innerHTML =
         '<option value="">All Designations</option>';
@@ -615,6 +671,36 @@ function showFavoriteEmployees() {
 
 function showEmployees(list, targetList = employeeList) {
 
+    const sortedList = [...list].sort((a, b) => {
+
+        const rankA =
+            DESIGNATION_RANK.has(
+                normalizeDesignation(a.designation)
+            )
+                ? DESIGNATION_RANK.get(
+                    normalizeDesignation(a.designation)
+                )
+                : DESIGNATION_ORDER.length;
+
+        const rankB =
+            DESIGNATION_RANK.has(
+                normalizeDesignation(b.designation)
+            )
+                ? DESIGNATION_RANK.get(
+                    normalizeDesignation(b.designation)
+                )
+                : DESIGNATION_ORDER.length;
+
+        if (rankA !== rankB) {
+            return rankA - rankB;
+        }
+
+        return String(a.employee_name || "")
+            .localeCompare(
+                String(b.employee_name || "")
+            );
+    });
+
     targetList.innerHTML = "";
 
 
@@ -634,7 +720,7 @@ function showEmployees(list, targetList = employeeList) {
     }
 
 
-    list.forEach((employee) => {
+    sortedList.forEach((employee) => {
 
         const div =
             document.createElement("div");
