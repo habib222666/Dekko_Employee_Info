@@ -90,9 +90,19 @@ async function toggleFavorite(employee) {
 
 departmentBackButton.addEventListener("click", function() {
 
-    departmentPage.style.display = "none";
+    console.log("BACK TO DEPARTMENTS CLICKED");
 
-    listPage.style.display = "block";
+    detailsPage.style.display = "none";
+    allEmployeesPage.style.display = "none";
+    favoritePage.style.display = "none";
+    birthdayPage.style.display = "none";
+    listPage.style.display = "none";
+
+    departmentEmployeeList.innerHTML = "";
+    departmentEmployeeList.style.display = "none";
+    departmentCards.style.display = "grid";
+    departmentPageTitle.textContent = "🏢 All Departments";
+    departmentPage.style.display = "block";
 
     window.scrollTo({
         top: 0,
@@ -392,7 +402,10 @@ function showDepartmentCards() {
             searchInput.value = "";
 
             departmentPageTitle.textContent = department;
+
+            departmentCards.style.display = "none";
             departmentEmployeeList.innerHTML = "";
+            departmentEmployeeList.style.display = "flex";
 
             const selectedEmployees = departments[department];
 
@@ -637,6 +650,9 @@ function showDetails(employee, previousPage = "list") {
     detailsPreviousPage = previousPage;
 
     listPage.style.display =
+        "none";
+
+    allEmployeesPage.style.display =
         "none";
 
     departmentPage.style.display =
@@ -1387,11 +1403,33 @@ backButton.addEventListener(
             listPage.style.display =
                 "none";
 
+            allEmployeesPage.style.display =
+                "none";
+
             favoritePage.style.display =
                 "none";
 
             departmentPage.style.display =
                 "block";
+
+            departmentCards.style.display =
+                "none";
+
+        } else if (detailsPreviousPage === "allEmployees") {
+
+            departmentPage.style.display =
+                "none";
+
+            favoritePage.style.display =
+                "none";
+
+            listPage.style.display =
+                "none";
+
+            allEmployeesPage.style.display =
+                "block";
+
+            showEmployees(employees);
 
         } else {
 
@@ -1430,7 +1468,13 @@ allDepartmentsButton.addEventListener(
     function() {
 
         listPage.style.display = "none";
+        allEmployeesPage.style.display = "none";
         favoritePage.style.display = "none";
+        birthdayPage.style.display = "none";
+        detailsPage.style.display = "none";
+
+        departmentCards.style.display = "grid";
+        departmentEmployeeList.innerHTML = "";
 
         departmentPage.style.display = "block";
 
