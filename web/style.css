@@ -1656,3 +1656,33 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     width: 85% !important;
     justify-self: center !important;
 }
+
+/* =========================
+   DESIGNATION FILTER
+========================= */
+
+#designationFilterBox {
+    width: 100%;
+    max-width: 600px;
+    margin: 12px auto 16px;
+    box-sizing: border-box;
+}
+
+#designationFilter {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 16px;
+    font-family: inherit;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#designationFilter:focus {
+    outline: none;
+    border-color: #999;
+}
+

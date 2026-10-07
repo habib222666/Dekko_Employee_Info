@@ -169,6 +169,83 @@ if (hashParams.get("access_token")) {
 
 
 /* =========================
+   DESIGNATION NORMALIZATION
+========================= */
+
+function normalizeDesignation(designation) {
+
+    const value = String(designation || "").trim();
+
+    const groups = {
+        "Executive Director (ED)": [
+            "Executive Director",
+            "ED"
+        ],
+        "Chief Financial Officer (CFO)": [
+            "Chief Financial Officer",
+            "CFO"
+        ],
+        "Chief Marketing Officer (CMO)": [
+            "Chief Marketing Officer",
+            "CMO"
+        ],
+        "Deputy General Manager (DGM)": [
+            "Deputy General Manager",
+            "DGM"
+        ],
+        "Asst. General Manager (AGM)": [
+            "Asst. General Manager",
+            "AGM"
+        ],
+        "Data Management Officer (DMO)": [
+            "Data Management Officer",
+            "DMO"
+        ]
+    };
+
+    for (const [groupName, values] of Object.entries(groups)) {
+        if (values.some(item =>
+            item.toLowerCase() === value.toLowerCase()
+        )) {
+            return groupName;
+        }
+    }
+
+    return value || "Other";
+}
+
+function populateDesignationFilter() {
+
+    const filter = document.getElementById("designationFilter");
+
+    if (!filter) return;
+
+    const designations = [...new Set(
+        employees.map(employee =>
+            normalizeDesignation(employee.designation)
+        )
+    )].filter(Boolean);
+
+    designations.sort((a, b) =>
+        a.localeCompare(b)
+    );
+
+    filter.innerHTML =
+        '<option value="">All Designations</option>';
+
+    designations.forEach(designation => {
+
+        const option = document.createElement("option");
+
+        option.value = designation;
+        option.textContent = designation;
+
+        filter.appendChild(option);
+
+    });
+}
+
+/* =========================
    LOAD EMPLOYEES
 ========================= */
 
@@ -216,6 +293,7 @@ async function loadEmployees() {
 
         showEmployees(employees);
 
+        populateDesignationFilter();
         loadEmployeeSelect();
 
 
@@ -1583,46 +1661,41 @@ searchInput.addEventListener(
                 .toLowerCase()
                 .trim();
 
+        const selectedDesignation =
+            designationFilter
+                ? designationFilter.value
+                : "";
 
         const filtered =
-            employees.filter(
-                employee =>
+            employees.filter(employee => {
 
-                    (employee.employee_name || "")
-                        .toLowerCase()
-                        .includes(searchText)
+                const matchesDesignation =
+                    !selectedDesignation ||
+                    normalizeDesignation(
+                        employee.designation
+                    ) === selectedDesignation;
 
-                    ||
+                const text =
+                    `${employee.employee_name || ""} ` +
+                    `${employee.employee_no || ""} ` +
+                    `${employee.company || ""} ` +
+                    `${employee.department || ""} ` +
+                    `${employee.designation || ""}`;
 
-                    (employee.employee_no || "")
-                        .toLowerCase()
-                        .includes(searchText)
+                const matchesSearch =
+                    !searchText ||
+                    text.toLowerCase()
+                        .includes(searchText);
 
-                    ||
-
-                    (employee.company || "")
-                        .toLowerCase()
-                        .includes(searchText)
-
-                    ||
-
-                    (employee.department || "")
-                        .toLowerCase()
-                        .includes(searchText)
-
-                    ||
-
-                    (employee.designation || "")
-                        .toLowerCase()
-                        .includes(searchText)
-
-            );
-
+                return matchesDesignation &&
+                       matchesSearch;
+            });
 
         showEmployees(filtered);
 
     }
 );
+
 
 
 /* =========================
@@ -1635,10 +1708,11 @@ clearSearch.addEventListener(
 
         searchInput.value = "";
 
+        if (designationFilter) {
+            designationFilter.value = "";
+        }
 
-        showEmployees(
-            employees
-        );
+        showEmployees(employees);
 
 
         searchInput.focus();
@@ -1834,4 +1908,57 @@ if (birthdayMonths) {
             showBirthdayEmployees(button.dataset.month);
         });
     });
+}
+
+/* =========================
+   DESIGNATION FILTER
+========================= */
+
+const designationFilter =
+    document.getElementById("designationFilter");
+
+if (designationFilter) {
+
+    designationFilter.addEventListener(
+        "change",
+        function() {
+
+            const selectedDesignation =
+                this.value;
+
+            const searchText =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+            const filtered =
+                employees.filter(employee => {
+
+                    const matchesDesignation =
+                        !selectedDesignation ||
+                        normalizeDesignation(
+                            employee.designation
+                        ) === selectedDesignation;
+
+                    const text =
+                        `${employee.employee_name || ""} ` +
+                        `${employee.employee_no || ""} ` +
+                        `${employee.company || ""} ` +
+                        `${employee.department || ""} ` +
+                        `${employee.designation || ""}`;
+
+                    const matchesSearch =
+                        !searchText ||
+                        text.toLowerCase()
+                            .includes(searchText);
+
+                    return matchesDesignation &&
+                           matchesSearch;
+                });
+
+            showEmployees(filtered);
+
+        }
+    );
+
 }
