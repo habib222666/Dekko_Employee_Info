@@ -94,14 +94,15 @@ departmentBackButton.addEventListener("click", function() {
     allEmployeesPage.style.display = "none";
     favoritePage.style.display = "none";
     birthdayPage.style.display = "none";
-    departmentPage.style.display = "none";
+    departmentPage.style.display = "block";
 
+    departmentCards.style.display = "grid";
+    departmentEmployeeList.style.display = "none";
     departmentEmployeeList.innerHTML = "";
-    departmentEmployeeList.style.display = "flex";
 
-    listPage.style.display = "block";
+    listPage.style.display = "none";
     departmentSection.style.display = "block";
-    employeeList.style.display = "block";
+    employeeList.style.display = "none";
 
     window.scrollTo({
         top: 0,
