@@ -1570,3 +1570,25 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         min-height: 96px !important;
     }
 }
+
+/* FINAL COMPACT HOME BUTTONS */
+#departmentHeader {
+    column-gap: 18px !important;
+    row-gap: 14px !important;
+}
+
+#departmentHeader button {
+    width: 78% !important;
+    justify-self: center !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        column-gap: 14px !important;
+        row-gap: 14px !important;
+    }
+
+    #departmentHeader button {
+        width: 78% !important;
+    }
+}
