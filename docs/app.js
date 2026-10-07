@@ -94,15 +94,26 @@ departmentBackButton.addEventListener("click", function() {
     allEmployeesPage.style.display = "none";
     favoritePage.style.display = "none";
     birthdayPage.style.display = "none";
-    departmentPage.style.display = "block";
 
-    departmentCards.style.display = "grid";
-    departmentEmployeeList.style.display = "none";
-    departmentEmployeeList.innerHTML = "";
+    if (departmentEmployeeList.style.display !== "none") {
 
-    listPage.style.display = "none";
-    departmentSection.style.display = "block";
-    employeeList.style.display = "none";
+        departmentEmployeeList.style.display = "none";
+        departmentEmployeeList.innerHTML = "";
+
+        departmentCards.style.display = "grid";
+        departmentPage.style.display = "block";
+        departmentPageTitle.textContent = "🏢 All Departments";
+
+    } else {
+
+        departmentPage.style.display = "none";
+        departmentCards.style.display = "none";
+
+        listPage.style.display = "block";
+        departmentSection.style.display = "block";
+        employeeList.style.display = "block";
+
+    }
 
     window.scrollTo({
         top: 0,
@@ -110,7 +121,6 @@ departmentBackButton.addEventListener("click", function() {
     });
 
 });
-
 
 
 const listPage = document.getElementById("listPage");
