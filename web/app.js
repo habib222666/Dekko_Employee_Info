@@ -1,6 +1,9 @@
 const SUPABASE_URL = "https://jborzgwqlinwkeiquivy.supabase.co";
 const SUPABASE_KEY = "sb_publishable_W_h2UbIqWWJNGZfRnJSojg_JCpHW7qN";
 
+const rememberLogin =
+    document.getElementById("rememberLogin");
+
 
 /* =========================
    ELEMENTS
@@ -1219,6 +1222,82 @@ forgotPasswordButton.addEventListener(
 
 
 /* =========================
+   RESTORE SAVED ADMIN SESSION
+========================= */
+
+async function restoreSavedAdminSession() {
+
+    const savedSession =
+        localStorage.getItem(
+            "dekko_admin_session"
+        );
+
+    if (!savedSession) return;
+
+    try {
+
+        const session =
+            JSON.parse(savedSession);
+
+        if (!session.access_token) {
+            localStorage.removeItem(
+                "dekko_admin_session"
+            );
+            return;
+        }
+
+        const response =
+            await fetch(
+                `${SUPABASE_URL}/auth/v1/user`,
+                {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization":
+                            "Bearer " +
+                            session.access_token
+                    }
+                }
+            );
+
+        if (!response.ok) {
+            localStorage.removeItem(
+                "dekko_admin_session"
+            );
+            return;
+        }
+
+        accessToken =
+            session.access_token;
+
+        loginPage.style.display =
+            "none";
+
+        adminPage.style.display =
+            "block";
+
+        uploadStatus.textContent = "";
+
+        console.log(
+            "Saved admin session restored."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Session restore failed:",
+            error
+        );
+
+        localStorage.removeItem(
+            "dekko_admin_session"
+        );
+    }
+}
+
+restoreSavedAdminSession();
+
+
+/* =========================
    ADMIN LOGIN
 ========================= */
 
@@ -1297,6 +1376,23 @@ loginButton.addEventListener(
             accessToken =
                 data.access_token;
 
+            if (rememberLogin && rememberLogin.checked) {
+
+                localStorage.setItem(
+                    "dekko_admin_session",
+                    JSON.stringify({
+                        access_token: data.access_token,
+                        refresh_token: data.refresh_token || null
+                    })
+                );
+
+            } else {
+
+                localStorage.removeItem(
+                    "dekko_admin_session"
+                );
+            }
+
 
             loginStatus.textContent =
                 "Login successful!";
@@ -1365,6 +1461,10 @@ logoutButton.addEventListener(
     function() {
 
         accessToken = null;
+
+        localStorage.removeItem(
+            "dekko_admin_session"
+        );
 
 
         adminPage.style.display =
