@@ -90,19 +90,18 @@ async function toggleFavorite(employee) {
 
 departmentBackButton.addEventListener("click", function() {
 
-    console.log("BACK TO DEPARTMENTS CLICKED");
-
     detailsPage.style.display = "none";
     allEmployeesPage.style.display = "none";
     favoritePage.style.display = "none";
     birthdayPage.style.display = "none";
-    listPage.style.display = "none";
+    departmentPage.style.display = "none";
 
     departmentEmployeeList.innerHTML = "";
-    departmentEmployeeList.style.display = "none";
-    departmentCards.style.display = "grid";
-    departmentPageTitle.textContent = "🏢 All Departments";
-    departmentPage.style.display = "block";
+    departmentEmployeeList.style.display = "flex";
+
+    listPage.style.display = "block";
+    departmentSection.style.display = "block";
+    employeeList.style.display = "block";
 
     window.scrollTo({
         top: 0,
