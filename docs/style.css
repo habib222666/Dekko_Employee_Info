@@ -1519,7 +1519,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     padding: 0 !important;
 }
 
-/* FINAL HOME BUTTON SIZE + GOLDEN THEME */
+/* FINAL HOME BUTTON SIZE */
 #listPage > #adminButton {
     width: fit-content !important;
     min-width: 110px !important;
@@ -1541,23 +1541,8 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     justify-self: center !important;
     height: 96px !important;
     min-height: 96px !important;
-    background: linear-gradient(135deg, #c99600, #e6b422) !important;
-    color: #ffffff !important;
 }
 
-#appTitle {
-    color: #b8860b !important;
-}
-
-@media (max-width: 600px) {
-    #departmentHeader button {
-        width: 88% !important;
-        height: 96px !important;
-        min-height: 96px !important;
-    }
-}
-
-/* RESTORE ORIGINAL HOME BUTTON COLORS */
 #allDepartmentsButton {
     background: #2e7d32 !important;
 }
@@ -1572,4 +1557,16 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 
 #birthdayButton {
     background: #00897b !important;
+}
+
+#appTitle {
+    color: #b8860b !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader button {
+        width: 88% !important;
+        height: 96px !important;
+        min-height: 96px !important;
+    }
 }
