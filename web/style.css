@@ -836,3 +836,669 @@ button:active {
 #departmentHeader {
     gap: 20px !important;
 }
+
+
+#allDepartmentsButton {
+    background-color: #2e7d32 !important;
+    color: #ffffff !important;
+}
+
+.department-color-21 { background: #f8d7da; }
+.department-color-22 { background: #d1ecf1; }
+.department-color-23 { background: #d4edda; }
+.department-color-24 { background: #fff3cd; }
+.department-color-25 { background: #e2d9f3; }
+.department-color-26 { background: #fce1e4; }
+.department-color-27 { background: #dbeafe; }
+.department-color-28 { background: #dcfce7; }
+.department-color-29 { background: #fef3c7; }
+.department-color-30 { background: #ede9fe; }
+
+/* FORCE DEPARTMENT COLORS 21-30 */
+button.department-card.department-color-21 { background-color: #f8d7da !important; }
+button.department-card.department-color-22 { background-color: #d1ecf1 !important; }
+button.department-card.department-color-23 { background-color: #d4edda !important; }
+button.department-card.department-color-24 { background-color: #fff3cd !important; }
+button.department-card.department-color-25 { background-color: #e2d9f3 !important; }
+button.department-card.department-color-26 { background-color: #fce1e4 !important; }
+button.department-card.department-color-27 { background-color: #dbeafe !important; }
+button.department-card.department-color-28 { background-color: #dcfce7 !important; }
+button.department-card.department-color-29 { background-color: #fef3c7 !important; }
+button.department-card.department-color-30 { background-color: #ede9fe !important; }
+
+/* =========================
+   BIRTHDAY FEATURE
+========================= */
+
+#birthdayButton {
+    background-color: #e91e63 !important;
+    color: #ffffff !important;
+}
+
+#birthdayPage {
+    padding: 10px;
+}
+
+#birthdayPage h1 {
+    text-align: center;
+    margin: 15px 0;
+}
+
+#birthdayMonths {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 15px 0 20px;
+}
+
+#birthdayMonths button {
+    padding: 12px 8px;
+    border: none;
+    border-radius: 8px;
+    background: #f3f4f6;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#birthdayMonths button:hover,
+#birthdayMonths button.active {
+    background: #e91e63;
+    color: #ffffff;
+}
+
+.birthday-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.birthday-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+.birthday-table th,
+.birthday-table td {
+    border: 1px solid #ddd;
+    padding: 10px 8px;
+    text-align: left;
+}
+
+.birthday-table th {
+    background: #f3f4f6;
+    font-weight: 700;
+}
+
+.birthday-table td:first-child,
+.birthday-table th:first-child {
+    text-align: center;
+    width: 55px;
+}
+
+.birthday-table td:last-child,
+.birthday-table th:last-child {
+    white-space: nowrap;
+}
+
+.no-birthday,
+.birthday-instruction {
+    text-align: center;
+    padding: 25px 10px;
+    color: #666;
+    font-size: 16px;
+}
+
+@media (max-width: 600px) {
+    #birthdayMonths {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    #birthdayMonths button {
+        padding: 10px 5px;
+        font-size: 14px;
+    }
+
+    .birthday-table th,
+    .birthday-table td {
+        padding: 8px 6px;
+        font-size: 14px;
+    }
+}
+
+/* =========================
+   FIX DEPARTMENT HEADER BUTTONS
+========================= */
+
+#departmentHeader {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#departmentHeader button {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 8px 5px !important;
+    font-size: 14px !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box;
+}
+
+#allDepartmentsButton {
+    background-color: #2e7d32 !important;
+    color: #ffffff !important;
+}
+
+#allEmployeesButton {
+    background-color: #4F81BD !important;
+    color: #ffffff !important;
+}
+
+#favoriteEmployeesButton {
+    background-color: #E85D75 !important;
+    color: #ffffff !important;
+}
+
+#birthdayButton {
+    background-color: #e91e63 !important;
+    color: #ffffff !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    #departmentHeader button {
+        font-size: 14px !important;
+    }
+}
+
+/* 4 HEADER BUTTONS - 2 x 2 */
+#departmentHeader {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+}
+
+#departmentHeader button {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 10px 6px !important;
+    font-size: 15px !important;
+    white-space: nowrap !important;
+}
+
+/* Birthday month buttons - clearer default color */
+#birthdayMonths button {
+    background-color: #f48fb1 !important;
+    color: #4a1025 !important;
+    border: 1px solid #ec407a !important;
+    font-weight: 600 !important;
+}
+
+#birthdayMonths button:hover,
+#birthdayMonths button.active {
+    background-color: #e91e63 !important;
+    color: #ffffff !important;
+    border-color: #c2185b !important;
+}
+
+/* Birthday month buttons - compact and improved */
+#birthdayMonths {
+    gap: 5px !important;
+    margin: 12px 0 18px !important;
+}
+
+#birthdayMonths button {
+    padding: 9px 5px !important;
+    border-radius: 6px !important;
+    background-color: #f8bbd0 !important;
+    color: #5a1533 !important;
+    border: 1px solid #ec7aa5 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+#birthdayMonths button:hover {
+    background-color: #f06292 !important;
+    color: #ffffff !important;
+}
+
+#birthdayMonths button.active {
+    background-color: #c2185b !important;
+    color: #ffffff !important;
+    border-color: #880e4f !important;
+}
+
+@media (max-width: 600px) {
+    #birthdayMonths {
+        gap: 4px !important;
+    }
+
+    #birthdayMonths button {
+        padding: 8px 4px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* =========================
+   BIRTHDAY MONTHS
+   4 MONTHS PER ROW
+========================= */
+
+#birthdayMonths {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 5px !important;
+    margin: 10px 0 15px !important;
+}
+
+#birthdayMonths button {
+    padding: 9px 4px !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(0,0,0,0.12) !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #333333 !important;
+}
+
+/* 12 different month colors */
+#birthdayMonths button[data-month="1"]  { background: #ffcdd2 !important; }
+#birthdayMonths button[data-month="2"]  { background: #f8bbd0 !important; }
+#birthdayMonths button[data-month="3"]  { background: #e1bee7 !important; }
+#birthdayMonths button[data-month="4"]  { background: #d1c4e9 !important; }
+#birthdayMonths button[data-month="5"]  { background: #c5cae9 !important; }
+#birthdayMonths button[data-month="6"]  { background: #bbdefb !important; }
+#birthdayMonths button[data-month="7"]  { background: #b2ebf2 !important; }
+#birthdayMonths button[data-month="8"]  { background: #b2dfdb !important; }
+#birthdayMonths button[data-month="9"]  { background: #c8e6c9 !important; }
+#birthdayMonths button[data-month="10"] { background: #dcedc8 !important; }
+#birthdayMonths button[data-month="11"] { background: #fff9c4 !important; }
+#birthdayMonths button[data-month="12"] { background: #ffe0b2 !important; }
+
+/* Selected month */
+#birthdayMonths button.active {
+    color: #ffffff !important;
+    background: #c2185b !important;
+    border-color: #880e4f !important;
+}
+
+/* Keep selected colors consistent on hover */
+#birthdayMonths button.active:hover {
+    background: #ad1457 !important;
+}
+
+@media (max-width: 600px) {
+    #birthdayMonths {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4px !important;
+    }
+
+    #birthdayMonths button {
+        padding: 8px 2px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* =========================
+   BIRTHDAY PORTRAIT LAYOUT
+========================= */
+
+#birthdayPage {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+}
+
+#birthdayPage .birthday-table-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+}
+
+#birthdayPage .birthday-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto !important;
+}
+
+#birthdayPage h1 {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 601px) {
+    #birthdayPage {
+        max-width: 600px !important;
+    }
+}
+
+/* =========================
+   EMPLOYEE PAGES PORTRAIT LAYOUT
+========================= */
+
+#listPage,
+#favoritePage {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+#employeeList,
+#favoriteEmployeeList {
+    width: 100% !important;
+    max-width: 600px !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 601px) {
+    #listPage,
+    #favoritePage {
+        max-width: 600px !important;
+    }
+}
+
+/* =========================
+   DEPARTMENT PAGE PORTRAIT
+========================= */
+
+#departmentPage {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#departmentEmployeeList {
+    width: 100% !important;
+    max-width: 600px !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 601px) {
+    #departmentPage {
+        max-width: 600px !important;
+    }
+}
+
+/* Admin button - top of Home Screen */
+#listPage > #adminButton {
+    display: block !important;
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto 12px auto !important;
+    box-sizing: border-box !important;
+}
+
+/* =========================
+   HOME - STYLISH MAIN BUTTONS
+========================= */
+
+#departmentHeader {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-top: 4px !important;
+}
+
+#departmentHeader button {
+    width: 100% !important;
+    min-height: 64px !important;
+    padding: 12px 8px !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 14px !important;
+    box-sizing: border-box !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+#departmentHeader button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 7px 15px rgba(0,0,0,0.20) !important;
+}
+
+#departmentHeader button:active {
+    transform: scale(0.97) !important;
+}
+
+/* Individual button colors */
+
+#allDepartmentsButton {
+    background: linear-gradient(135deg, #2e7d32, #43a047) !important;
+}
+
+#allEmployeesButton {
+    background: linear-gradient(135deg, #1565c0, #42a5f5) !important;
+}
+
+#favoriteEmployeesButton {
+    background: linear-gradient(135deg, #c2185b, #ec407a) !important;
+}
+
+#birthdayButton {
+    background: linear-gradient(135deg, #e91e63, #ff6090) !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        gap: 10px !important;
+    }
+
+    #departmentHeader button {
+        min-height: 62px !important;
+        font-size: 14px !important;
+        border-radius: 13px !important;
+    }
+}
+
+/* =========================
+   STANDARD DASHBOARD BUTTONS
+========================= */
+
+#departmentHeader {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    margin-top: 8px !important;
+}
+
+#departmentHeader button {
+    min-height: 82px !important;
+    height: 82px !important;
+    padding: 10px 6px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(0,0,0,0.10) !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+}
+
+/* Icon */
+#departmentHeader button::first-letter {
+    font-size: 24px !important;
+}
+
+/* Different colors */
+
+#allDepartmentsButton {
+    background: #43a047 !important;
+    color: #ffffff !important;
+}
+
+#allEmployeesButton {
+    background: #1976d2 !important;
+    color: #ffffff !important;
+}
+
+#favoriteEmployeesButton {
+    background: #8e44ad !important;
+    color: #ffffff !important;
+}
+
+#birthdayButton {
+    background: #f39c12 !important;
+    color: #ffffff !important;
+}
+
+#departmentHeader button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 9px rgba(0,0,0,0.16) !important;
+}
+
+#departmentHeader button:active {
+    transform: scale(0.98) !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        gap: 8px !important;
+    }
+
+    #departmentHeader button {
+        height: 76px !important;
+        min-height: 76px !important;
+        font-size: 13px !important;
+        border-radius: 10px !important;
+    }
+}
+
+/* Dashboard icon + label */
+#departmentHeader button {
+    font-size: 0 !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+#departmentHeader .dashboard-icon {
+    display: block !important;
+    font-size: 30px !important;
+    line-height: 1 !important;
+}
+
+#departmentHeader .dashboard-label {
+    display: block !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 1.1 !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader .dashboard-icon {
+        font-size: 27px !important;
+    }
+
+    #departmentHeader .dashboard-label {
+        font-size: 14px !important;
+    }
+}
+
+/* Admin and Birthday must be clearly different */
+#listPage > #adminButton {
+    background: #455a64 !important;
+    color: #ffffff !important;
+}
+
+#birthdayButton {
+    background: #00897b !important;
+    color: #ffffff !important;
+}
+
+/* FINAL OVERRIDE - DASHBOARD BUTTONS */
+
+#departmentHeader button {
+    font-size: 16px !important;
+    font-family: Arial, sans-serif !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    height: 86px !important;
+    min-height: 86px !important;
+    padding: 7px 4px !important;
+    line-height: normal !important;
+}
+
+#departmentHeader button::first-letter {
+    font-size: inherit !important;
+}
+
+#departmentHeader .dashboard-icon {
+    display: block !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+}
+
+#departmentHeader .dashboard-label {
+    display: block !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+}
+
+#allDepartmentsButton {
+    background: #2e7d32 !important;
+}
+
+#allEmployeesButton {
+    background: #1976d2 !important;
+}
+
+#favoriteEmployeesButton {
+    background: #8e44ad !important;
+}
+
+#birthdayButton {
+    background: #00897b !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader button {
+        height: 82px !important;
+        min-height: 82px !important;
+    }
+
+    #departmentHeader .dashboard-icon {
+        font-size: 30px !important;
+    }
+
+    #departmentHeader .dashboard-label {
+        font-size: 15px !important;
+    }
+}
+
+#departmentSection::before {
+    margin-bottom: 36px !important;
+}
+

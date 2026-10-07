@@ -22,6 +22,13 @@ const departmentBackButton = document.getElementById("departmentBackButton");
 const favoritePage = document.getElementById("favoritePage");
 const favoriteEmployeeList = document.getElementById("favoriteEmployeeList");
 const favoriteBackButton = document.getElementById("favoriteBackButton");
+const birthdayButton = document.getElementById("birthdayButton");
+const birthdayPage = document.getElementById("birthdayPage");
+const birthdayBackButton = document.getElementById("birthdayBackButton");
+const birthdayEmployeeList = document.getElementById("birthdayEmployeeList");
+const birthdayMonths = document.getElementById("birthdayMonths");
+const allEmployeesPage = document.getElementById("allEmployeesPage");
+const allEmployeesBackButton = document.getElementById("allEmployeesBackButton");
 
 let favoriteEmployees = JSON.parse(
     localStorage.getItem("favoriteEmployees") || "[]"
@@ -33,21 +40,18 @@ function isFavorite(employee) {
     );
 }
 
-function toggleFavorite(employee) {
+async function toggleFavorite(employee) {
 
     const employeeNo = String(employee.employee_no);
+    const newFavorite = !isFavorite(employee);
 
-    if (favoriteEmployees.includes(employeeNo)) {
-
+    if (newFavorite) {
+        favoriteEmployees.push(employeeNo);
+    } else {
         favoriteEmployees =
             favoriteEmployees.filter(
                 id => id !== employeeNo
             );
-
-    } else {
-
-        favoriteEmployees.push(employeeNo);
-
     }
 
     localStorage.setItem(
@@ -55,6 +59,32 @@ function toggleFavorite(employee) {
         JSON.stringify(favoriteEmployees)
     );
 
+    try {
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/employee_dekko_v2?employee_no=eq.${encodeURIComponent(employeeNo)}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": `Bearer ${SUPABASE_KEY}`,
+                    "Content-Type": "application/json",
+                    "Prefer": "return=minimal"
+                },
+                body: JSON.stringify({
+                    favorite: newFavorite
+                })
+            }
+        );
+
+        if (!response.ok) {
+            console.error(
+                "Failed to sync favorite:",
+                await response.text()
+            );
+        }
+    } catch (error) {
+        console.error("Favorite sync error:", error);
+    }
 }
 
 
@@ -161,6 +191,16 @@ async function loadEmployees() {
 
 
         employees = await response.json();
+
+        // Load favorite status from Supabase
+        favoriteEmployees = employees
+            .filter(employee => employee.favorite === true)
+            .map(employee => String(employee.employee_no));
+
+        localStorage.setItem(
+            "favoriteEmployees",
+            JSON.stringify(favoriteEmployees)
+        );
 
 
         showDepartmentCards();
@@ -334,7 +374,7 @@ function showDepartmentCards() {
         card.type = "button";
         card.className =
             "department-card department-color-" +
-            ((index % 20) + 1);
+            ((index % 30) + 1);
 
         card.innerHTML = `
             <span class="department-name">
@@ -483,18 +523,20 @@ function showFavoriteEmployees() {
 }
 
 
-function showEmployees(list) {
+function showEmployees(list, targetList = employeeList) {
 
-    employeeList.innerHTML = "";
+    targetList.innerHTML = "";
 
 
-    resultCount.textContent =
-        `${list.length} employee${list.length === 1 ? "" : "s"} found`;
+    if (targetList === employeeList) {
+        resultCount.textContent =
+            `${list.length} employee${list.length === 1 ? "" : "s"} found`;
+    }
 
 
     if (list.length === 0) {
 
-        employeeList.innerHTML =
+        targetList.innerHTML =
             "<p>No employees found.</p>";
 
         return;
@@ -577,7 +619,7 @@ function showEmployees(list) {
                 }
             );
 
-        employeeList.appendChild(div);
+        targetList.appendChild(div);
 
     });
 
@@ -816,26 +858,19 @@ function loadEmployeeSelect() {
    ADMIN BUTTON
 ========================= */
 
-adminButton.addEventListener(
-    "click",
-    function() {
+if (adminButton) {
+    adminButton.addEventListener(
+        "click",
+        function() {
 
-        listPage.style.display =
-            "none";
+            listPage.style.display = "none";
+            detailsPage.style.display = "none";
+            loginPage.style.display = "block";
+            loginStatus.textContent = "";
 
-
-        detailsPage.style.display =
-            "none";
-
-
-        loginPage.style.display =
-            "block";
-
-
-        loginStatus.textContent = "";
-
-    }
-);
+        }
+    );
+}
 
 
 /* =========================
@@ -1394,12 +1429,15 @@ allDepartmentsButton.addEventListener(
     "click",
     function() {
 
+        listPage.style.display = "none";
         favoritePage.style.display = "none";
-        departmentPage.style.display = "none";
-        listPage.style.display = "block";
 
-        departmentSection.style.display = "block";
-        employeeList.style.display = "none";
+        departmentPage.style.display = "block";
+
+        departmentPageTitle.textContent = "🏢 All Departments";
+        departmentEmployeeList.innerHTML = "";
+
+        showDepartmentCards();
 
         window.scrollTo({
             top: 0,
@@ -1456,11 +1494,12 @@ allEmployeesButton.addEventListener(
 
         searchInput.value = "";
 
+        listPage.style.display = "none";
         departmentPage.style.display = "none";
         favoritePage.style.display = "none";
-        listPage.style.display = "block";
-        departmentSection.style.display = "block";
-        employeeList.style.display = "block";
+        birthdayPage.style.display = "none";
+
+        allEmployeesPage.style.display = "block";
 
         showEmployees(employees);
 
@@ -1470,6 +1509,22 @@ allEmployeesButton.addEventListener(
         });
     }
 );
+
+if (allEmployeesBackButton) {
+    allEmployeesBackButton.addEventListener(
+        "click",
+        function() {
+
+            allEmployeesPage.style.display = "none";
+            listPage.style.display = "block";
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    );
+}
 
 
 /* =========================
@@ -1638,3 +1693,93 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+/* =========================
+   BIRTHDAY FEATURE
+========================= */
+
+function showBirthdayEmployees(month) {
+    if (!birthdayEmployeeList) return;
+
+    const monthNumber = String(month).padStart(2, "0");
+
+    const birthdayEmployees = employees
+        .filter(employee => {
+            const birthday = String(employee.birthday || "").trim();
+            return /^\d{1,2}-\d{1,2}$/.test(birthday) &&
+                   birthday.split("-")[1].padStart(2, "0") === monthNumber;
+        })
+        .sort((a, b) => {
+            const dayA = parseInt(String(a.birthday).split("-")[0], 10);
+            const dayB = parseInt(String(b.birthday).split("-")[0], 10);
+            return dayA - dayB;
+        });
+
+    if (birthdayEmployees.length === 0) {
+        birthdayEmployeeList.innerHTML =
+            '<p class="no-birthday">No birthdays in this month.</p>';
+        return;
+    }
+
+    birthdayEmployeeList.innerHTML = `
+        <div class="birthday-table-wrapper">
+            <table class="birthday-table">
+                <thead>
+                    <tr>
+                        <th>Sl.</th>
+                        <th>Emp. Name</th>
+                        <th>Designation</th>
+                        <th>Birthday Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${birthdayEmployees.map((employee, index) => `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${employee.name || employee.employee_name || ""}</td>
+                            <td>${employee.designation || ""}</td>
+                            <td>${employee.birthday || ""}</td>
+                        </tr>
+                    `).join("")}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+function openBirthdayPage() {
+    departmentSection.style.display = "none";
+    employeeList.style.display = "none";
+    departmentPage.style.display = "none";
+    favoritePage.style.display = "none";
+    detailsPage.style.display = "none";
+    birthdayPage.style.display = "block";
+
+    birthdayEmployeeList.innerHTML =
+        '<p class="birthday-instruction">Select a month to view birthdays.</p>';
+}
+
+if (birthdayButton) {
+    birthdayButton.addEventListener("click", openBirthdayPage);
+}
+
+if (birthdayBackButton) {
+    birthdayBackButton.addEventListener("click", () => {
+        birthdayPage.style.display = "none";
+        departmentSection.style.display = "block";
+        employeeList.style.display = "block";
+    });
+}
+
+if (birthdayMonths) {
+    birthdayMonths.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => {
+            birthdayMonths.querySelectorAll("button").forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            button.classList.add("active");
+            showBirthdayEmployees(button.dataset.month);
+        });
+    });
+}

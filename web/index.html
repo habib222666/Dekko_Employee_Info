@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Employee App</title>
+<title>LIVE TEST - Employee App</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,31 +13,35 @@
 
 <button id="adminButton">Admin</button>
 
-<h1>Employee List</h1>
-
-<div class="searchBox">
-<input type="text" id="searchInput" placeholder="Search employee...">
-<button id="clearSearch">Clear</button>
-</div>
-
-<div id="resultCount">Loading...</div>
-
 <div id="departmentSection">
     <div id="departmentHeader">
-        <button id="allDepartmentsButton">🏢 All Departments</button>
-        <button id="allEmployeesButton">👥 All Employees</button>
-        <button id="favoriteEmployeesButton">❤️ Favorite Employees</button>
+        <button id="allDepartmentsButton"><span class="dashboard-icon">🏢</span><span class="dashboard-label">All Departments</span></button>
+        <button id="allEmployeesButton"><span class="dashboard-icon">👥</span><span class="dashboard-label">All Employees</span></button>
+        <button id="favoriteEmployeesButton"><span class="dashboard-icon">❤️</span><span class="dashboard-label">Favorite Employees</span></button>
+        <button id="birthdayButton"><span class="dashboard-icon">🎂</span><span class="dashboard-label">Birthday</span></button>
     </div>
-    <div id="departmentCards"></div>
 </div>
 
-<div id="employeeList"></div>
+</div>
 
+<div id="allEmployeesPage" style="display:none;">
+    <button id="allEmployeesBackButton">← Back</button>
+    <h1>👥 All Employees</h1>
+
+    <div class="searchBox">
+        <input type="text" id="searchInput" placeholder="Search employee...">
+        <button id="clearSearch">Clear</button>
+    </div>
+
+    <div id="resultCount">Loading...</div>
+
+    <div id="employeeList"></div>
 </div>
 
 <div id="departmentPage" style="display:none;">
     <button id="departmentBackButton">← Back to Departments</button>
-    <h1 id="departmentPageTitle"></h1>
+    <h1 id="departmentPageTitle">🏢 All Departments</h1>
+    <div id="departmentCards"></div>
     <div id="departmentEmployeeList"></div>
 </div>
 
@@ -45,6 +49,28 @@
     <button id="favoriteBackButton">← Back</button>
     <h1>❤️ Favorite Employees</h1>
     <div id="favoriteEmployeeList"></div>
+</div>
+
+<div id="birthdayPage" style="display:none;">
+<button id="birthdayBackButton">← Back</button>
+<h1>🎂 Birthday</h1>
+
+<div id="birthdayMonths">
+    <button data-month="1">January</button>
+    <button data-month="2">February</button>
+    <button data-month="3">March</button>
+    <button data-month="4">April</button>
+    <button data-month="5">May</button>
+    <button data-month="6">June</button>
+    <button data-month="7">July</button>
+    <button data-month="8">August</button>
+    <button data-month="9">September</button>
+    <button data-month="10">October</button>
+    <button data-month="11">November</button>
+    <button data-month="12">December</button>
+</div>
+
+<div id="birthdayEmployeeList"></div>
 </div>
 
 <div id="detailsPage" style="display:none;">
