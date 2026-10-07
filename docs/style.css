@@ -1616,3 +1616,17 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         width: 78% !important;
     }
 }
+
+/* FINAL DASHBOARD ICON + TEXT */
+#departmentHeader button {
+    gap: 15px !important;
+}
+
+#departmentHeader .dashboard-icon {
+    font-size: 32px !important;
+}
+
+#departmentHeader .dashboard-label {
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
