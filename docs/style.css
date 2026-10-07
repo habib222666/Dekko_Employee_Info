@@ -1502,3 +1502,19 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     margin-bottom: 36px !important;
 }
 
+
+/* FINAL HOME SCREEN TITLE + 2-GAP SPACING */
+#appTitle {
+    text-align: center !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    margin-top: 18px !important;
+    margin-bottom: 36px !important;
+}
+
+#appTitle div {
+    margin: 0 !important;
+    padding: 0 !important;
+}
