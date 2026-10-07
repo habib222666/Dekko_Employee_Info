@@ -1645,3 +1645,14 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     justify-self: stretch !important;
     box-sizing: border-box !important;
 }
+
+/* FINAL DASHBOARD SPACING */
+#departmentHeader {
+    column-gap: 30px !important;
+    row-gap: 30px !important;
+}
+
+#departmentHeader button {
+    width: 85% !important;
+    justify-self: center !important;
+}
