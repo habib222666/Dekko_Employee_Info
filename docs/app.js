@@ -2059,3 +2059,260 @@ if (designationFilter) {
     );
 
 }
+
+/* =========================
+   ADD NEW EMPLOYEE
+========================= */
+
+const showAddEmployeeButton =
+    document.getElementById("showAddEmployeeButton");
+
+const addEmployeeForm =
+    document.getElementById("addEmployeeForm");
+
+const saveNewEmployeeButton =
+    document.getElementById("saveNewEmployeeButton");
+
+const addEmployeeStatus =
+    document.getElementById("addEmployeeStatus");
+
+if (showAddEmployeeButton && addEmployeeForm) {
+
+    showAddEmployeeButton.addEventListener(
+        "click",
+        function() {
+
+            if (addEmployeeForm.style.display === "none") {
+
+                addEmployeeForm.style.display = "block";
+
+                showAddEmployeeButton.textContent =
+                    "− Close Add Employee";
+
+            } else {
+
+                addEmployeeForm.style.display = "none";
+
+                showAddEmployeeButton.textContent =
+                    "+ Add New Employee";
+            }
+
+        }
+    );
+}
+
+if (saveNewEmployeeButton) {
+
+    saveNewEmployeeButton.addEventListener(
+        "click",
+        async function() {
+
+            const employeeName =
+                document.getElementById("newEmployeeName").value.trim();
+
+            const designation =
+                document.getElementById("newEmployeeDesignation").value.trim();
+
+            const company =
+                document.getElementById("newEmployeeCompany").value.trim();
+
+            const employeeNo =
+                document.getElementById("newEmployeeNo").value.trim();
+
+            const department =
+                document.getElementById("newEmployeeDepartment").value.trim();
+
+            const officialNo =
+                document.getElementById("newEmployeeOfficialNo").value.trim();
+
+            const personalNo =
+                document.getElementById("newEmployeePersonalNo").value.trim();
+
+            const emailOfficial =
+                document.getElementById("newEmployeeEmail").value.trim();
+
+            const pabxNumber =
+                document.getElementById("newEmployeePabx").value.trim();
+
+            const bloodGroup =
+                document.getElementById("newEmployeeBloodGroup").value.trim();
+
+            const joiningDate =
+                document.getElementById("newEmployeeJoiningDate").value;
+
+            const birthday =
+                document.getElementById("newEmployeeBirthday").value.trim();
+
+            const nid =
+                document.getElementById("newEmployeeNid").value.trim();
+
+            const tinNo =
+                document.getElementById("newEmployeeTin").value.trim();
+
+            if (!employeeName) {
+                alert("Employee Name is required.");
+                return;
+            }
+
+            if (!employeeNo) {
+                alert("Employee ID is required.");
+                return;
+            }
+
+            if (!accessToken) {
+                alert("Please login first.");
+                return;
+            }
+
+            saveNewEmployeeButton.disabled = true;
+            saveNewEmployeeButton.textContent = "Saving...";
+
+            addEmployeeStatus.textContent =
+                "Saving employee...";
+
+            try {
+
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/employee_dekko_v2`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization":
+                                `Bearer ${accessToken}`,
+                            "Content-Type":
+                                "application/json",
+                            "Prefer":
+                                "return=representation"
+                        },
+
+                        body: JSON.stringify({
+                            employee_name: employeeName,
+                            designation: designation,
+                            company: company,
+                            employee_no: employeeNo,
+                            department: department,
+                            phone_official: officialNo,
+                            personal_no: personalNo,
+                            email_official: emailOfficial,
+                            pabx_number: pabxNumber,
+                            blood_group: bloodGroup,
+                            joining_date: joiningDate || null,
+                            birthday: birthday,
+                            nid: nid,
+                            tin_no: tinNo
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                console.log(
+                    "Add Employee Response:",
+                    data
+                );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.details ||
+                        data.hint ||
+                        data.error ||
+                        "Employee could not be added."
+                    );
+                }
+
+                addEmployeeStatus.textContent =
+                    "Employee added successfully.";
+
+                alert(
+                    "Employee added successfully!"
+                );
+
+                document.getElementById(
+                    "newEmployeeName"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeDesignation"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeCompany"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeNo"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeDepartment"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeOfficialNo"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeePersonalNo"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeEmail"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeePabx"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeBloodGroup"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeJoiningDate"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeBirthday"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeNid"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeTin"
+                ).value = "";
+
+                await loadEmployees();
+
+            } catch (error) {
+
+                console.error(
+                    "Add Employee Error:",
+                    error
+                );
+
+                addEmployeeStatus.textContent =
+                    "Error: " + error.message;
+
+                alert(
+                    "Employee could not be added:\n\n" +
+                    error.message
+                );
+
+            } finally {
+
+                saveNewEmployeeButton.disabled = false;
+
+                saveNewEmployeeButton.textContent =
+                    "Save Employee";
+            }
+
+        }
+    );
+
+}
