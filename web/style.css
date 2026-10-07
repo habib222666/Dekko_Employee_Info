@@ -1630,3 +1630,18 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     font-size: 19px !important;
     font-weight: 700 !important;
 }
+
+/* FINAL DASHBOARD 2-COLUMN LAYOUT */
+#departmentHeader {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 15px !important;
+    row-gap: 15px !important;
+    width: 100% !important;
+}
+
+#departmentHeader button {
+    width: 100% !important;
+    justify-self: stretch !important;
+    box-sizing: border-box !important;
+}
