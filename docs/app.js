@@ -1781,7 +1781,16 @@ function showBirthdayEmployees(month) {
                             <td>${index + 1}</td>
                             <td>${employee.name || employee.employee_name || ""}</td>
                             <td>${employee.designation || ""}</td>
-                            <td>${employee.birthday || ""}</td>
+                            <td>${(() => {
+                                const parts = String(employee.birthday || "").split("-");
+                                const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                                if (parts.length === 2) {
+                                    const day = parts[0].padStart(2, "0");
+                                    const month = months[parseInt(parts[1], 10) - 1];
+                                    return month ? `${day} ${month}` : employee.birthday || "";
+                                }
+                                return employee.birthday || "";
+                            })()}</td>
                         </tr>
                     `).join("")}
                 </tbody>
