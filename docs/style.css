@@ -1730,3 +1730,45 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     }
 
 }
+
+/* =========================
+   ADD EMPLOYEE - LABEL + INPUT SIDE BY SIDE
+========================= */
+
+#addEmployeeForm {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 10px;
+    align-items: center;
+}
+
+#addEmployeeForm label {
+    margin: 0 !important;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#addEmployeeForm input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 42px;
+}
+
+#addEmployeeForm #saveNewEmployeeButton,
+#addEmployeeForm #addEmployeeStatus {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+
+    #addEmployeeForm {
+        grid-template-columns: 115px minmax(0, 1fr);
+        column-gap: 10px;
+    }
+
+    #addEmployeeForm label {
+        font-size: 13px;
+    }
+
+}
