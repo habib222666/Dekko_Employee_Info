@@ -1556,3 +1556,20 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         min-height: 96px !important;
     }
 }
+
+/* RESTORE ORIGINAL HOME BUTTON COLORS */
+#allDepartmentsButton {
+    background: #2e7d32 !important;
+}
+
+#allEmployeesButton {
+    background: #1976d2 !important;
+}
+
+#favoriteEmployeesButton {
+    background: #8e44ad !important;
+}
+
+#birthdayButton {
+    background: #00897b !important;
+}
