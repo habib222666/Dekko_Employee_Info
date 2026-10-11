@@ -2073,6 +2073,7 @@ function showBirthdayEmployees(month) {
 }
 
 function openBirthdayPage() {
+    listPage.style.display = "none";
     adminButton.style.setProperty("display", "none", "important");
     document.getElementById("appTitle").style.display = "none";
     departmentSection.style.display = "none";
