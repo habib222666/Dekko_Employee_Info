@@ -2075,3 +2075,23 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         font-size: clamp(15px, 4.5vw, 19px) !important;
     }
 }
+
+
+/* DEKKO ICON WATERMARK - HOME PAGE */
+#listPage {
+    position: relative !important;
+    isolation: isolate !important;
+}
+
+#listPage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("assets/icons/Dekko%20icon.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: min(72%, 420px) auto;
+    opacity: 0.20;
+    pointer-events: none;
+    z-index: -1;
+}
