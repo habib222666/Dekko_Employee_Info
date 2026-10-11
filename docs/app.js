@@ -2094,6 +2094,7 @@ if (birthdayButton) {
 if (birthdayBackButton) {
     birthdayBackButton.addEventListener("click", () => {
         birthdayPage.style.display = "none";
+        listPage.style.display = "block";
         adminButton.style.removeProperty("display");
         document.getElementById("appTitle").style.display = "";
         departmentSection.style.display = "block";
