@@ -2041,7 +2041,7 @@ function showBirthdayEmployees(month) {
                 <thead>
                     <tr>
                         <th>Sl.</th>
-                        <th>Employee</th>
+                        <th>Employee Name</th>
                         <th>Designation</th>
                         <th>Department</th>
                         <th>Birthday Date</th>
@@ -2073,7 +2073,7 @@ function showBirthdayEmployees(month) {
 }
 
 function openBirthdayPage() {
-    adminButton.style.display = "none";
+    adminButton.style.setProperty("display", "none", "important");
     document.getElementById("appTitle").style.display = "none";
     departmentSection.style.display = "none";
     employeeList.style.display = "none";
@@ -2093,7 +2093,7 @@ if (birthdayButton) {
 if (birthdayBackButton) {
     birthdayBackButton.addEventListener("click", () => {
         birthdayPage.style.display = "none";
-        adminButton.style.display = "";
+        adminButton.style.removeProperty("display");
         document.getElementById("appTitle").style.display = "";
         departmentSection.style.display = "block";
         employeeList.style.display = "block";

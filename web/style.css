@@ -1822,3 +1822,29 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     color: #ffffff !important;
     border-color: #00796b !important;
 }
+
+
+/* BIRTHDAY PAGE: ADMIN VISIBILITY AND COMPACT TABLE COLUMNS */
+#listPage > #adminButton {
+    #display: none;
+}
+
+.birthday-table th:first-child,
+.birthday-table td:first-child {
+    width: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    white-space: nowrap;
+}
+
+.birthday-table th:last-child,
+.birthday-table td:last-child {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    white-space: nowrap;
+}
