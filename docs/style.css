@@ -1974,3 +1974,55 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         overflow: visible !important;
     }
 }
+
+/* BIRTHDAY TABLE: FIT PHONE SCREEN WITHOUT HORIZONTAL SCROLL */
+@media (max-width: 600px) {
+    #birthdayPage .birthday-table-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    #birthdayPage .birthday-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    #birthdayPage .birthday-table th,
+    #birthdayPage .birthday-table td {
+        box-sizing: border-box !important;
+        padding: 6px 2px !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+    }
+
+    #birthdayPage .birthday-table th {
+        font-size: 13px !important;
+        line-height: 1.2 !important;
+    }
+
+    #birthdayPage .birthday-table td {
+        font-size: 12px !important;
+        line-height: 1.25 !important;
+    }
+
+    #birthdayPage .birthday-table th:nth-child(1),
+    #birthdayPage .birthday-table td:nth-child(1) { width: 8% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(2),
+    #birthdayPage .birthday-table td:nth-child(2) { width: 28% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(3),
+    #birthdayPage .birthday-table td:nth-child(3) { width: 24% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(4),
+    #birthdayPage .birthday-table td:nth-child(4) { width: 20% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(5),
+    #birthdayPage .birthday-table td:nth-child(5) { width: 20% !important; }
+}
