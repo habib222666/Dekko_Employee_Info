@@ -2422,3 +2422,20 @@ if (saveNewEmployeeButton) {
     );
 
 }
+
+
+/* ATTENDANCE CALENDAR DATE */
+(function () {
+    function updateAttendanceCalendar() {
+        const month = document.getElementById("attendanceMonth");
+        const date = document.getElementById("attendanceDate");
+        if (!month || !date) return;
+
+        const today = new Date();
+        month.textContent = today.toLocaleDateString("en-US", { month: "long" }).toUpperCase();
+        date.textContent = today.getDate();
+    }
+
+    updateAttendanceCalendar();
+    setInterval(updateAttendanceCalendar, 60000);
+})();

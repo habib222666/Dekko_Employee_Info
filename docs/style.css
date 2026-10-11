@@ -2155,3 +2155,46 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     padding-bottom: 105px !important;
     box-sizing: border-box !important;
 }
+
+
+/* ATTENDANCE BUTTON CALENDAR */
+#attendanceButton #attendanceCalendar {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    line-height: 1 !important;
+    margin: 0 auto 5px !important;
+}
+
+#attendanceButton #attendanceMonth {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+}
+
+#attendanceButton #attendanceDate {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 38px !important;
+    height: 34px !important;
+    padding: 0 5px !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    color: #e65100 !important;
+    border-radius: 4px !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+
+#attendanceButton {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
