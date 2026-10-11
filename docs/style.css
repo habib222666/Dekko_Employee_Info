@@ -2026,3 +2026,15 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     #birthdayPage .birthday-table th:nth-child(5),
     #birthdayPage .birthday-table td:nth-child(5) { width: 20% !important; }
 }
+
+
+/* NEW HOME CARDS */
+#attendanceButton {
+    background: #1565c0 !important;
+    color: #ffffff !important;
+}
+
+#salaryButton {
+    background: #b8860b !important;
+    color: #ffffff !important;
+}
