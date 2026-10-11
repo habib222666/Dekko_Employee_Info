@@ -1848,3 +1848,36 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     padding-right: 4px !important;
     white-space: nowrap;
 }
+
+
+/* BIRTHDAY PAGE: BRITTANY SIGNATURE HEADING AND DATE COLUMN FIX */
+@font-face {
+    font-family: "BrittanySignature";
+    src: url("fonts/BrittanySignature.ttf") format("truetype");
+    font-display: swap;
+}
+
+#birthdayPage h1 {
+    font-family: "BrittanySignature", cursive !important;
+    font-size: clamp(30px, 6vw, 42px) !important;
+    line-height: 1.25 !important;
+}
+
+#birthdayPage .birthday-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+#birthdayPage .birthday-table th:last-child,
+#birthdayPage .birthday-table td:last-child {
+    width: 112px !important;
+    min-width: 0 !important;
+    max-width: 112px !important;
+    box-sizing: border-box !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 12px !important;
+}
