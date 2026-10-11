@@ -2038,3 +2038,40 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     background: #b8860b !important;
     color: #ffffff !important;
 }
+
+
+/* HOME CARD SPACING, COLORS AND SINGLE-LINE TITLE */
+#appTitle {
+    white-space: nowrap !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#appTitle div {
+    white-space: nowrap !important;
+    font-size: clamp(16px, 4.5vw, 22px) !important;
+}
+
+#departmentHeader {
+    row-gap: 42px !important;
+}
+
+#allEmployeesButton {
+    background: #1976d2 !important;
+    color: #ffffff !important;
+}
+
+#attendanceButton {
+    background: #e65100 !important;
+    color: #ffffff !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        row-gap: 28px !important;
+    }
+
+    #appTitle div {
+        font-size: clamp(15px, 4.5vw, 19px) !important;
+    }
+}
