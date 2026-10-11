@@ -2207,3 +2207,10 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     align-items: center !important;
     justify-content: center !important;
 }
+
+
+/* Slightly taller six home dashboard buttons */
+#departmentHeader > button {
+    min-height: 100px !important;
+    box-sizing: border-box !important;
+}
