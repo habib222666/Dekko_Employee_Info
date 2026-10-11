@@ -1810,3 +1810,15 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     }
 
 }
+
+
+/* BIRTHDAY PAGE: CLEAN TOP AREA AND COLORED HEADINGS */
+#birthdayPage h1 {
+    color: #00897b !important;
+}
+
+#birthdayPage .birthday-table thead th {
+    background-color: #00897b !important;
+    color: #ffffff !important;
+    border-color: #00796b !important;
+}

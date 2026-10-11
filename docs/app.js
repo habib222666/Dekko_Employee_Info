@@ -2041,8 +2041,9 @@ function showBirthdayEmployees(month) {
                 <thead>
                     <tr>
                         <th>Sl.</th>
-                        <th>Emp. Name</th>
+                        <th>Employee</th>
                         <th>Designation</th>
+                        <th>Department</th>
                         <th>Birthday Date</th>
                     </tr>
                 </thead>
@@ -2052,6 +2053,7 @@ function showBirthdayEmployees(month) {
                             <td>${index + 1}</td>
                             <td>${employee.name || employee.employee_name || ""}</td>
                             <td>${employee.designation || ""}</td>
+                            <td>${employee.department || ""}</td>
                             <td>${(() => {
                                 const parts = String(employee.birthday || "").split("-");
                                 const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -2071,6 +2073,8 @@ function showBirthdayEmployees(month) {
 }
 
 function openBirthdayPage() {
+    adminButton.style.display = "none";
+    document.getElementById("appTitle").style.display = "none";
     departmentSection.style.display = "none";
     employeeList.style.display = "none";
     departmentPage.style.display = "none";
@@ -2089,6 +2093,8 @@ if (birthdayButton) {
 if (birthdayBackButton) {
     birthdayBackButton.addEventListener("click", () => {
         birthdayPage.style.display = "none";
+        adminButton.style.display = "";
+        document.getElementById("appTitle").style.display = "";
         departmentSection.style.display = "block";
         employeeList.style.display = "block";
     });
