@@ -1881,3 +1881,37 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     text-overflow: ellipsis !important;
     font-size: 12px !important;
 }
+
+/* BIRTHDAY TABLE: UNIFORM FONT SIZES AND WIDER EMPLOYEE NAME */
+#birthdayPage .birthday-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+#birthdayPage .birthday-table th {
+    font-size: 13px !important;
+    box-sizing: border-box !important;
+}
+
+#birthdayPage .birthday-table td {
+    font-size: 12px !important;
+    box-sizing: border-box !important;
+}
+
+#birthdayPage .birthday-table th:nth-child(2),
+#birthdayPage .birthday-table td:nth-child(2) {
+    width: 36% !important;
+    overflow-wrap: anywhere !important;
+}
+
+#birthdayPage .birthday-table th:last-child,
+#birthdayPage .birthday-table td:last-child {
+    width: 112px !important;
+    min-width: 0 !important;
+    max-width: 112px !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}

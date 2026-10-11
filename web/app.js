@@ -2044,7 +2044,7 @@ function showBirthdayEmployees(month) {
                         <th>Employee Name</th>
                         <th>Designation</th>
                         <th>Department</th>
-                        <th>Birthday Date</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
