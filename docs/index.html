@@ -86,6 +86,33 @@
 <div id="birthdayEmployeeList"></div>
 </div>
 
+<div id="attendancePage" style="display:none;">
+    <button id="attendanceBackButton">← Back</button>
+    <h1>🕒 Attendance</h1>
+
+    <div id="attendanceTodayCard">
+        <h2>Today's Attendance</h2>
+        <p id="attendanceTodayDate"></p>
+        <p>Status: <strong id="attendanceStatus">Not Checked In</strong></p>
+        <p>Check In: <span id="attendanceCheckInTime">—</span></p>
+        <p>Check Out: <span id="attendanceCheckOutTime">—</span></p>
+        <p>Working Hours: <span id="attendanceWorkingHours">—</span></p>
+
+        <button id="checkInButton" type="button">Check In</button>
+        <button id="checkOutButton" type="button" disabled>Check Out</button>
+        <p id="attendanceMessage" role="status"></p>
+    </div>
+
+    <div id="attendanceMonthlySummary">
+        <h2>Monthly Summary</h2>
+        <p>Present: <span id="attendancePresentDays">0</span></p>
+        <p>Attendance History</p>
+        <div id="attendanceHistory">
+            <p>No attendance records yet.</p>
+        </div>
+    </div>
+</div>
+
 <div id="detailsPage" style="display:none;">
 <button id="backButton">← Back</button>
 <h1>Employee Details</h1>

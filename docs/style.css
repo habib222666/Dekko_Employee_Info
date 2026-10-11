@@ -2205,3 +2205,71 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     min-height: 100px !important;
     box-sizing: border-box !important;
 }
+
+/* ATTENDANCE PAGE UI */
+#attendancePage {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 16px;
+    box-sizing: border-box;
+    color: #1f2937;
+}
+#attendancePage h1 {
+    margin: 18px 0;
+    font-size: 26px;
+}
+#attendanceTodayCard,
+#attendanceMonthlySummary {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 14px 0;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+#attendanceTodayCard h2,
+#attendanceMonthlySummary h2 {
+    margin-top: 0;
+    font-size: 19px;
+}
+#attendancePage button {
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+#checkInButton {
+    background: #15803d;
+    color: #ffffff;
+}
+#checkOutButton {
+    background: #b91c1c;
+    color: #ffffff;
+    margin-left: 8px;
+}
+#attendancePage button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+#attendanceMessage {
+    color: #64748b;
+    font-size: 13px;
+}
+#attendanceHistory {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 8px;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+    #attendancePage {
+        padding: 12px;
+    }
+    #attendanceTodayCard,
+    #attendanceMonthlySummary {
+        padding: 14px;
+    }
+    #attendancePage h1 {
+        font-size: 23px;
+    }
+}

@@ -2426,6 +2426,92 @@ if (saveNewEmployeeButton) {
 }
 
 
+
+
+/* ATTENDANCE CHECK IN/OUT - DEMO ONLY */
+(function () {
+    const page = document.getElementById("attendancePage");
+    if (!page) return;
+
+    const checkIn = document.getElementById("checkInButton");
+    const checkOut = document.getElementById("checkOutButton");
+    const status = document.getElementById("attendanceStatus");
+    const inTime = document.getElementById("attendanceCheckInTime");
+    const outTime = document.getElementById("attendanceCheckOutTime");
+    const hours = document.getElementById("attendanceWorkingHours");
+    const message = document.getElementById("attendanceMessage");
+    const history = document.getElementById("attendanceHistory");
+    const present = document.getElementById("attendancePresentDays");
+
+    if (!checkIn || !checkOut) return;
+
+    let start = null;
+    let finish = null;
+
+    function timeText(date) {
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function updateHours() {
+        if (!start) return;
+        const end = finish || new Date();
+        const minutes = Math.max(0, Math.floor((end - start) / 60000));
+        hours.textContent = Math.floor(minutes / 60) + "h " + (minutes % 60) + "m";
+    }
+
+    checkIn.addEventListener("click", function () {
+        if (start) return;
+        start = new Date();
+        inTime.textContent = timeText(start);
+        status.textContent = "Checked In";
+        checkIn.disabled = true;
+        checkOut.disabled = false;
+        message.textContent = "Demo only — not saved permanently.";
+        updateHours();
+    });
+
+    checkOut.addEventListener("click", function () {
+        if (!start || finish) return;
+        finish = new Date();
+        outTime.textContent = timeText(finish);
+        status.textContent = "Checked Out";
+        checkOut.disabled = true;
+        message.textContent = "Demo only — not saved permanently.";
+        updateHours();
+
+        const row = document.createElement("p");
+        row.textContent = new Date().toLocaleDateString() + " — " +
+            timeText(start) + " to " + timeText(finish) +
+            " (" + hours.textContent + ")";
+        history.replaceChildren(row);
+        present.textContent = "1";
+    });
+})();
+
+/* ATTENDANCE PAGE NAVIGATION */
+(function () {
+    const openButton = document.getElementById("attendanceButton");
+    const page = document.getElementById("attendancePage");
+    const backButton = document.getElementById("attendanceBackButton");
+    if (!openButton || !page || !backButton) return;
+
+    openButton.addEventListener("click", function () {
+        document.getElementById("listPage").style.display = "none";
+        document.getElementById("departmentSection").style.display = "none";
+        page.style.display = "block";
+        const date = document.getElementById("attendanceTodayDate");
+        if (date) date.textContent = new Date().toLocaleDateString(undefined, {
+            weekday: "long", year: "numeric", month: "long", day: "numeric"
+        });
+    });
+
+    backButton.addEventListener("click", function () {
+        page.style.display = "none";
+        document.getElementById("listPage").style.display = "block";
+        document.getElementById("departmentSection").style.display = "block";
+    });
+})();
+
 /* ATTENDANCE CALENDAR DATE */
 (function () {
     function updateAttendanceCalendar() {
