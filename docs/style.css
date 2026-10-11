@@ -2079,6 +2079,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 
 /* DEKKO ICON WATERMARK - HOME PAGE */
 #listPage {
+    min-height: 100vh;
     position: relative !important;
     isolation: isolate !important;
 }
