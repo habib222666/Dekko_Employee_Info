@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://jborzgwqlinwkeiquivy.supabase.co";
+const SUPABASE_URL = 'https://' + 'jborzgwqlinwkeiquivy' + '.supabase.co';
 const SUPABASE_KEY = "sb_publishable_W_h2UbIqWWJNGZfRnJSojg_JCpHW7qN";
 
 const rememberLogin =
@@ -2428,7 +2428,7 @@ if (saveNewEmployeeButton) {
 
 
 
-/* ATTENDANCE CHECK IN/OUT - DEMO ONLY */
+/* ATTENDANCE CHECK IN/OUT - SUPABASE */
 (function () {
     const page = document.getElementById("attendancePage");
     if (!page) return;
@@ -2442,52 +2442,203 @@ if (saveNewEmployeeButton) {
     const message = document.getElementById("attendanceMessage");
     const history = document.getElementById("attendanceHistory");
     const present = document.getElementById("attendancePresentDays");
+    const openButton = document.getElementById("attendanceButton");
 
     if (!checkIn || !checkOut) return;
 
-    let start = null;
-    let finish = null;
+    const todayKey = () => new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Dhaka",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date());
 
-    function timeText(date) {
-        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const monthStartKey = () => todayKey().slice(0, 7) + "-01";
+
+    const timeText = value => value
+        ? new Date(value).toLocaleTimeString("en-GB", {
+            timeZone: "Asia/Dhaka",
+            hour: "2-digit",
+            minute: "2-digit"
+        })
+        : "—";
+
+    const dateText = value => new Date(value + "T12:00:00+06:00")
+        .toLocaleDateString("en-GB", {
+            timeZone: "Asia/Dhaka",
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+
+    async function api(path, options = {}) {
+        if (!accessToken) {
+            throw new Error("Please log in to use Attendance.");
+        }
+
+        const response = await fetch(`${SUPABASE_URL}${path}`, {
+            ...options,
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + accessToken,
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        });
+
+        const text = await response.text();
+        let data = null;
+        try {
+            data = text ? JSON.parse(text) : null;
+        } catch (_) {
+            data = text;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data && data.message
+                    ? data.message
+                    : "Attendance request failed (" + response.status + ")."
+            );
+        }
+
+        return data;
     }
 
-    function updateHours() {
-        if (!start) return;
-        const end = finish || new Date();
+    function showWorkingHours(record) {
+        if (!record || !record.check_in) {
+            hours.textContent = "—";
+            return;
+        }
+
+        const start = new Date(record.check_in).getTime();
+        const end = record.check_out
+            ? new Date(record.check_out).getTime()
+            : Date.now();
         const minutes = Math.max(0, Math.floor((end - start) / 60000));
-        hours.textContent = Math.floor(minutes / 60) + "h " + (minutes % 60) + "m";
+
+        hours.textContent =
+            Math.floor(minutes / 60) + "h " + (minutes % 60) + "m";
     }
 
-    checkIn.addEventListener("click", function () {
-        if (start) return;
-        start = new Date();
-        inTime.textContent = timeText(start);
-        status.textContent = "Checked In";
+    function showToday(record) {
+        inTime.textContent = timeText(record && record.check_in);
+        outTime.textContent = timeText(record && record.check_out);
+        showWorkingHours(record);
+
+        if (!record || !record.check_in) {
+            status.textContent = "Not Checked In";
+            checkIn.disabled = false;
+            checkOut.disabled = true;
+        } else if (!record.check_out) {
+            status.textContent = "Checked In";
+            checkIn.disabled = true;
+            checkOut.disabled = false;
+        } else {
+            status.textContent = "Checked Out";
+            checkIn.disabled = true;
+            checkOut.disabled = true;
+        }
+    }
+
+    async function loadAttendance() {
+        if (!accessToken) {
+            checkIn.disabled = true;
+            checkOut.disabled = true;
+            message.textContent = "Please log in before using Attendance.";
+            return;
+        }
+
         checkIn.disabled = true;
-        checkOut.disabled = false;
-        message.textContent = "Demo only — not saved permanently.";
-        updateHours();
-    });
-
-    checkOut.addEventListener("click", function () {
-        if (!start || finish) return;
-        finish = new Date();
-        outTime.textContent = timeText(finish);
-        status.textContent = "Checked Out";
         checkOut.disabled = true;
-        message.textContent = "Demo only — not saved permanently.";
-        updateHours();
+        message.textContent = "Loading attendance…";
 
-        const row = document.createElement("p");
-        row.textContent = new Date().toLocaleDateString() + " — " +
-            timeText(start) + " to " + timeText(finish) +
-            " (" + hours.textContent + ")";
-        history.replaceChildren(row);
-        present.textContent = "1";
+        try {
+            const query =
+                "/rest/v1/employee_attendance" +
+                "?select=attendance_date,check_in,check_out" +
+                "&attendance_date=gte." + monthStartKey() +
+                "&order=attendance_date.desc";
+
+            const rows = await api(query);
+            const records = Array.isArray(rows) ? rows : [];
+            const today = records.find(r => r.attendance_date === todayKey());
+
+            showToday(today || null);
+            present.textContent = String(
+                records.filter(r => r.check_in).length
+            );
+
+            history.replaceChildren();
+
+            if (!records.length) {
+                const empty = document.createElement("p");
+                empty.textContent = "No attendance records this month.";
+                history.appendChild(empty);
+            } else {
+                records.forEach(record => {
+                    const row = document.createElement("p");
+                    const label = record.check_out
+                        ? timeText(record.check_in) + " to " + timeText(record.check_out)
+                        : timeText(record.check_in) + " — Checked In";
+                    row.textContent = dateText(record.attendance_date) + " — " + label;
+                    history.appendChild(row);
+                });
+            }
+
+            const todayDate = document.getElementById("attendanceTodayDate");
+            if (todayDate) {
+                todayDate.textContent = new Date().toLocaleDateString("en-GB", {
+                    timeZone: "Asia/Dhaka",
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                });
+            }
+
+            message.textContent = "";
+        } catch (error) {
+            message.textContent = error.message || "Could not load attendance.";
+            console.error("Attendance load failed:", error);
+        }
+    }
+
+    async function submitAttendance(action) {
+        checkIn.disabled = true;
+        checkOut.disabled = true;
+        message.textContent = "Saving attendance…";
+
+        try {
+            await api("/rest/v1/rpc/attendance_" + action, {
+                method: "POST",
+                body: "{}"
+            });
+
+            message.textContent = "Attendance saved successfully.";
+            await loadAttendance();
+        } catch (error) {
+            message.textContent = error.message || "Could not save attendance.";
+            console.error("Attendance save failed:", error);
+            await loadAttendance();
+        }
+    }
+
+    checkIn.addEventListener("click", () => submitAttendance("check_in"));
+    checkOut.addEventListener("click", () => submitAttendance("check_out"));
+
+    if (openButton) {
+        openButton.addEventListener("click", () => {
+            if (page.style.display !== "none") loadAttendance();
+        });
+    }
+
+    page.addEventListener("click", event => {
+        if (event.target && event.target.id === "attendanceBackButton") return;
     });
-})();
 
+    loadAttendance();
+})();
 /* ATTENDANCE PAGE NAVIGATION */
 (function () {
     const openButton = document.getElementById("attendanceButton");
