@@ -2026,3 +2026,12 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     #birthdayPage .birthday-table th:nth-child(5),
     #birthdayPage .birthday-table td:nth-child(5) { width: 20% !important; }
 }
+
+/* BIRTHDAY WEB TABLE: CENTER ALL CELL TEXT */
+@media (min-width: 601px) {
+    #birthdayPage .birthday-table th,
+    #birthdayPage .birthday-table td {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+}
