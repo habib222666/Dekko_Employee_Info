@@ -2110,3 +2110,55 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     position: relative;
     z-index: 1;
 }
+
+
+/* WELCOME TITLE AND BOTTOM LOGO */
+@font-face {
+    font-family: "Times New Roman";
+    src: url("fonts/Times%20New%20Roman%20Bold%20Italic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Times New Roman";
+    src: url("fonts/Times%20New%20Roman%20Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+}
+#appTitle {
+    white-space: normal !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 24px !important;
+}
+#appTitle .welcome-title {
+    font-family: "Times New Roman", serif !important;
+    font-weight: 700 !important;
+    font-style: italic !important;
+    font-size: clamp(18px, 5vw, 24px) !important;
+    white-space: normal !important;
+}
+#appTitle .welcome-subtitle {
+    font-family: "Times New Roman", serif !important;
+    font-weight: 400 !important;
+    font-style: italic !important;
+    font-size: clamp(14px, 3.8vw, 18px) !important;
+    white-space: normal !important;
+}
+#homeBottomLogo {
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 120px !important;
+    max-width: 35vw !important;
+    max-height: 85px !important;
+    object-fit: contain !important;
+    z-index: 1 !important;
+}
+#listPage {
+    padding-bottom: 105px !important;
+    box-sizing: border-box !important;
+}
