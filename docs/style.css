@@ -1676,7 +1676,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     border-radius: 8px;
     background: #fff;
     font-size: 16px;
-    font-family: inherit;
+    font-family: "Trebuchet MS", sans-serif !important;
     box-sizing: border-box;
     cursor: pointer;
 }
