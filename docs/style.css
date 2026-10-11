@@ -2090,8 +2090,13 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     background-image: url("assets/icons/Dekko%20icon.jpg");
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: min(72%, 420px) auto;
-    opacity: 0.20;
+    background-size: contain;
+    opacity: 0.15;
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
+}
+
+#listPage > * {
+    position: relative;
+    z-index: 1;
 }
