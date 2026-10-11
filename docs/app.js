@@ -2629,7 +2629,9 @@ if (saveNewEmployeeButton) {
 
     if (openButton) {
         openButton.addEventListener("click", () => {
-            if (page.style.display !== "none") loadAttendance();
+            setTimeout(() => {
+                if (page.style.display !== "none") loadAttendance();
+            }, 0);
         });
     }
 
