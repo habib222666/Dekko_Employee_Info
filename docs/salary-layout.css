@@ -439,8 +439,8 @@
 /* MOBILE PAYSLIP READABILITY - 2026-10-12 */
 @media (max-width: 480px) {
     .payslip-components-grid {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 10px;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
     }
 
     .payslip-components-grid > .payslip-section {
