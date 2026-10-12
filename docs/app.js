@@ -1413,6 +1413,15 @@ loginButton.addEventListener(
 
             uploadStatus.textContent = "";
 
+            if (window.__openSalaryAfterLogin) {
+                window.__openSalaryAfterLogin = false;
+
+                const salaryBtn =
+                    document.getElementById("salaryButton");
+
+                if (salaryBtn) salaryBtn.click();
+            }
+
 
         } catch (error) {
 
@@ -2800,6 +2809,20 @@ if (saveNewEmployeeButton) {
             try {
                 await checkAdmin();
             } catch (error) {
+                if (!accessToken) {
+                    window.__openSalaryAfterLogin = true;
+
+                    if (listPage) listPage.style.display = "none";
+                    if (detailsPage) detailsPage.style.display = "none";
+                    if (loginPage) loginPage.style.display = "block";
+
+                    if (loginStatus) {
+                        loginStatus.textContent =
+                            "Please log in to access Salary Management.";
+                    }
+                    return;
+                }
+
                 window.alert(error.message || "Access denied.");
                 return;
             }
