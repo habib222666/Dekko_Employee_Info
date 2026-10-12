@@ -726,3 +726,23 @@
 .payslip-company-text p {
     text-align: left;
 }
+
+/* Keep Earning and Deduct side by side on phone */
+.payslip-components-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    align-items: start;
+}
+
+.payslip-components-grid > .payslip-section {
+    min-width: 0;
+    margin-top: 8px;
+}
+
+.payslip-components-grid .payslip-table th,
+.payslip-components-grid .payslip-table td {
+    padding: 5px 3px;
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
