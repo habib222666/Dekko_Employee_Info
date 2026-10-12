@@ -3133,24 +3133,216 @@ if (saveNewEmployeeButton) {
 
                     const record = rows[0];
                     const employee = employeeInfo.get(employeeNo) || {};
-                    const title = document.createElement("h3");
-                    title.textContent = "PAY SLIP — " + record.salary_month;
-                    slipResult.appendChild(title);
 
-                    [
-                        ["Employee Name", employee.employee_name || "—"],
-                        ["Employee No.", record.employee_no],
-                        ["Department", employee.department || "—"],
-                        ["Basic Salary", Number(record.basic_salary).toFixed(2)],
-                        ["Allowances", Number(record.allowances).toFixed(2)],
-                        ["Deductions", Number(record.deductions).toFixed(2)],
-                        ["Net Pay", Number(record.net_pay).toFixed(2)],
-                        ["Status", record.status]
-                    ].forEach(([label, value]) => {
-                        const p = document.createElement("p");
-                        p.textContent = label + ": " + value;
-                        slipResult.appendChild(p);
-                    });
+                    const safe = value => String(value ?? "—").replace(
+                        /[&<>"']/g,
+                        char => ({
+                            "&": "&amp;",
+                            "<": "&lt;",
+                            ">": "&gt;",
+                            '"': "&quot;",
+                            "'": "&#39;"
+                        })[char]
+                    );
+
+                    const amount = value =>
+                        Number(value || 0).toLocaleString("en-BD", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                    const getEmployeeValue = (...keys) => {
+                        for (const key of keys) {
+                            const value = employee[key];
+                            if (value !== undefined && value !== null && value !== "") {
+                                return value;
+                            }
+                        }
+                        return "—";
+                    };
+
+                    const monthDate = new Date(record.salary_month + "-01T12:00:00");
+                    const monthName = Number.isNaN(monthDate.getTime())
+                        ? record.salary_month
+                        : monthDate.toLocaleDateString("en-GB", {
+                            month: "long",
+                            year: "numeric"
+                        });
+
+                    const year = Number(String(record.salary_month).slice(0, 4));
+                    const monthNumber = Number(String(record.salary_month).slice(5, 7));
+                    const lastDay = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
+
+                    const period = Number.isNaN(monthDate.getTime())
+                        ? record.salary_month
+                        : "01 " + monthDate.toLocaleDateString("en-GB", {
+                            month: "short",
+                            year: "numeric"
+                        }) + " – " + lastDay + " " +
+                        monthDate.toLocaleDateString("en-GB", {
+                            month: "short",
+                            year: "numeric"
+                        });
+
+                    const basic = Number(record.basic_salary || 0);
+                    const allowances = Number(record.allowances || 0);
+                    const deductions = Number(record.deductions || 0);
+                    const netPay = Number(record.net_pay || 0);
+                    const totalEarnings = basic + allowances;
+
+                    function wordsUnderThousand(number) {
+                        const ones = [
+                            "Zero", "One", "Two", "Three", "Four", "Five",
+                            "Six", "Seven", "Eight", "Nine", "Ten", "Eleven",
+                            "Twelve", "Thirteen", "Fourteen", "Fifteen",
+                            "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+                        ];
+                        const tens = [
+                            "", "", "Twenty", "Thirty", "Forty", "Fifty",
+                            "Sixty", "Seventy", "Eighty", "Ninety"
+                        ];
+                        let result = "";
+
+                        if (number >= 100) {
+                            result += ones[Math.floor(number / 100)] + " Hundred";
+                            number %= 100;
+                            if (number) result += " ";
+                        }
+
+                        if (number >= 20) {
+                            result += tens[Math.floor(number / 10)];
+                            number %= 10;
+                            if (number) result += "-" + ones[number];
+                        } else if (number > 0 || !result) {
+                            result += ones[number];
+                        }
+
+                        return result;
+                    }
+
+                    function amountInWords(value) {
+                        let number = Math.floor(Math.abs(value));
+                        if (number === 0) return "Zero Taka Only";
+
+                        const groups = [
+                            [10000000, "Crore"],
+                            [100000, "Lakh"],
+                            [1000, "Thousand"],
+                            [1, ""]
+                        ];
+                        const parts = [];
+
+                        for (const [size, label] of groups) {
+                            if (number >= size) {
+                                const count = Math.floor(number / size);
+                                number %= size;
+                                parts.push(
+                                    wordsUnderThousand(count) +
+                                    (label ? " " + label : "")
+                                );
+                            }
+                        }
+
+                        return parts.join(" ") + " Taka Only";
+                    }
+
+                    const optionalDetails = [
+                        ["Designation", getEmployeeValue("designation", "job_title")],
+                        ["Joining Date", getEmployeeValue("joining_date", "date_of_joining", "date_joined")],
+                        ["Working Days", getEmployeeValue("working_days")],
+                        ["Present Days", getEmployeeValue("present_days")],
+                        ["Leave Days", getEmployeeValue("leave_days")],
+                        ["Payment Method", getEmployeeValue("payment_method")]
+                    ];
+
+                    const detail = (label, value) =>
+                        `<div class="payslip-detail">
+                            <span>${safe(label)}</span>
+                            <strong>${safe(value)}</strong>
+                        </div>`;
+
+                    slipResult.innerHTML = `
+                        <article class="professional-payslip">
+                            <header class="payslip-company">
+                                <div class="payslip-brand-mark">D</div>
+                                <div class="payslip-company-text">
+                                    <h2>Dekko Corporation Ltd.</h2>
+                                    <p class="payslip-tagline">People | Progress | Together</p>
+                                    <p>Head Office: 123 Business Avenue</p>
+                                    <p>Dhaka-1207, Bangladesh</p>
+                                    <p>Phone: +880 2 5881 0000</p>
+                                    <p>www.dekkocorp.com</p>
+                                </div>
+                            </header>
+
+                            <div class="payslip-heading">
+                                <h3>PAY SLIP</h3>
+                                <p>For the Month of ${safe(monthName)}</p>
+                                <span class="payslip-status">${safe(record.status || "—")}</span>
+                            </div>
+
+                            <section class="payslip-section">
+                                <h4>EMPLOYEE INFORMATION</h4>
+                                <div class="payslip-details-grid">
+                                    ${detail("Employee Name", employee.employee_name || "—")}
+                                    ${detail("Pay Period", period)}
+                                    ${detail("Employee ID", record.employee_no || "—")}
+                                    ${detail("Working Days", optionalDetails[2][1])}
+                                    ${detail("Designation", optionalDetails[0][1])}
+                                    ${detail("Present Days", optionalDetails[3][1])}
+                                    ${detail("Department", employee.department || "—")}
+                                    ${detail("Leave Days", optionalDetails[4][1])}
+                                    ${detail("Joining Date", optionalDetails[1][1])}
+                                    ${detail("Payment Method", optionalDetails[5][1])}
+                                </div>
+                            </section>
+
+                            <section class="payslip-section">
+                                <h4>EARNINGS</h4>
+                                <table class="payslip-table">
+                                    <thead>
+                                        <tr><th>Particulars</th><th>Amount (BDT)</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Basic Salary</td><td>${amount(basic)}</td></tr>
+                                        <tr><td>Allowances</td><td>${amount(allowances)}</td></tr>
+                                        <tr class="payslip-total-row"><td>Total Earnings</td><td>${amount(totalEarnings)}</td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+
+                            <section class="payslip-section">
+                                <h4>DEDUCTIONS</h4>
+                                <table class="payslip-table">
+                                    <thead>
+                                        <tr><th>Particulars</th><th>Amount (BDT)</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Total Deductions</td><td>${amount(deductions)}</td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+
+                            <section class="payslip-net">
+                                <span>NET PAY (BDT)</span>
+                                <strong>${amount(netPay)}</strong>
+                            </section>
+
+                            <section class="payslip-words">
+                                <h4>Net Pay (in Words)</h4>
+                                <p>${safe(amountInWords(netPay))}</p>
+                            </section>
+
+                            <footer class="payslip-footer">
+                                <p>This is a system-generated payslip. For any query, please contact the HR Department.</p>
+                                <div class="payslip-signature">
+                                    <div class="payslip-signature-line"></div>
+                                    <strong>Authorized Signature</strong>
+                                    <span>HR Department</span>
+                                </div>
+                            </footer>
+                        </article>
+                    `;
 
                     const printButton = $("printPaySlipButton");
                     if (printButton) printButton.style.display = "inline-block";
