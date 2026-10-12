@@ -374,6 +374,8 @@
 
     .payslip-details-grid {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-rows: repeat(6, auto);
+        grid-auto-flow: column;
         gap: 0 8px;
     }
 
