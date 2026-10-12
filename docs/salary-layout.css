@@ -373,7 +373,8 @@
     }
 
     .payslip-details-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 0 8px;
     }
 
     .payslip-net {
