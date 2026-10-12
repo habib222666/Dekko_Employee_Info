@@ -2266,6 +2266,12 @@ if (saveNewEmployeeButton) {
             const tinNo =
                 document.getElementById("newEmployeeTin").value.trim();
 
+            const bankName =
+                document.getElementById("newEmployeeBankName").value.trim();
+
+            const accountNo =
+                document.getElementById("newEmployeeAccountNo").value.trim();
+
             if (!employeeName) {
                 alert("Employee Name is required.");
                 return;
@@ -2318,7 +2324,9 @@ if (saveNewEmployeeButton) {
                             joining_date: joiningDate || null,
                             birthday: birthday,
                             nid: nid,
-                            tin_no: tinNo
+                            tin_no: tinNo,
+                            bank_name: bankName,
+                            account_no: accountNo
                         })
                     }
                 );
@@ -2403,6 +2411,9 @@ if (saveNewEmployeeButton) {
                 document.getElementById(
                     "newEmployeeTin"
                 ).value = "";
+
+                document.getElementById("newEmployeeBankName").value = "";
+                document.getElementById("newEmployeeAccountNo").value = "";
 
                 await loadEmployees();
 
@@ -2638,9 +2649,7 @@ if (saveNewEmployeeButton) {
 
     if (openButton) {
         openButton.addEventListener("click", () => {
-            setTimeout(() => {
-                if (page.style.display !== "none") loadAttendance();
-            }, 0);
+            if (page.style.display !== "none") loadAttendance();
         });
     }
 
@@ -2752,7 +2761,7 @@ if (saveNewEmployeeButton) {
         async function loadEmployees() {
             const response = await fetch(
                 SUPABASE_URL +
-                "/rest/v1/employee_dekko_v2?select=employee_no,employee_name,department,designation,joining_date&order=employee_name.asc",
+                "/rest/v1/employee_dekko_v2?select=employee_no,employee_name,department,designation,joining_date,bank_name,account_no&order=employee_name.asc",
                 { headers: apiHeaders() }
             );
 
@@ -2888,19 +2897,41 @@ if (saveNewEmployeeButton) {
             return Math.round(n * 100) / 100;
         }
 
+        const earningIds = [
+            "houseRentAllowance",
+            "medicalAllowance",
+            "conveyanceAllowance",
+            "specialAllowance"
+        ];
+
+        const deductionIds = [
+            "employeeProvidentFund",
+            "incomeTax",
+            "healthInsurance",
+            "loanRepayment",
+            "otherDeductions"
+        ];
+
+        function componentTotal(ids) {
+            return ids.reduce((sum, id) => sum + getAmount(id), 0);
+        }
+
         function updateNet() {
             try {
-                $("salaryNetPreview").textContent = (
-                    getAmount("basicSalary") +
-                    getAmount("salaryAllowances") -
-                    getAmount("salaryDeductions")
-                ).toFixed(2);
+                const basic = getAmount("basicSalary");
+                const allowances = componentTotal(earningIds);
+                const deductions = componentTotal(deductionIds);
+
+                $("salaryAllowances").value = allowances.toFixed(2);
+                $("salaryDeductions").value = deductions.toFixed(2);
+                $("salaryNetPreview").textContent =
+                    (basic + allowances - deductions).toFixed(2);
             } catch (_) {
                 $("salaryNetPreview").textContent = "Invalid amount";
             }
         }
 
-        ["basicSalary", "salaryAllowances", "salaryDeductions"].forEach(id => {
+        ["basicSalary", ...earningIds, ...deductionIds].forEach(id => {
             if ($(id)) $(id).addEventListener("input", updateNet);
         });
 
@@ -2936,8 +2967,20 @@ if (saveNewEmployeeButton) {
                     const employeeNo = employeeSelect.value;
                     const month = monthInput.value;
                     const basic = getAmount("basicSalary");
-                    const allowances = getAmount("salaryAllowances");
-                    const deductions = getAmount("salaryDeductions");
+
+                    const houseRent = getAmount("houseRentAllowance");
+                    const medical = getAmount("medicalAllowance");
+                    const conveyance = getAmount("conveyanceAllowance");
+                    const special = getAmount("specialAllowance");
+                    const allowances = houseRent + medical + conveyance + special;
+
+                    const providentFund = getAmount("employeeProvidentFund");
+                    const incomeTaxAmount = getAmount("incomeTax");
+                    const healthInsurance = getAmount("healthInsurance");
+                    const loanRepayment = getAmount("loanRepayment");
+                    const otherDeductionsAmount = getAmount("otherDeductions");
+                    const deductions = providentFund + incomeTaxAmount +
+                        healthInsurance + loanRepayment + otherDeductionsAmount;
 
                     if (!employeeNumbers.has(employeeNo)) {
                         throw new Error("Select a valid employee.");
@@ -2946,13 +2989,22 @@ if (saveNewEmployeeButton) {
                         throw new Error("Select a valid salary month.");
                     }
                     if (deductions > basic + allowances) {
-                        throw new Error("Deductions cannot exceed Basic + Allowances.");
+                        throw new Error("Deductions cannot exceed total earnings.");
                     }
 
                     await saveRecords([{
                         employee_no: employeeNo,
                         salary_month: month,
                         basic_salary: basic,
+                        house_rent_allowance: houseRent,
+                        medical_allowance: medical,
+                        conveyance_allowance: conveyance,
+                        special_allowance: special,
+                        employee_provident_fund: providentFund,
+                        income_tax: incomeTaxAmount,
+                        health_insurance: healthInsurance,
+                        loan_repayment: loanRepayment,
+                        other_deductions: otherDeductionsAmount,
                         allowances: allowances,
                         deductions: deductions,
                         status: $("salaryPublishStatus").value
@@ -2990,13 +3042,26 @@ if (saveNewEmployeeButton) {
             return fields;
         }
 
+        const csvComponentColumns = [
+            "house_rent_allowance", "medical_allowance",
+            "conveyance_allowance", "special_allowance",
+            "employee_provident_fund", "income_tax",
+            "health_insurance", "loan_repayment", "other_deductions"
+        ];
+
         const templateButton = $("salaryCsvTemplateButton");
         if (templateButton) {
             templateButton.addEventListener("click", function () {
-                const csv =
-                    "employee_no,salary_month,basic_salary,allowances,deductions,status\n" +
-                    "EMP001,2026-10,25000,3000,1000,Draft\n";
-
+                const headers = [
+                    "employee_no", "salary_month", "basic_salary",
+                    ...csvComponentColumns, "status"
+                ];
+                const sample = [
+                    "EMP001", "2026-10", "25000",
+                    "5000", "1000", "500", "1500",
+                    "1000", "500", "200", "0", "0", "Draft"
+                ];
+                const csv = headers.join(",") + "\n" + sample.join(",") + "\n";
                 const url = URL.createObjectURL(
                     new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8;" })
                 );
@@ -3009,83 +3074,224 @@ if (saveNewEmployeeButton) {
         }
 
         const uploadButton = $("salaryCsvUploadButton");
-        if (uploadButton) {
-            uploadButton.addEventListener("click", async function () {
-                csvStatus.textContent = "Validating CSV...";
+        const csvFileInput = $("salaryCsvFile");
+        let pendingCsvRecords = null;
 
+        let csvPreview = $("salaryCsvPreview");
+        if (!csvPreview && csvStatus) {
+            csvPreview = document.createElement("div");
+            csvPreview.id = "salaryCsvPreview";
+            csvStatus.insertAdjacentElement("afterend", csvPreview);
+        }
+
+        function resetCsvPreview() {
+            pendingCsvRecords = null;
+            if (uploadButton) uploadButton.textContent = "Preview & Validate CSV";
+            if (csvPreview) csvPreview.replaceChildren();
+        }
+
+        if (csvFileInput) {
+            csvFileInput.addEventListener("change", resetCsvPreview);
+        }
+
+        function showCsvPreview(records) {
+            if (!csvPreview) throw new Error("CSV preview area is unavailable.");
+
+            csvPreview.replaceChildren();
+            const heading = document.createElement("h3");
+            heading.textContent = "CSV Preview — " + records.length + " record(s)";
+            csvPreview.appendChild(heading);
+
+            const note = document.createElement("p");
+            note.textContent =
+                "Validation passed. Review these totals before confirming upload.";
+            csvPreview.appendChild(note);
+
+            const table = document.createElement("table");
+            table.className = "payslip-table";
+            const thead = document.createElement("thead");
+            const headRow = document.createElement("tr");
+
+            [
+                "Employee ID", "Salary Month", "Basic",
+                "Total Earnings", "Total Deductions", "Net Pay", "Status"
+            ].forEach(label => {
+                const th = document.createElement("th");
+                th.textContent = label;
+                headRow.appendChild(th);
+            });
+
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement("tbody");
+            records.forEach(record => {
+                const row = document.createElement("tr");
+                const values = [
+                    record.employee_no,
+                    record.salary_month,
+                    record.basic_salary.toFixed(2),
+                    (record.basic_salary + record.allowances).toFixed(2),
+                    record.deductions.toFixed(2),
+                    (record.basic_salary + record.allowances - record.deductions).toFixed(2),
+                    record.status
+                ];
+
+                values.forEach(value => {
+                    const td = document.createElement("td");
+                    td.textContent = String(value);
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+            csvPreview.appendChild(table);
+        }
+
+        if (uploadButton) {
+            uploadButton.textContent = "Preview & Validate CSV";
+
+            uploadButton.addEventListener("click", async function () {
                 try {
                     await checkAdmin();
 
-                    const file = $("salaryCsvFile").files[0];
-                    if (!file) throw new Error("Choose a CSV file first.");
+                    if (!pendingCsvRecords) {
+                        csvStatus.textContent = "Validating CSV...";
+                        const file = csvFileInput && csvFileInput.files[0];
+                        if (!file) throw new Error("Choose a CSV file first.");
 
-                    const lines = (await file.text()).replace(/^\uFEFF/, "")
-                        .split(/\r?\n/).filter(line => line.trim());
+                        const lines = (await file.text()).replace(/^\uFEFF/, "")
+                            .split(/\r?\n/).filter(line => line.trim());
 
-                    if (lines.length < 2) throw new Error("CSV has no data rows.");
+                        if (lines.length < 2) throw new Error("CSV has no data rows.");
 
-                    const headers = parseCsvLine(lines[0]).map(h => h.toLowerCase());
-                    const required = [
-                        "employee_no", "salary_month", "basic_salary",
-                        "allowances", "deductions", "status"
-                    ];
+                        const headers = parseCsvLine(lines[0]).map(h => h.toLowerCase());
+                        const coreRequired = [
+                            "employee_no", "salary_month", "basic_salary", "status"
+                        ];
 
-                    required.forEach(h => {
-                        if (!headers.includes(h)) throw new Error("Missing CSV column: " + h);
-                    });
-
-                    const records = [];
-                    const seen = new Set();
-
-                    lines.slice(1).forEach((line, index) => {
-                        const values = parseCsvLine(line);
-                        if (values.length !== headers.length) {
-                            throw new Error("Invalid column count on CSV row " + (index + 2));
-                        }
-
-                        const row = {};
-                        headers.forEach((h, i) => row[h] = values[i]);
-
-                        if (!employeeNumbers.has(row.employee_no)) {
-                            throw new Error("Unknown employee number on CSV row " + (index + 2));
-                        }
-                        if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(row.salary_month)) {
-                            throw new Error("Invalid month on CSV row " + (index + 2));
-                        }
-
-                        const basic = Number(row.basic_salary);
-                        const allowances = Number(row.allowances);
-                        const deductions = Number(row.deductions);
-
-                        if (![basic, allowances, deductions].every(n => Number.isFinite(n) && n >= 0)) {
-                            throw new Error("Invalid amount on CSV row " + (index + 2));
-                        }
-                        if (deductions > basic + allowances) {
-                            throw new Error("Deductions too high on CSV row " + (index + 2));
-                        }
-
-                        const status = row.status || "Draft";
-                        if (!["Draft", "Published"].includes(status)) {
-                            throw new Error("Status must be Draft or Published on row " + (index + 2));
-                        }
-
-                        const key = row.employee_no + "|" + row.salary_month;
-                        if (seen.has(key)) throw new Error("Duplicate employee/month: " + key);
-                        seen.add(key);
-
-                        records.push({
-                            employee_no: row.employee_no,
-                            salary_month: row.salary_month,
-                            basic_salary: basic,
-                            allowances: allowances,
-                            deductions: deductions,
-                            status: status
+                        coreRequired.forEach(h => {
+                            if (!headers.includes(h)) {
+                                throw new Error("Missing CSV column: " + h);
+                            }
                         });
-                    });
 
-                    await saveRecords(records);
-                    csvStatus.textContent = "Successfully uploaded " + records.length + " record(s).";
+                        const hasComponents = csvComponentColumns.every(h => headers.includes(h));
+                        const hasLegacy = headers.includes("allowances") &&
+                            headers.includes("deductions");
+
+                        if (!hasComponents && !hasLegacy) {
+                            throw new Error(
+                                "CSV must include all 9 component columns or both legacy columns: allowances,deductions."
+                            );
+                        }
+
+                        const records = [];
+                        const seen = new Set();
+
+                        lines.slice(1).forEach((line, index) => {
+                            const rowNumber = index + 2;
+                            const values = parseCsvLine(line);
+
+                            if (values.length !== headers.length) {
+                                throw new Error("Invalid column count on CSV row " + rowNumber);
+                            }
+
+                            const row = {};
+                            headers.forEach((h, i) => row[h] = values[i]);
+
+                            const employeeNo = row.employee_no.trim();
+                            if (!employeeNumbers.has(employeeNo)) {
+                                throw new Error("Unknown employee number on CSV row " + rowNumber);
+                            }
+                            if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(row.salary_month)) {
+                                throw new Error("Invalid month on CSV row " + rowNumber);
+                            }
+
+                            const numberFor = (name, fallback = "0") => {
+                                const raw = row[name] === undefined || row[name] === ""
+                                    ? fallback : row[name];
+                                const n = Number(raw);
+                                if (!Number.isFinite(n) || n < 0) {
+                                    throw new Error("Invalid " + name + " on CSV row " + rowNumber);
+                                }
+                                return Math.round(n * 100) / 100;
+                            };
+
+                            const basic = numberFor("basic_salary");
+                            const components = {};
+                            csvComponentColumns.forEach(name => {
+                                components[name] = hasComponents
+                                    ? numberFor(name)
+                                    : 0;
+                            });
+
+                            let allowances;
+                            let deductions;
+
+                            if (hasComponents) {
+                                allowances =
+                                    components.house_rent_allowance +
+                                    components.medical_allowance +
+                                    components.conveyance_allowance +
+                                    components.special_allowance;
+
+                                deductions =
+                                    components.employee_provident_fund +
+                                    components.income_tax +
+                                    components.health_insurance +
+                                    components.loan_repayment +
+                                    components.other_deductions;
+                            } else {
+                                allowances = numberFor("allowances");
+                                deductions = numberFor("deductions");
+                                components.special_allowance = allowances;
+                                components.other_deductions = deductions;
+                            }
+
+                            if (deductions > basic + allowances) {
+                                throw new Error("Deductions too high on CSV row " + rowNumber);
+                            }
+
+                            const status = row.status || "Draft";
+                            if (!["Draft", "Published"].includes(status)) {
+                                throw new Error("Status must be Draft or Published on row " + rowNumber);
+                            }
+
+                            const key = employeeNo + "|" + row.salary_month;
+                            if (seen.has(key)) {
+                                throw new Error("Duplicate employee/month in CSV: " + key);
+                            }
+                            seen.add(key);
+
+                            records.push({
+                                employee_no: employeeNo,
+                                salary_month: row.salary_month,
+                                basic_salary: basic,
+                                ...components,
+                                allowances: allowances,
+                                deductions: deductions,
+                                status: status
+                            });
+                        });
+
+                        pendingCsvRecords = records;
+                        showCsvPreview(records);
+                        uploadButton.textContent = "Confirm Upload";
+                        csvStatus.textContent =
+                            "Preview ready. Check the rows, then click Confirm Upload.";
+                        return;
+                    }
+
+                    const recordsToSave = pendingCsvRecords;
+                    csvStatus.textContent = "Uploading " + recordsToSave.length + " record(s)...";
+                    await saveRecords(recordsToSave);
+                    csvStatus.textContent =
+                        "Successfully uploaded " + recordsToSave.length + " record(s).";
+                    resetCsvPreview();
                 } catch (error) {
+                    resetCsvPreview();
                     csvStatus.textContent = error.message;
                 }
             });
@@ -3109,7 +3315,7 @@ if (saveNewEmployeeButton) {
                     }
 
                     const query = new URLSearchParams({
-                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status",
+                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions",
                         employee_no: "eq." + employeeNo,
                         salary_month: "eq." + month
                     });
@@ -3185,10 +3391,42 @@ if (saveNewEmployeeButton) {
                         });
 
                     const basic = Number(record.basic_salary || 0);
-                    const allowances = Number(record.allowances || 0);
-                    const deductions = Number(record.deductions || 0);
+
+                    const houseRent = Number(record.house_rent_allowance || 0);
+                    const medical = Number(record.medical_allowance || 0);
+                    const conveyance = Number(record.conveyance_allowance || 0);
+                    const special = Number(record.special_allowance || 0);
+
+                    const providentFund = Number(record.employee_provident_fund || 0);
+                    const incomeTax = Number(record.income_tax || 0);
+                    const healthInsurance = Number(record.health_insurance || 0);
+                    const loanRepayment = Number(record.loan_repayment || 0);
+                    const otherDeductions = Number(record.other_deductions || 0);
+
+                    const storedAllowances = Number(record.allowances || 0);
+                    const storedDeductions = Number(record.deductions || 0);
+
+                    const hasEarningComponents =
+                        houseRent !== 0 || medical !== 0 ||
+                        conveyance !== 0 || special !== 0;
+
+                    const hasDeductionComponents =
+                        providentFund !== 0 || incomeTax !== 0 ||
+                        healthInsurance !== 0 || loanRepayment !== 0 ||
+                        otherDeductions !== 0;
+
+                    const legacyAllowances =
+                        !hasEarningComponents ? storedAllowances : 0;
+                    const legacyDeductions =
+                        !hasDeductionComponents ? storedDeductions : 0;
+
+                    const allowances = houseRent + medical + conveyance + special;
+                    const deductions = providentFund + incomeTax +
+                        healthInsurance + loanRepayment + otherDeductions;
+
+                    const totalEarnings = basic + allowances + legacyAllowances;
+                    const totalDeductions = deductions + legacyDeductions;
                     const netPay = Number(record.net_pay || 0);
-                    const totalEarnings = basic + allowances;
 
                     function wordsUnderThousand(number) {
                         const ones = [
@@ -3264,25 +3502,26 @@ if (saveNewEmployeeButton) {
                     slipResult.innerHTML = `
                         <article class="professional-payslip">
                             <header class="payslip-company">
-                                <div class="payslip-brand-mark">D</div>
+                                <img src="assets/icons/Dekko%20logo.jpg" alt="Dekko Logo" class="payslip-company-logo">
                                 <div class="payslip-company-text">
-                                    <h2>Dekko Corporation Ltd.</h2>
-                                    <p class="payslip-tagline">People | Progress | Together</p>
-                                    <p>Head Office: 123 Business Avenue</p>
-                                    <p>Dhaka-1207, Bangladesh</p>
-                                    <p>Phone: +880 2 5881 0000</p>
-                                    <p>www.dekkocorp.com</p>
+                                    <h2>Dekko Accessories Ltd.</h2>
+
+
+                                    <p>Head Office: Shimanto Shambhar (8th Floor),</p>
+                                    <p>Road No. 2, Dhanmondi, Dhaka-1205</p>
+                                    <p>Phone: +880 9666774400</p>
+                                    <p>www.dekkolegacy.com</p>
                                 </div>
                             </header>
 
                             <div class="payslip-heading">
-                                <h3>PAY SLIP</h3>
+                                <h3>Pay Slip</h3>
                                 <p>For the Month of ${safe(monthName)}</p>
                                 <span class="payslip-status">${safe(record.status || "—")}</span>
                             </div>
 
                             <section class="payslip-section">
-                                <h4>EMPLOYEE INFORMATION</h4>
+                                <h4>Emp. Information</h4>
                                 <div class="payslip-details-grid">
                                     ${detail("Employee Name", employee.employee_name || "—")}
                                     ${detail("Pay Period", period)}
@@ -3294,34 +3533,49 @@ if (saveNewEmployeeButton) {
                                     ${detail("Leave Days", optionalDetails[4][1])}
                                     ${detail("Joining Date", optionalDetails[1][1])}
                                     ${detail("Payment Method", optionalDetails[5][1])}
+                                    ${detail("Bank Name", getEmployeeValue("bank_name"))}
+                                    ${detail("Account No.", getEmployeeValue("account_no"))}
                                 </div>
                             </section>
 
-                            <section class="payslip-section">
-                                <h4>EARNINGS</h4>
+                            <div class="payslip-components-grid">
+<section class="payslip-section">
+                                <h4>Earning</h4>
                                 <table class="payslip-table">
                                     <thead>
-                                        <tr><th>Particulars</th><th>Amount (BDT)</th></tr>
+                                        <tr><th>Particulars</th><th>Amount</th></tr>
                                     </thead>
                                     <tbody>
                                         <tr><td>Basic Salary</td><td>${amount(basic)}</td></tr>
-                                        <tr><td>Allowances</td><td>${amount(allowances)}</td></tr>
+                                        <tr><td>House Rent Allowance</td><td>${amount(houseRent)}</td></tr>
+                                        <tr><td>Medical Allowance</td><td>${amount(medical)}</td></tr>
+                                        <tr><td>Conveyance Allowance</td><td>${amount(conveyance)}</td></tr>
+                                        <tr><td>Special Allowance</td><td>${amount(special)}</td></tr>
+                                        ${legacyAllowances ? `<tr><td>Allowances (legacy record)</td><td>${amount(legacyAllowances)}</td></tr>` : ""}
                                         <tr class="payslip-total-row"><td>Total Earnings</td><td>${amount(totalEarnings)}</td></tr>
                                     </tbody>
                                 </table>
                             </section>
 
                             <section class="payslip-section">
-                                <h4>DEDUCTIONS</h4>
+                                <h4>Deduct</h4>
                                 <table class="payslip-table">
                                     <thead>
-                                        <tr><th>Particulars</th><th>Amount (BDT)</th></tr>
+                                        <tr><th>Particulars</th><th>Amount</th></tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Total Deductions</td><td>${amount(deductions)}</td></tr>
+                                        <tr><td>Employee Provident Fund</td><td>${amount(providentFund)}</td></tr>
+                                        <tr><td>Income Tax</td><td>${amount(incomeTax)}</td></tr>
+                                        <tr><td>Health Insurance</td><td>${amount(healthInsurance)}</td></tr>
+                                        <tr><td>Loan Repayment</td><td>${amount(loanRepayment)}</td></tr>
+                                        <tr><td>Other Deductions</td><td>${amount(otherDeductions)}</td></tr>
+                                        ${legacyDeductions ? `<tr><td>Deductions (legacy record)</td><td>${amount(legacyDeductions)}</td></tr>` : ""}
+                                        <tr class="payslip-total-row"><td>Total Deductions</td><td>${amount(totalDeductions)}</td></tr>
                                     </tbody>
                                 </table>
                             </section>
+
+                                                        </div>
 
                             <section class="payslip-net">
                                 <span>NET PAY (BDT)</span>
@@ -3329,8 +3583,7 @@ if (saveNewEmployeeButton) {
                             </section>
 
                             <section class="payslip-words">
-                                <h4>Net Pay (in Words)</h4>
-                                <p>${safe(amountInWords(netPay))}</p>
+                                <p><strong>Net Pay (in Words):</strong> ${safe(amountInWords(netPay))}</p>
                             </section>
 
                             <footer class="payslip-footer">
