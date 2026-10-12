@@ -2796,39 +2796,37 @@ if (saveNewEmployeeButton) {
             }
         }
 
-        salaryButton.addEventListener("click", function () {
-    // Hide the other main pages before opening Salary.
-    const idsToHide = [
-      "listPage",
-      "allEmployeesPage",
-      "favoritePage",
-      "birthdayPage",
-      "departmentPage",
-      "detailsPage",
-      "attendancePage",
-      "adminPage",
-      "loginPage"
-    ];
+        salaryButton.addEventListener("click", async function () {
+            try {
+                await checkAdmin();
+            } catch (error) {
+                window.alert(error.message || "Access denied.");
+                return;
+            }
 
-    idsToHide.forEach(id => {
-      const page = $(id);
-      if (page) page.style.display = "none";
-    });
+            const idsToHide = [
+                "listPage", "allEmployeesPage", "favoritePage",
+                "birthdayPage", "departmentPage", "detailsPage",
+                "attendancePage", "adminPage", "loginPage"
+            ];
 
-    const departmentSection = $("departmentSection");
-    const employeeList = $("employeeList");
-    const appTitle = $("appTitle");
+            idsToHide.forEach(id => {
+                const page = $(id);
+                if (page) page.style.display = "none";
+            });
 
-    if (departmentSection) departmentSection.style.display = "none";
-    if (employeeList) employeeList.style.display = "none";
-    if (appTitle) appTitle.style.display = "none";
+            const departmentSection = $("departmentSection");
+            const employeeList = $("employeeList");
+            const appTitle = $("appTitle");
 
-    salaryPage.style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
+            if (departmentSection) departmentSection.style.display = "none";
+            if (employeeList) employeeList.style.display = "none";
+            if (appTitle) appTitle.style.display = "none";
 
-    initializeSalary();
-  });
-
+            salaryPage.style.display = "block";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            initializeSalary();
+        });
 
         const salaryBackButton = $("salaryBackButton");
         if (salaryBackButton) {
