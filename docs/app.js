@@ -2680,3 +2680,470 @@ if (saveNewEmployeeButton) {
     updateAttendanceCalendar();
     setInterval(updateAttendanceCalendar, 60000);
 })();
+
+/* SALARY MANAGEMENT - ADMIN ONLY */
+(function () {
+    "use strict";
+
+    const ADMIN_UID = "e5090917-b885-41b4-8062-e208fd6ab287";
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const $ = id => document.getElementById(id);
+        const salaryButton = $("salaryButton");
+        const salaryPage = $("salaryPage");
+        const salaryStatus = $("salaryStatus");
+        const management = $("salaryManagement");
+        const loginButton = $("salaryLoginButton");
+        const employeeSelect = $("salaryEmployee");
+        const slipEmployee = $("paySlipEmployee");
+        const monthInput = $("salaryMonth");
+        const slipMonth = $("paySlipMonth");
+        const saveStatus = $("salarySaveStatus");
+        const csvStatus = $("salaryCsvStatus");
+        const slipResult = $("paySlipResult");
+
+        if (!salaryButton || !salaryPage || !management) {
+            console.error("Salary HTML elements not found.");
+            return;
+        }
+
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        if (monthInput) monthInput.value = currentMonth;
+        if (slipMonth) slipMonth.value = currentMonth;
+
+        let employeeNumbers = new Set();
+        let employeeInfo = new Map();
+
+        async function checkAdmin() {
+            if (!accessToken) throw new Error("Please log in first.");
+
+            const response = await fetch(SUPABASE_URL + "/auth/v1/user", {
+                headers: {
+                    apikey: SUPABASE_KEY,
+                    Authorization: "Bearer " + accessToken
+                }
+            });
+
+            if (!response.ok) throw new Error("Session expired. Please log in again.");
+
+            const user = await response.json();
+            if (user.id !== ADMIN_UID) {
+                throw new Error("This account is not authorized for Salary Management.");
+            }
+        }
+
+        function apiHeaders() {
+            return {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + accessToken,
+                "Content-Type": "application/json"
+            };
+        }
+
+        async function loadEmployees() {
+            const response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/employee_dekko_v2?select=employee_no,employee_name,department&order=employee_name.asc",
+                { headers: apiHeaders() }
+            );
+
+            if (!response.ok) {
+                throw new Error("Employee list error: " + await response.text());
+            }
+
+            const employees = await response.json();
+            employeeNumbers = new Set();
+            employeeInfo = new Map();
+
+            [employeeSelect, slipEmployee].forEach(select => {
+                if (select) select.replaceChildren(new Option("Select employee", ""));
+            });
+
+            employees.forEach(employee => {
+                if (!employee.employee_no) return;
+
+                const no = String(employee.employee_no);
+                employeeNumbers.add(no);
+                employeeInfo.set(no, employee);
+
+                const label = [
+                    employee.employee_name || "Unnamed",
+                    no,
+                    employee.department || ""
+                ].filter(Boolean).join(" — ");
+
+                [employeeSelect, slipEmployee].forEach(select => {
+                    if (select) select.add(new Option(label, no));
+                });
+            });
+
+            if (!employeeNumbers.size) throw new Error("No employees found.");
+        }
+
+        async function initializeSalary() {
+            management.style.display = "none";
+            if (loginButton) loginButton.style.display = "none";
+            salaryStatus.textContent = "Checking Admin access...";
+
+            try {
+                await checkAdmin();
+                await loadEmployees();
+                management.style.display = "block";
+                salaryStatus.textContent = "Admin verified. Salary Management is ready.";
+            } catch (error) {
+                salaryStatus.textContent = error.message;
+                if (loginButton) loginButton.style.display = "inline-block";
+            }
+        }
+
+        salaryButton.addEventListener("click", function () {
+    // Hide the other main pages before opening Salary.
+    const idsToHide = [
+      "listPage",
+      "allEmployeesPage",
+      "favoritePage",
+      "birthdayPage",
+      "departmentPage",
+      "detailsPage",
+      "attendancePage",
+      "adminPage",
+      "loginPage"
+    ];
+
+    idsToHide.forEach(id => {
+      const page = $(id);
+      if (page) page.style.display = "none";
+    });
+
+    const departmentSection = $("departmentSection");
+    const employeeList = $("employeeList");
+    const appTitle = $("appTitle");
+
+    if (departmentSection) departmentSection.style.display = "none";
+    if (employeeList) employeeList.style.display = "none";
+    if (appTitle) appTitle.style.display = "none";
+
+    salaryPage.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    initializeSalary();
+  });
+
+
+        const salaryBackButton = $("salaryBackButton");
+        if (salaryBackButton) {
+            salaryBackButton.addEventListener("click", function () {
+                salaryPage.style.display = "none";
+
+                const homePage = $("listPage");
+                const adminButton = $("adminButton");
+                const appTitle = $("appTitle");
+                const departmentSection = $("departmentSection");
+                const employeeList = $("employeeList");
+
+                if (homePage) homePage.style.display = "block";
+                if (adminButton) adminButton.style.removeProperty("display");
+                if (appTitle) appTitle.style.display = "";
+                if (departmentSection) departmentSection.style.display = "block";
+                if (employeeList) employeeList.style.display = "block";
+
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        }
+
+        if (loginButton) {
+            loginButton.addEventListener("click", function () {
+                salaryPage.style.display = "none";
+                const adminButton = $("adminButton");
+                if (adminButton) adminButton.click();
+            });
+        }
+
+        function getAmount(id) {
+            const n = Number($(id).value);
+            if (!Number.isFinite(n) || n < 0) {
+                throw new Error("Enter valid non-negative salary amounts.");
+            }
+            return Math.round(n * 100) / 100;
+        }
+
+        function updateNet() {
+            try {
+                $("salaryNetPreview").textContent = (
+                    getAmount("basicSalary") +
+                    getAmount("salaryAllowances") -
+                    getAmount("salaryDeductions")
+                ).toFixed(2);
+            } catch (_) {
+                $("salaryNetPreview").textContent = "Invalid amount";
+            }
+        }
+
+        ["basicSalary", "salaryAllowances", "salaryDeductions"].forEach(id => {
+            if ($(id)) $(id).addEventListener("input", updateNet);
+        });
+
+        async function saveRecords(records) {
+            const response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/salary_records?on_conflict=employee_no,salary_month",
+                {
+                    method: "POST",
+                    headers: {
+                        ...apiHeaders(),
+                        Prefer: "resolution=merge-duplicates,return=minimal"
+                    },
+                    body: JSON.stringify(records)
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Database error (" + response.status + "): " +
+                    await response.text());
+            }
+        }
+
+        const form = $("salaryEntryForm");
+        if (form) {
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                saveStatus.textContent = "Saving...";
+
+                try {
+                    await checkAdmin();
+
+                    const employeeNo = employeeSelect.value;
+                    const month = monthInput.value;
+                    const basic = getAmount("basicSalary");
+                    const allowances = getAmount("salaryAllowances");
+                    const deductions = getAmount("salaryDeductions");
+
+                    if (!employeeNumbers.has(employeeNo)) {
+                        throw new Error("Select a valid employee.");
+                    }
+                    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+                        throw new Error("Select a valid salary month.");
+                    }
+                    if (deductions > basic + allowances) {
+                        throw new Error("Deductions cannot exceed Basic + Allowances.");
+                    }
+
+                    await saveRecords([{
+                        employee_no: employeeNo,
+                        salary_month: month,
+                        basic_salary: basic,
+                        allowances: allowances,
+                        deductions: deductions,
+                        status: $("salaryPublishStatus").value
+                    }]);
+
+                    saveStatus.textContent = "Salary saved successfully.";
+                } catch (error) {
+                    saveStatus.textContent = error.message;
+                }
+            });
+        }
+
+        function parseCsvLine(line) {
+            const fields = [];
+            let value = "";
+            let quoted = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+
+                if (ch === '"' && quoted && line[i + 1] === '"') {
+                    value += '"';
+                    i++;
+                } else if (ch === '"') {
+                    quoted = !quoted;
+                } else if (ch === "," && !quoted) {
+                    fields.push(value.trim());
+                    value = "";
+                } else {
+                    value += ch;
+                }
+            }
+
+            fields.push(value.trim());
+            return fields;
+        }
+
+        const templateButton = $("salaryCsvTemplateButton");
+        if (templateButton) {
+            templateButton.addEventListener("click", function () {
+                const csv =
+                    "employee_no,salary_month,basic_salary,allowances,deductions,status\n" +
+                    "EMP001,2026-10,25000,3000,1000,Draft\n";
+
+                const url = URL.createObjectURL(
+                    new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8;" })
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "salary_template.csv";
+                link.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        const uploadButton = $("salaryCsvUploadButton");
+        if (uploadButton) {
+            uploadButton.addEventListener("click", async function () {
+                csvStatus.textContent = "Validating CSV...";
+
+                try {
+                    await checkAdmin();
+
+                    const file = $("salaryCsvFile").files[0];
+                    if (!file) throw new Error("Choose a CSV file first.");
+
+                    const lines = (await file.text()).replace(/^\uFEFF/, "")
+                        .split(/\r?\n/).filter(line => line.trim());
+
+                    if (lines.length < 2) throw new Error("CSV has no data rows.");
+
+                    const headers = parseCsvLine(lines[0]).map(h => h.toLowerCase());
+                    const required = [
+                        "employee_no", "salary_month", "basic_salary",
+                        "allowances", "deductions", "status"
+                    ];
+
+                    required.forEach(h => {
+                        if (!headers.includes(h)) throw new Error("Missing CSV column: " + h);
+                    });
+
+                    const records = [];
+                    const seen = new Set();
+
+                    lines.slice(1).forEach((line, index) => {
+                        const values = parseCsvLine(line);
+                        if (values.length !== headers.length) {
+                            throw new Error("Invalid column count on CSV row " + (index + 2));
+                        }
+
+                        const row = {};
+                        headers.forEach((h, i) => row[h] = values[i]);
+
+                        if (!employeeNumbers.has(row.employee_no)) {
+                            throw new Error("Unknown employee number on CSV row " + (index + 2));
+                        }
+                        if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(row.salary_month)) {
+                            throw new Error("Invalid month on CSV row " + (index + 2));
+                        }
+
+                        const basic = Number(row.basic_salary);
+                        const allowances = Number(row.allowances);
+                        const deductions = Number(row.deductions);
+
+                        if (![basic, allowances, deductions].every(n => Number.isFinite(n) && n >= 0)) {
+                            throw new Error("Invalid amount on CSV row " + (index + 2));
+                        }
+                        if (deductions > basic + allowances) {
+                            throw new Error("Deductions too high on CSV row " + (index + 2));
+                        }
+
+                        const status = row.status || "Draft";
+                        if (!["Draft", "Published"].includes(status)) {
+                            throw new Error("Status must be Draft or Published on row " + (index + 2));
+                        }
+
+                        const key = row.employee_no + "|" + row.salary_month;
+                        if (seen.has(key)) throw new Error("Duplicate employee/month: " + key);
+                        seen.add(key);
+
+                        records.push({
+                            employee_no: row.employee_no,
+                            salary_month: row.salary_month,
+                            basic_salary: basic,
+                            allowances: allowances,
+                            deductions: deductions,
+                            status: status
+                        });
+                    });
+
+                    await saveRecords(records);
+                    csvStatus.textContent = "Successfully uploaded " + records.length + " record(s).";
+                } catch (error) {
+                    csvStatus.textContent = error.message;
+                }
+            });
+        }
+
+        const viewButton = $("viewPaySlipButton");
+        if (viewButton) {
+            viewButton.addEventListener("click", async function () {
+                slipResult.replaceChildren();
+                slipResult.textContent = "Loading Pay Slip...";
+
+                try {
+                    await checkAdmin();
+
+                    const employeeNo = slipEmployee.value;
+                    const month = slipMonth.value;
+
+                    if (!employeeNumbers.has(employeeNo)) throw new Error("Select an employee.");
+                    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+                        throw new Error("Select a valid month.");
+                    }
+
+                    const query = new URLSearchParams({
+                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status",
+                        employee_no: "eq." + employeeNo,
+                        salary_month: "eq." + month
+                    });
+
+                    const response = await fetch(
+                        SUPABASE_URL + "/rest/v1/salary_records?" + query,
+                        { headers: apiHeaders() }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Pay Slip request failed: " + await response.text());
+                    }
+
+                    const rows = await response.json();
+                    slipResult.replaceChildren();
+
+                    if (!rows.length) {
+                        slipResult.textContent = "No salary record found for this employee/month.";
+                        return;
+                    }
+
+                    const record = rows[0];
+                    const employee = employeeInfo.get(employeeNo) || {};
+                    const title = document.createElement("h3");
+                    title.textContent = "PAY SLIP — " + record.salary_month;
+                    slipResult.appendChild(title);
+
+                    [
+                        ["Employee Name", employee.employee_name || "—"],
+                        ["Employee No.", record.employee_no],
+                        ["Department", employee.department || "—"],
+                        ["Basic Salary", Number(record.basic_salary).toFixed(2)],
+                        ["Allowances", Number(record.allowances).toFixed(2)],
+                        ["Deductions", Number(record.deductions).toFixed(2)],
+                        ["Net Pay", Number(record.net_pay).toFixed(2)],
+                        ["Status", record.status]
+                    ].forEach(([label, value]) => {
+                        const p = document.createElement("p");
+                        p.textContent = label + ": " + value;
+                        slipResult.appendChild(p);
+                    });
+
+                    const printButton = $("printPaySlipButton");
+                    if (printButton) printButton.style.display = "inline-block";
+                } catch (error) {
+                    slipResult.textContent = error.message;
+                }
+            });
+        }
+
+        const printButton = $("printPaySlipButton");
+        if (printButton) {
+            printButton.addEventListener("click", function () {
+                window.print();
+            });
+        }
+    });
+})();

@@ -291,7 +291,94 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="app.js?v=20261011fix1"></script>
+<script src="app.js?v=20261012salary1"></script>
 
+
+<div id="salaryPage" style="display:none;">
+    <button id="salaryBackButton" type="button">← Back</button>
+    <h1>💰 Salary Management</h1>
+
+    <div class="admin-card">
+        <h2>Salary Access</h2>
+        <p id="salaryStatus" role="status" aria-live="polite">
+            Checking authorized Admin access...
+        </p>
+        <button id="salaryLoginButton" type="button" style="display:none;">
+            Open Admin Login
+        </button>
+    </div>
+
+    <div id="salaryManagement" style="display:none;">
+        <div class="admin-card">
+            <h2>Manual Salary Entry</h2>
+
+            <form id="salaryEntryForm">
+                <label for="salaryEmployee">Employee</label>
+                <select id="salaryEmployee" required>
+                    <option value="">Select employee</option>
+                </select>
+
+                <label for="salaryMonth">Salary Month</label>
+                <input type="month" id="salaryMonth" required>
+
+                <label for="basicSalary">Basic Salary</label>
+                <input type="number" id="basicSalary" min="0"
+                       step="0.01" required value="0">
+
+                <label for="salaryAllowances">Allowances</label>
+                <input type="number" id="salaryAllowances" min="0"
+                       step="0.01" required value="0">
+
+                <label for="salaryDeductions">Deductions</label>
+                <input type="number" id="salaryDeductions" min="0"
+                       step="0.01" required value="0">
+
+                <p>Net Pay: <strong id="salaryNetPreview">0.00</strong></p>
+
+                <label for="salaryPublishStatus">Status</label>
+                <select id="salaryPublishStatus">
+                    <option value="Draft">Draft</option>
+                    <option value="Published">Published</option>
+                </select>
+
+                <button type="submit" id="saveSalaryButton">
+                    Save Salary
+                </button>
+            </form>
+            <p id="salarySaveStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="admin-card">
+            <h2>CSV Upload</h2>
+            <p>Required columns: employee_no, salary_month, basic_salary,
+                allowances, deductions, status</p>
+            <button id="salaryCsvTemplateButton" type="button">
+                Download CSV Template
+            </button>
+            <label for="salaryCsvFile">Choose CSV file</label>
+            <input type="file" id="salaryCsvFile" accept=".csv,text/csv">
+            <button id="salaryCsvUploadButton" type="button">
+                Upload CSV
+            </button>
+            <p id="salaryCsvStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="admin-card">
+            <h2>Monthly Pay Slip</h2>
+            <label for="paySlipEmployee">Employee</label>
+            <select id="paySlipEmployee" required>
+                <option value="">Select employee</option>
+            </select>
+
+            <label for="paySlipMonth">Salary Month</label>
+            <input type="month" id="paySlipMonth" required>
+
+            <button id="viewPaySlipButton" type="button">View Pay Slip</button>
+            <button id="printPaySlipButton" type="button"
+                    style="display:none;">Print Pay Slip</button>
+            <div id="paySlipResult"></div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
