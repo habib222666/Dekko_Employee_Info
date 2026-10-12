@@ -2752,7 +2752,7 @@ if (saveNewEmployeeButton) {
         async function loadEmployees() {
             const response = await fetch(
                 SUPABASE_URL +
-                "/rest/v1/employee_dekko_v2?select=employee_no,employee_name,department,designation&order=employee_name.asc",
+                "/rest/v1/employee_dekko_v2?select=employee_no,employee_name,department,designation,joining_date&order=employee_name.asc",
                 { headers: apiHeaders() }
             );
 
