@@ -2637,3 +2637,26 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         gap: 12px;
     }
 }
+
+/* Manual Salary Entry: align labels and inputs like Earnings/Deductions */
+.salary-entry-details-grid .salary-entry-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: center;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
