@@ -2685,3 +2685,29 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     min-width: 0;
     box-sizing: border-box;
 }
+
+/* Manual Salary Entry: match Earnings Basic Salary alignment */
+.salary-entry-details-grid .salary-entry-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    display: block;
+    width: 100%;
+    margin: 0;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
