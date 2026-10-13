@@ -2966,6 +2966,11 @@ if (saveNewEmployeeButton) {
 
                     const employeeNo = employeeSelect.value;
                     const month = monthInput.value;
+                    const workingDays = Number($("salaryWorkingDays").value);
+                    const presentDays = Number($("salaryPresentDays").value);
+                    const leaveDays = Number($("salaryLeaveDays").value);
+                    const absentDays = Number($("salaryAbsentDays").value);
+
                     const basic = getAmount("basicSalary");
 
                     const houseRent = getAmount("houseRentAllowance");
@@ -2982,6 +2987,11 @@ if (saveNewEmployeeButton) {
                     const deductions = providentFund + incomeTaxAmount +
                         healthInsurance + loanRepayment + otherDeductionsAmount;
 
+                    const attendance = [workingDays, presentDays, leaveDays, absentDays];
+                    if (!attendance.every(n => Number.isInteger(n) && n >= 0)) {
+                        throw new Error("Attendance days must be non-negative whole numbers.");
+                    }
+
                     if (!employeeNumbers.has(employeeNo)) {
                         throw new Error("Select a valid employee.");
                     }
@@ -2995,6 +3005,10 @@ if (saveNewEmployeeButton) {
                     await saveRecords([{
                         employee_no: employeeNo,
                         salary_month: month,
+                        working_days: workingDays,
+                        present_days: presentDays,
+                        leave_days: leaveDays,
+                        absent_days: absentDays,
                         basic_salary: basic,
                         house_rent_allowance: houseRent,
                         medical_allowance: medical,
@@ -3315,7 +3329,7 @@ if (saveNewEmployeeButton) {
                     }
 
                     const query = new URLSearchParams({
-                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions",
+                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days",
                         employee_no: "eq." + employeeNo,
                         salary_month: "eq." + month
                     });
@@ -3487,17 +3501,19 @@ if (saveNewEmployeeButton) {
                     const optionalDetails = [
                         ["Designation", getEmployeeValue("designation", "job_title")],
                         ["Joining Date", getEmployeeValue("joining_date", "date_of_joining", "date_joined")],
-                        ["Working Days", getEmployeeValue("working_days")],
-                        ["Present Days", getEmployeeValue("present_days")],
-                        ["Leave Days", getEmployeeValue("leave_days")],
-                        ["Payment Method", getEmployeeValue("payment_method")]
+                        ["Working Days", record.working_days],
+                        ["Present Days", record.present_days],
+                        ["Leave Days", record.leave_days],
+                        ["Absent Days", record.absent_days]
                     ];
 
-                    const detail = (label, value) =>
-                        `<div class="payslip-detail">
+                    const detail = (label, value) => {
+                        if (value === undefined || value === null || value === "" || value === "—") return "";
+                        return `<div class="payslip-detail">
                             <span>${safe(label)}</span>
                             <strong>${safe(value)}</strong>
                         </div>`;
+                    };
 
                     slipResult.innerHTML = `
                         <article class="professional-payslip">
@@ -3523,18 +3539,22 @@ if (saveNewEmployeeButton) {
                             <section class="payslip-section">
                                 <h4>Emp. Information</h4>
                                 <div class="payslip-details-grid">
-                                    ${detail("Employee Name", employee.employee_name || "—")}
-                                    ${detail("Pay Period", period)}
-                                    ${detail("Employee ID", record.employee_no || "—")}
-                                    ${detail("Working Days", optionalDetails[2][1])}
-                                    ${detail("Designation", optionalDetails[0][1])}
-                                    ${detail("Present Days", optionalDetails[3][1])}
-                                    ${detail("Department", employee.department || "—")}
-                                    ${detail("Leave Days", optionalDetails[4][1])}
-                                    ${detail("Joining Date", optionalDetails[1][1])}
-                                    ${detail("Payment Method", optionalDetails[5][1])}
-                                    ${detail("Bank Name", getEmployeeValue("bank_name"))}
-                                    ${detail("Account No.", getEmployeeValue("account_no"))}
+                                    <div class="payslip-info-column">
+                                        ${detail("Employee ID", record.employee_no || employee.employee_no || "—")}
+                                        ${detail("Employee Name", employee.employee_name || "—")}
+                                        ${detail("Designation", optionalDetails[0][1])}
+                                        ${detail("Department", employee.department || "—")}
+                                        ${detail("Joining Date", optionalDetails[1][1])}
+                                        ${detail("Pay Period", period)}
+                                    </div>
+                                    <div class="payslip-info-column">
+                                        ${detail("Bank Name", getEmployeeValue("bank_name"))}
+                                        ${detail("Account No.", getEmployeeValue("account_no"))}
+                                        ${detail("Working Days", optionalDetails[2][1])}
+                                        ${detail("Present Days", optionalDetails[3][1])}
+                                        ${detail("Leave Days", optionalDetails[4][1])}
+                                        ${detail("Absent Days", optionalDetails[5][1])}
+                                    </div>
                                 </div>
                             </section>
 
