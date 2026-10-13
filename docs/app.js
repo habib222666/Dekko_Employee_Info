@@ -3063,29 +3063,7 @@ if (saveNewEmployeeButton) {
             "health_insurance", "loan_repayment", "other_deductions"
         ];
 
-        const templateButton = $("salaryCsvTemplateButton");
-        if (templateButton) {
-            templateButton.addEventListener("click", function () {
-                const headers = [
-                    "employee_no", "salary_month", "basic_salary",
-                    ...csvComponentColumns, "status"
-                ];
-                const sample = [
-                    "EMP001", "2026-10", "25000",
-                    "5000", "1000", "500", "1500",
-                    "1000", "500", "200", "0", "0", "Draft"
-                ];
-                const csv = headers.join(",") + "\n" + sample.join(",") + "\n";
-                const url = URL.createObjectURL(
-                    new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8;" })
-                );
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = "salary_template.csv";
-                link.click();
-                URL.revokeObjectURL(url);
-            });
-        }
+
 
         const uploadButton = $("salaryCsvUploadButton");
         const csvFileInput = $("salaryCsvFile");
@@ -3100,7 +3078,7 @@ if (saveNewEmployeeButton) {
 
         function resetCsvPreview() {
             pendingCsvRecords = null;
-            if (uploadButton) uploadButton.textContent = "Preview & Validate CSV";
+            if (uploadButton) uploadButton.textContent = "Upload CSV";
             if (csvPreview) csvPreview.replaceChildren();
         }
 
@@ -3164,7 +3142,7 @@ if (saveNewEmployeeButton) {
         }
 
         if (uploadButton) {
-            uploadButton.textContent = "Preview & Validate CSV";
+            uploadButton.textContent = "Upload CSV";
 
             uploadButton.addEventListener("click", async function () {
                 try {
@@ -3291,11 +3269,6 @@ if (saveNewEmployeeButton) {
                         });
 
                         pendingCsvRecords = records;
-                        showCsvPreview(records);
-                        uploadButton.textContent = "Confirm Upload";
-                        csvStatus.textContent =
-                            "Preview ready. Check the rows, then click Confirm Upload.";
-                        return;
                     }
 
                     const recordsToSave = pendingCsvRecords;

@@ -2743,3 +2743,111 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     min-width: 0;
     box-sizing: border-box;
 }
+
+/* Final fix: Manual Salary Entry information alignment */
+#salaryPage .salary-entry-details-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    gap: 14px 24px;
+}
+
+#salaryPage .salary-entry-details-grid .salary-entry-field {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(100px, 1fr) !important;
+    align-items: center;
+    gap: 8px 12px;
+    min-width: 0;
+}
+
+#salaryPage .salary-entry-details-grid .salary-entry-field label {
+    display: block;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+#salaryPage .salary-entry-details-grid .salary-entry-field input,
+#salaryPage .salary-entry-details-grid .salary-entry-field select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+    #salaryPage .salary-entry-details-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px;
+    }
+
+    #salaryPage .salary-entry-details-grid .salary-entry-field {
+        grid-template-columns: minmax(0, 1fr) minmax(110px, 1fr) !important;
+    }
+}
+
+
+/* Fix: keep Earnings and Deductions side by side on Android WebView */
+#salaryPage .salary-components-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: start;
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Final layout override: Earnings and Deductions side by side */
+#salaryPage .salary-components-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group {
+    display: block !important;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 50% !important;
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group input {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}

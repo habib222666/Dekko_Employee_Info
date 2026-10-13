@@ -782,3 +782,29 @@
         break-inside: avoid;
     }
 }
+
+/* Final override: keep Earnings and Deductions side-by-side on phones */
+#salaryPage .salary-components-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    align-items: start !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#salaryPage .salary-component-group input,
+#salaryPage .salary-component-group select {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
