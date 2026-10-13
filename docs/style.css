@@ -2603,3 +2603,37 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
         box-sizing: border-box;
     }
 }
+
+
+/* Manual Salary Entry: six details in two columns */
+.salary-entry-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.salary-entry-details-grid .salary-entry-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    margin-bottom: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 480px) {
+    .salary-entry-details-grid {
+        gap: 12px;
+    }
+}

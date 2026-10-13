@@ -324,25 +324,41 @@
             <h2>Manual Salary Entry</h2>
 
             <form id="salaryEntryForm">
-                <label for="salaryEmployee">Employee</label>
-                <select id="salaryEmployee" required>
-                    <option value="">Select employee</option>
-                </select>
+                
+                <div class="salary-entry-details-grid">
+                    <div class="salary-entry-field">
+                        <label for="salaryEmployee">Employee</label>
+                        <select id="salaryEmployee" required>
+                            <option value="">Select employee</option>
+                        </select>
+                    </div>
 
-                <label for="salaryMonth">Salary Month</label>
-                <input type="month" id="salaryMonth" required>
+                    <div class="salary-entry-field">
+                        <label for="salaryPresentDays">Present Days</label>
+                        <input type="number" id="salaryPresentDays" min="0" step="1" required>
+                    </div>
 
-                <label for="salaryWorkingDays">Working Days</label>
-                <input type="number" id="salaryWorkingDays" min="0" step="1" required>
+                    <div class="salary-entry-field">
+                        <label for="salaryMonth">Salary Month</label>
+                        <input type="month" id="salaryMonth" required>
+                    </div>
 
-                <label for="salaryPresentDays">Present Days</label>
-                <input type="number" id="salaryPresentDays" min="0" step="1" required>
+                    <div class="salary-entry-field">
+                        <label for="salaryLeaveDays">Leave Days</label>
+                        <input type="number" id="salaryLeaveDays" min="0" step="1" required>
+                    </div>
 
-                <label for="salaryLeaveDays">Leave Days</label>
-                <input type="number" id="salaryLeaveDays" min="0" step="1" required>
+                    <div class="salary-entry-field">
+                        <label for="salaryWorkingDays">Working Days</label>
+                        <input type="number" id="salaryWorkingDays" min="0" step="1" required>
+                    </div>
 
-                <label for="salaryAbsentDays">Absent Days</label>
-                <input type="number" id="salaryAbsentDays" min="0" step="1" required>
+                    <div class="salary-entry-field">
+                        <label for="salaryAbsentDays">Absent Days</label>
+                        <input type="number" id="salaryAbsentDays" min="0" step="1" required>
+                    </div>
+                </div>
+
 
 
                 <div class="salary-components-grid">

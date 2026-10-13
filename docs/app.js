@@ -3507,8 +3507,8 @@ if (saveNewEmployeeButton) {
                         ["Absent Days", record.absent_days]
                     ];
 
-                    const detail = (label, value) => {
-                        if (value === undefined || value === null || value === "" || value === "—") return "";
+                    const detail = (label, value, showEmpty = false) => {
+                        if (!showEmpty && (value === undefined || value === null || value === "" || value === "—")) return "";
                         return `<div class="payslip-detail">
                             <span>${safe(label)}</span>
                             <strong>${safe(value)}</strong>
@@ -3548,8 +3548,8 @@ if (saveNewEmployeeButton) {
                                         ${detail("Pay Period", period)}
                                     </div>
                                     <div class="payslip-info-column">
-                                        ${detail("Bank Name", getEmployeeValue("bank_name"))}
-                                        ${detail("Account No.", getEmployeeValue("account_no"))}
+                                        ${detail("Bank Name", getEmployeeValue("bank_name"), true)}
+                                        ${detail("Account No.", getEmployeeValue("account_no"), true)}
                                         ${detail("Working Days", optionalDetails[2][1])}
                                         ${detail("Present Days", optionalDetails[3][1])}
                                         ${detail("Leave Days", optionalDetails[4][1])}
