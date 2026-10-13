@@ -2735,3 +2735,11 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     min-width: 0;
     box-sizing: border-box;
 }
+
+/* Fix: let all six Manual Salary Entry fields use the full form width */
+#salaryEntryForm > .salary-entry-details-grid {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
