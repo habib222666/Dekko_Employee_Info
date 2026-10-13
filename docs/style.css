@@ -2154,9 +2154,9 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     bottom: 25px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
-    width: 150px !important;
-    max-width: 40vw !important;
-    max-height: 100px !important;
+    width: 195px !important;
+    max-width: 52vw !important;
+    max-height: 130px !important;
     object-fit: contain !important;
     z-index: 1 !important;
 }
