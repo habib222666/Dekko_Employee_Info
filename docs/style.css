@@ -2711,3 +2711,27 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     min-width: 0;
     box-sizing: border-box;
 }
+
+/* Manual Salary Entry: keep each label beside its input */
+.salary-entry-details-grid .salary-entry-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 0;
+    align-items: center;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    width: auto;
+    margin: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
