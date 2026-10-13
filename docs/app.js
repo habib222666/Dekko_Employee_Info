@@ -3597,6 +3597,19 @@ if (saveNewEmployeeButton) {
                         </article>
                     `;
 
+                    const page = $("paySlipPage");
+                    const pageContent = $("paySlipPageContent");
+                    const salaryPage = $("salaryPage");
+
+                    if (!page || !pageContent || !salaryPage) {
+                        throw new Error("Pay Slip page could not be opened.");
+                    }
+
+                    pageContent.innerHTML = slipResult.innerHTML;
+                    page.style.display = "block";
+                    salaryPage.style.display = "none";
+                    window.scrollTo(0, 0);
+
                     const printButton = $("printPaySlipButton");
                     if (printButton) printButton.style.display = "inline-block";
                 } catch (error) {
@@ -3608,6 +3621,23 @@ if (saveNewEmployeeButton) {
         const printButton = $("printPaySlipButton");
         if (printButton) {
             printButton.addEventListener("click", function () {
+                window.print();
+            });
+        }
+
+        const paySlipPageBackButton = $("paySlipPageBackButton");
+        if (paySlipPageBackButton) {
+            paySlipPageBackButton.addEventListener("click", function () {
+                const page = $("paySlipPage");
+                const salaryPage = $("salaryPage");
+                if (page) page.style.display = "none";
+                if (salaryPage) salaryPage.style.display = "block";
+            });
+        }
+
+        const paySlipPagePrintButton = $("paySlipPagePrintButton");
+        if (paySlipPagePrintButton) {
+            paySlipPagePrintButton.addEventListener("click", function () {
                 window.print();
             });
         }

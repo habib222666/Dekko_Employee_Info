@@ -2318,20 +2318,41 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     font-variant-numeric: tabular-nums;
 }
 
+.payslip-page-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 900px;
+    margin: 16px auto;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+#paySlipPage {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 @media print {
     body * {
         visibility: hidden !important;
     }
-    #paySlipResult, #paySlipResult * {
+    #paySlipPage, #paySlipPage * {
         visibility: visible !important;
     }
-    #paySlipResult {
+    #paySlipPage {
+        display: block !important;
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
+        margin: 0;
+        padding: 0;
         color: #000;
         background: #fff;
+    }
+    .payslip-page-actions {
+        display: none !important;
     }
 }
 
