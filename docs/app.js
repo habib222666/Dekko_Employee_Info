@@ -3638,7 +3638,12 @@ if (saveNewEmployeeButton) {
         const paySlipPagePrintButton = $("paySlipPagePrintButton");
         if (paySlipPagePrintButton) {
             paySlipPagePrintButton.addEventListener("click", function () {
-                window.print();
+                if (window.AndroidPaySlipPdf &&
+                    typeof window.AndroidPaySlipPdf.downloadPaySlipPdf === "function") {
+                    window.AndroidPaySlipPdf.downloadPaySlipPdf();
+                } else {
+                    window.print();
+                }
             });
         }
     });
