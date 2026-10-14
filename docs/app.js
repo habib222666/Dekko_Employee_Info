@@ -3091,6 +3091,43 @@ if (slipEmployee) {
             if ($(id)) $(id).addEventListener("input", updateNet);
         });
 
+        function updatePresentDays() {
+            const workingInput = $("salaryWorkingDays");
+            const presentInput = $("salaryPresentDays");
+            if (!workingInput || !presentInput) return;
+
+            const rawWorking = workingInput.value.trim();
+            if (rawWorking === "") {
+                presentInput.value = "";
+                return;
+            }
+
+            const readDays = id => {
+                const raw = $(id).value.trim();
+                return raw === "" ? 0 : Number(raw);
+            };
+
+            const working = readDays("salaryWorkingDays");
+            const leave = readDays("salaryLeaveDays");
+            const absent = readDays("salaryAbsentDays");
+
+            if (![working, leave, absent].every(Number.isInteger)) {
+                presentInput.value = "";
+                return;
+            }
+
+            presentInput.value = String(working - leave - absent);
+        }
+
+        ["salaryWorkingDays", "salaryLeaveDays", "salaryAbsentDays"].forEach(id => {
+            const input = $(id);
+            if (input) {
+                input.addEventListener("input", updatePresentDays);
+                input.addEventListener("change", updatePresentDays);
+            }
+        });
+        updatePresentDays();
+
         async function saveRecords(records) {
             const response = await fetch(
                 SUPABASE_URL +
@@ -3189,6 +3226,7 @@ if (slipEmployee) {
                     setValue("salaryPresentDays", record.present_days);
                     setValue("salaryLeaveDays", record.leave_days);
                     setValue("salaryAbsentDays", record.absent_days);
+                    updatePresentDays();
                     setValue("payableSalary", record.payable_salary ?? 0);
                     setValue("othersAllowance", record.others_allowance ?? 0);
                     setValue("absentAmount", record.absent_amount ?? 0);
@@ -3264,12 +3302,12 @@ if (slipEmployee) {
                     };
 
                     const workingDays = readOptionalDays("salaryWorkingDays");
-                    const presentDays = readOptionalDays("salaryPresentDays");
                     const leaveDays = readOptionalDays("salaryLeaveDays");
                     const absentDays = readOptionalDays("salaryAbsentDays");
 
-                    if ([workingDays, presentDays, leaveDays, absentDays].some(Number.isNaN)) {
-                        alert("Attendance days must be non-negative whole numbers, or left blank.");
+                    const presentDays = workingDays === null ? null : workingDays - ((leaveDays ?? 0) + (absentDays ?? 0));
+                    if ([workingDays, leaveDays, absentDays].some(Number.isNaN) || (presentDays !== null && presentDays < 0)) {
+                        alert("Attendance days must be whole numbers, and Present Days cannot be negative.");
                         return;
                     }
 
@@ -3472,7 +3510,6 @@ if (slipEmployee) {
                     const houseRent = Number(record.house_rent_allowance || 0);
                     const medical = Number(record.medical_allowance || 0);
                     const conveyance = Number(record.conveyance_allowance || 0);
-                    const special = Number(record.special_allowance || 0);
                     const othersAllowance = Number(record.others_allowance || 0);
 
                     const providentFund = Number(record.employee_provident_fund || 0);
@@ -3489,7 +3526,7 @@ if (slipEmployee) {
 
                     const hasEarningComponents =
                         houseRent !== 0 || medical !== 0 ||
-                        conveyance !== 0 || special !== 0 || othersAllowance !== 0;
+                        conveyance !== 0 || othersAllowance !== 0;
 
                     const hasDeductionComponents =
                         providentFund !== 0 || incomeTax !== 0 ||
@@ -3505,7 +3542,7 @@ if (slipEmployee) {
                         !hasDeductionComponents ? storedDeductions : 0;
 
                     const allowances =
-                        houseRent + medical + conveyance + special + othersAllowance;
+                        houseRent + medical + conveyance + othersAllowance;
                     const deductions = providentFund + incomeTax + healthInsurance +
                         absentAmount + lunchBill + excessMobileBill +
                         loanRepayment + otherDeductions;
@@ -3662,7 +3699,6 @@ if (slipEmployee) {
                                         <tr><td>Medical Allowance</td><td>${amount(medical)}</td></tr>
                                         <tr><td>Conveyance Allowance</td><td>${Number(conveyance) ? amount(conveyance) : "-"}</td></tr>
                                         <tr><td>Payable Salary</td><td>${Number(payableSalary) ? amount(payableSalary) : "-"}</td></tr>
-                                        <tr><td>Special Allowance</td><td>${Number(special) ? amount(special) : "-"}</td></tr>
                                         <tr><td>Others Allowance</td><td>${Number(othersAllowance) ? amount(othersAllowance) : "-"}</td></tr>
                                         ${legacyAllowances ? `<tr><td>Allowances (legacy record)</td><td>${amount(legacyAllowances)}</td></tr>` : ""}
                                         <tr class="payslip-total-row"><td>Total Earnings</td><td>${Number(totalEarnings) ? amount(totalEarnings) : "-"}</td></tr>
