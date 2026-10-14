@@ -960,3 +960,31 @@
     max-width: 100% !important;
     box-sizing: border-box !important;
 }
+
+/* Align Earning and Deduct table columns with Employee Information */
+.professional-payslip .payslip-components-grid .payslip-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: fixed !important;
+    box-sizing: border-box !important;
+}
+
+.professional-payslip .payslip-components-grid .payslip-table th:first-child,
+.professional-payslip .payslip-components-grid .payslip-table td:first-child {
+    width: 48% !important;
+}
+
+.professional-payslip .payslip-components-grid .payslip-table th:last-child,
+.professional-payslip .payslip-components-grid .payslip-table td:last-child {
+    width: 52% !important;
+}
+
+/* Preserve the existing 12px gap and total width */
+.professional-payslip .payslip-info-tables-grid,
+.professional-payslip .payslip-components-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
