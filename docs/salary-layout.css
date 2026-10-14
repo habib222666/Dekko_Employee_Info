@@ -1174,6 +1174,13 @@
 #salaryPage .salary-entry-field {
     position: relative;
 }
+
+#salaryPage #salaryEmployeeSuggestions {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+}
 #salaryPage #salaryEmployee[hidden],
 #salaryPage #salaryEmployeeSuggestions[hidden] {
     display: none !important;

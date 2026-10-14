@@ -2751,7 +2751,9 @@ if (saveNewEmployeeButton) {
                     button.type = "button";
                     button.className = "salary-employee-suggestion";
                     button.setAttribute("role", "option");
-                    button.textContent = option.textContent;
+                    const employee = employeeInfo.get(option.value);
+                    const employeeName = String(employee?.employee_name || "Unnamed");
+                    button.textContent = `${option.value} (${employeeName})`;
 
                     button.addEventListener("click", function () {
                         salarySearchInput.value = option.textContent;
