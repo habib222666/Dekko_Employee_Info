@@ -935,3 +935,28 @@
         padding: 5px 4px;
     }
 }
+
+/* Pay Slip: keep total width fixed and set 12px gap on web and phone */
+.professional-payslip .payslip-info-tables-grid,
+.professional-payslip .payslip-components-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.professional-payslip .payslip-info-tables-grid > *,
+.professional-payslip .payslip-components-grid > .payslip-section {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.professional-payslip .payslip-info-table,
+.professional-payslip .payslip-components-grid .payslip-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
