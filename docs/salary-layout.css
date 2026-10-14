@@ -836,7 +836,7 @@
 
 .payslip-info-table th {
     width: 48%;
-    background: #f1f5f9;
+    background: #ffffff;
     color: #334b68;
     text-align: left;
     font-weight: 700;
@@ -844,7 +844,7 @@
 
 .payslip-info-table td {
     color: #263449;
-    text-align: left;
+    text-align: right;
 }
 
 @media (max-width: 600px) {
@@ -865,5 +865,35 @@
 
     .payslip-info-table th {
         width: 48%;
+    }
+}
+
+
+/* FINAL: Uniform font size and row height across ALL Pay Slip tables */
+.professional-payslip table {
+    font-size: 12px !important;
+}
+
+.professional-payslip table tr {
+    height: 38px;
+}
+
+.professional-payslip table th,
+.professional-payslip table td {
+    box-sizing: border-box;
+    height: 38px;
+    padding: 8px 7px;
+    font-size: 12px !important;
+    line-height: 1.3;
+    vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+    .professional-payslip table th,
+    .professional-payslip table td {
+        height: 38px;
+        padding: 6px 4px;
+        font-size: 12px !important;
+        line-height: 1.3;
     }
 }
