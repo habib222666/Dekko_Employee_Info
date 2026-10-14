@@ -988,3 +988,33 @@
     max-width: 100% !important;
     box-sizing: border-box !important;
 }
+
+/* Pay Slip: move Earning and Deduct slightly lower */
+.professional-payslip .payslip-components-grid {
+    margin-top: 14px !important;
+}
+
+.professional-payslip .payslip-components-grid > .payslip-section {
+    margin-top: 0 !important;
+}
+
+/* Pay Slip: move NET PAY slightly lower */
+.professional-payslip .payslip-net {
+    margin-top: 14px !important;
+}
+
+/* Disclaimer must appear once, at the very bottom after signature */
+.professional-payslip .payslip-footer {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.professional-payslip .payslip-footer .payslip-signature {
+    order: 1 !important;
+}
+
+.professional-payslip .payslip-footer > p {
+    order: 2 !important;
+    margin-top: 14px !important;
+    margin-bottom: 0 !important;
+}
