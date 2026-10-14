@@ -1018,3 +1018,38 @@
     margin-top: 14px !important;
     margin-bottom: 0 !important;
 }
+
+/* Lighter NET PAY background */
+.professional-payslip .payslip-net {
+    background: #f3f7fc !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Remove the extra colored line below the disclaimer when printing */
+@media print {
+    .professional-payslip .payslip-footer {
+        border-bottom: 0 !important;
+        box-shadow: none !important;
+        background-image: none !important;
+    }
+
+    .professional-payslip .payslip-footer > p {
+        border: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    .professional-payslip .payslip-footer::after,
+    .professional-payslip .payslip-footer > p::after {
+        content: none !important;
+        display: none !important;
+        border: 0 !important;
+    }
+
+    .professional-payslip .payslip-net {
+        background: #f3f7fc !important;
+        border-color: #e2e8f0 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}
