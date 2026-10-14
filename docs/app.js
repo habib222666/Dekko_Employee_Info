@@ -3329,7 +3329,7 @@ if (saveNewEmployeeButton) {
                             </div>
 
                             <section class="payslip-section payslip-employee-section">
-                                <h4>Employee Information</h4>
+                                <h4><span aria-hidden="true">👤</span> Employee Information</h4>
                                 <div class="payslip-info-tables-grid">
                                     ${infoTable([
                                         ["Employee ID", record.employee_no || employee.employee_no || "—"],
@@ -3352,7 +3352,7 @@ if (saveNewEmployeeButton) {
 
                             <div class="payslip-components-grid">
 <section class="payslip-section">
-                                <h4>Earning</h4>
+                                <h4><span aria-hidden="true">💰</span> Earning</h4>
                                 <table class="payslip-table">
                                     <thead>
                                         <tr><th>Particulars</th><th>Amount</th></tr>
@@ -3370,7 +3370,7 @@ if (saveNewEmployeeButton) {
                             </section>
 
                             <section class="payslip-section">
-                                <h4>Deduct</h4>
+                                <h4><span aria-hidden="true">➖</span> Deduct</h4>
                                 <table class="payslip-table">
                                     <thead>
                                         <tr><th>Particulars</th><th>Amount</th></tr>

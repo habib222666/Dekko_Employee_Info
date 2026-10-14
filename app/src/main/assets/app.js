@@ -1,5 +1,8 @@
-const SUPABASE_URL = "https://jborzgwqlinwkeiquivy.supabase.co";
+const SUPABASE_URL = 'https://' + 'jborzgwqlinwkeiquivy' + '.supabase.co';
 const SUPABASE_KEY = "sb_publishable_W_h2UbIqWWJNGZfRnJSojg_JCpHW7qN";
+
+const rememberLogin =
+    document.getElementById("rememberLogin");
 
 
 /* =========================
@@ -90,9 +93,30 @@ async function toggleFavorite(employee) {
 
 departmentBackButton.addEventListener("click", function() {
 
-    departmentPage.style.display = "none";
+    detailsPage.style.display = "none";
+    allEmployeesPage.style.display = "none";
+    favoritePage.style.display = "none";
+    birthdayPage.style.display = "none";
 
-    listPage.style.display = "block";
+    if (departmentEmployeeList.style.display !== "none") {
+
+        departmentEmployeeList.style.display = "none";
+        departmentEmployeeList.innerHTML = "";
+
+        departmentCards.style.display = "grid";
+        departmentPage.style.display = "block";
+        departmentPageTitle.textContent = "🏢 All Departments";
+
+    } else {
+
+        departmentPage.style.display = "none";
+        departmentCards.style.display = "none";
+
+        listPage.style.display = "block";
+        departmentSection.style.display = "block";
+        employeeList.style.display = "block";
+
+    }
 
     window.scrollTo({
         top: 0,
@@ -100,7 +124,6 @@ departmentBackButton.addEventListener("click", function() {
     });
 
 });
-
 
 
 const listPage = document.getElementById("listPage");
@@ -160,6 +183,139 @@ if (hashParams.get("access_token")) {
 
 
 /* =========================
+   DESIGNATION NORMALIZATION
+========================= */
+
+const DESIGNATION_ORDER = [
+    "Executive Director (ED)",
+    "Chief Financial Officer (CFO)",
+    "Chief Marketing Officer (CMO)",
+    "Head of Operation",
+    "Head of Planning",
+    "Head of Supply Chain Management",
+    "Divisional Head",
+    "Deputy General Manager (DGM)",
+    "Asst. General Manager (AGM)",
+    "Sr. Manager",
+    "Manager",
+    "In Charge",
+    "Deputy Manager",
+    "Asst. Manager",
+    "CS Team Lead",
+    "Team Lead",
+    "Sr. Executive",
+    "Sr. Designer",
+    "Executive",
+    "Designer",
+    "Graphics Designer",
+    "3D Designer",
+    "Fashion Designer",
+    "Interior Designer",
+    "Jr. Executive",
+    "Jr. Merchandiser",
+    "Data Management Officer (DMO)",
+    "Pattern Master",
+    "Messenger",
+    "Office Assistant",
+    "Driver",
+    "Delivery Man",
+    "Intern"
+];
+
+const DESIGNATION_RANK = new Map(
+    DESIGNATION_ORDER.map(
+        (designation, index) => [designation, index]
+    )
+);
+
+function normalizeDesignation(designation) {
+
+    const value = String(designation || "").trim();
+
+    const groups = {
+        "Executive Director (ED)": [
+            "Executive Director",
+            "ED"
+        ],
+        "Chief Financial Officer (CFO)": [
+            "Chief Financial Officer",
+            "CFO"
+        ],
+        "Chief Marketing Officer (CMO)": [
+            "Chief Marketing Officer",
+            "CMO"
+        ],
+        "Deputy General Manager (DGM)": [
+            "Deputy General Manager",
+            "DGM"
+        ],
+        "Asst. General Manager (AGM)": [
+            "Asst. General Manager",
+            "AGM"
+        ],
+        "Data Management Officer (DMO)": [
+            "Data Management Officer",
+            "DMO"
+        ]
+    };
+
+    for (const [groupName, values] of Object.entries(groups)) {
+        if (values.some(item =>
+            item.toLowerCase() === value.toLowerCase()
+        )) {
+            return groupName;
+        }
+    }
+
+    return value || "Other";
+}
+
+function populateDesignationFilter() {
+
+    const filter = document.getElementById("designationFilter");
+
+    if (!filter) return;
+
+    const designations = [...new Set(
+        employees.map(employee =>
+            normalizeDesignation(employee.designation)
+        )
+    )].filter(Boolean);
+
+    designations.sort((a, b) => {
+        const rankA =
+            DESIGNATION_RANK.has(a)
+                ? DESIGNATION_RANK.get(a)
+                : DESIGNATION_ORDER.length;
+
+        const rankB =
+            DESIGNATION_RANK.has(b)
+                ? DESIGNATION_RANK.get(b)
+                : DESIGNATION_ORDER.length;
+
+        if (rankA !== rankB) {
+            return rankA - rankB;
+        }
+
+        return a.localeCompare(b);
+    });
+
+    filter.innerHTML =
+        '<option value="">All Designations</option>';
+
+    designations.forEach(designation => {
+
+        const option = document.createElement("option");
+
+        option.value = designation;
+        option.textContent = designation;
+
+        filter.appendChild(option);
+
+    });
+}
+
+/* =========================
    LOAD EMPLOYEES
 ========================= */
 
@@ -207,6 +363,7 @@ async function loadEmployees() {
 
         showEmployees(employees);
 
+        populateDesignationFilter();
         loadEmployeeSelect();
 
 
@@ -392,7 +549,10 @@ function showDepartmentCards() {
             searchInput.value = "";
 
             departmentPageTitle.textContent = department;
+
+            departmentCards.style.display = "none";
             departmentEmployeeList.innerHTML = "";
+            departmentEmployeeList.style.display = "flex";
 
             const selectedEmployees = departments[department];
 
@@ -525,6 +685,36 @@ function showFavoriteEmployees() {
 
 function showEmployees(list, targetList = employeeList) {
 
+    const sortedList = [...list].sort((a, b) => {
+
+        const rankA =
+            DESIGNATION_RANK.has(
+                normalizeDesignation(a.designation)
+            )
+                ? DESIGNATION_RANK.get(
+                    normalizeDesignation(a.designation)
+                )
+                : DESIGNATION_ORDER.length;
+
+        const rankB =
+            DESIGNATION_RANK.has(
+                normalizeDesignation(b.designation)
+            )
+                ? DESIGNATION_RANK.get(
+                    normalizeDesignation(b.designation)
+                )
+                : DESIGNATION_ORDER.length;
+
+        if (rankA !== rankB) {
+            return rankA - rankB;
+        }
+
+        return String(a.employee_name || "")
+            .localeCompare(
+                String(b.employee_name || "")
+            );
+    });
+
     targetList.innerHTML = "";
 
 
@@ -544,7 +734,7 @@ function showEmployees(list, targetList = employeeList) {
     }
 
 
-    list.forEach((employee) => {
+    sortedList.forEach((employee) => {
 
         const div =
             document.createElement("div");
@@ -637,6 +827,9 @@ function showDetails(employee, previousPage = "list") {
     detailsPreviousPage = previousPage;
 
     listPage.style.display =
+        "none";
+
+    allEmployeesPage.style.display =
         "none";
 
     departmentPage.style.display =
@@ -1029,6 +1222,82 @@ forgotPasswordButton.addEventListener(
 
 
 /* =========================
+   RESTORE SAVED ADMIN SESSION
+========================= */
+
+async function restoreSavedAdminSession() {
+
+    const savedSession =
+        localStorage.getItem(
+            "dekko_admin_session"
+        );
+
+    if (!savedSession) return;
+
+    try {
+
+        const session =
+            JSON.parse(savedSession);
+
+        if (!session.access_token) {
+            localStorage.removeItem(
+                "dekko_admin_session"
+            );
+            return;
+        }
+
+        const response =
+            await fetch(
+                `${SUPABASE_URL}/auth/v1/user`,
+                {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization":
+                            "Bearer " +
+                            session.access_token
+                    }
+                }
+            );
+
+        if (!response.ok) {
+            localStorage.removeItem(
+                "dekko_admin_session"
+            );
+            return;
+        }
+
+        accessToken =
+            session.access_token;
+
+        loginPage.style.display =
+            "none";
+
+        adminPage.style.display =
+            "block";
+
+        uploadStatus.textContent = "";
+
+        console.log(
+            "Saved admin session restored."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Session restore failed:",
+            error
+        );
+
+        localStorage.removeItem(
+            "dekko_admin_session"
+        );
+    }
+}
+
+restoreSavedAdminSession();
+
+
+/* =========================
    ADMIN LOGIN
 ========================= */
 
@@ -1107,6 +1376,23 @@ loginButton.addEventListener(
             accessToken =
                 data.access_token;
 
+            if (rememberLogin && rememberLogin.checked) {
+
+                localStorage.setItem(
+                    "dekko_admin_session",
+                    JSON.stringify({
+                        access_token: data.access_token,
+                        refresh_token: data.refresh_token || null
+                    })
+                );
+
+            } else {
+
+                localStorage.removeItem(
+                    "dekko_admin_session"
+                );
+            }
+
 
             loginStatus.textContent =
                 "Login successful!";
@@ -1126,6 +1412,15 @@ loginButton.addEventListener(
 
 
             uploadStatus.textContent = "";
+
+            if (window.__openSalaryAfterLogin) {
+                window.__openSalaryAfterLogin = false;
+
+                const salaryBtn =
+                    document.getElementById("salaryButton");
+
+                if (salaryBtn) salaryBtn.click();
+            }
 
 
         } catch (error) {
@@ -1175,6 +1470,10 @@ logoutButton.addEventListener(
     function() {
 
         accessToken = null;
+
+        localStorage.removeItem(
+            "dekko_admin_session"
+        );
 
 
         adminPage.style.display =
@@ -1387,11 +1686,33 @@ backButton.addEventListener(
             listPage.style.display =
                 "none";
 
+            allEmployeesPage.style.display =
+                "none";
+
             favoritePage.style.display =
                 "none";
 
             departmentPage.style.display =
                 "block";
+
+            departmentCards.style.display =
+                "none";
+
+        } else if (detailsPreviousPage === "allEmployees") {
+
+            departmentPage.style.display =
+                "none";
+
+            favoritePage.style.display =
+                "none";
+
+            listPage.style.display =
+                "none";
+
+            allEmployeesPage.style.display =
+                "block";
+
+            showEmployees(employees);
 
         } else {
 
@@ -1430,7 +1751,13 @@ allDepartmentsButton.addEventListener(
     function() {
 
         listPage.style.display = "none";
+        allEmployeesPage.style.display = "none";
         favoritePage.style.display = "none";
+        birthdayPage.style.display = "none";
+        detailsPage.style.display = "none";
+
+        departmentCards.style.display = "grid";
+        departmentEmployeeList.innerHTML = "";
 
         departmentPage.style.display = "block";
 
@@ -1540,46 +1867,41 @@ searchInput.addEventListener(
                 .toLowerCase()
                 .trim();
 
+        const selectedDesignation =
+            designationFilter
+                ? designationFilter.value
+                : "";
 
         const filtered =
-            employees.filter(
-                employee =>
+            employees.filter(employee => {
 
-                    (employee.employee_name || "")
-                        .toLowerCase()
-                        .includes(searchText)
+                const matchesDesignation =
+                    !selectedDesignation ||
+                    normalizeDesignation(
+                        employee.designation
+                    ) === selectedDesignation;
 
-                    ||
+                const text =
+                    `${employee.employee_name || ""} ` +
+                    `${employee.employee_no || ""} ` +
+                    `${employee.company || ""} ` +
+                    `${employee.department || ""} ` +
+                    `${employee.designation || ""}`;
 
-                    (employee.employee_no || "")
-                        .toLowerCase()
-                        .includes(searchText)
+                const matchesSearch =
+                    !searchText ||
+                    text.toLowerCase()
+                        .includes(searchText);
 
-                    ||
-
-                    (employee.company || "")
-                        .toLowerCase()
-                        .includes(searchText)
-
-                    ||
-
-                    (employee.department || "")
-                        .toLowerCase()
-                        .includes(searchText)
-
-                    ||
-
-                    (employee.designation || "")
-                        .toLowerCase()
-                        .includes(searchText)
-
-            );
-
+                return matchesDesignation &&
+                       matchesSearch;
+            });
 
         showEmployees(filtered);
 
     }
 );
+
 
 
 /* =========================
@@ -1592,10 +1914,11 @@ clearSearch.addEventListener(
 
         searchInput.value = "";
 
+        if (designationFilter) {
+            designationFilter.value = "";
+        }
 
-        showEmployees(
-            employees
-        );
+        showEmployees(employees);
 
 
         searchInput.focus();
@@ -1727,9 +2050,10 @@ function showBirthdayEmployees(month) {
                 <thead>
                     <tr>
                         <th>Sl.</th>
-                        <th>Emp. Name</th>
+                        <th>Employee Name</th>
                         <th>Designation</th>
-                        <th>Birthday Date</th>
+                        <th>Department</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1738,7 +2062,17 @@ function showBirthdayEmployees(month) {
                             <td>${index + 1}</td>
                             <td>${employee.name || employee.employee_name || ""}</td>
                             <td>${employee.designation || ""}</td>
-                            <td>${employee.birthday || ""}</td>
+                            <td>${employee.department || ""}</td>
+                            <td>${(() => {
+                                const parts = String(employee.birthday || "").split("-");
+                                const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+                                if (parts.length === 2) {
+                                    const day = parts[0].padStart(2, "0");
+                                    const month = months[parseInt(parts[1], 10) - 1];
+                                    return month ? `${day} ${month}` : employee.birthday || "";
+                                }
+                                return employee.birthday || "";
+                            })()}</td>
                         </tr>
                     `).join("")}
                 </tbody>
@@ -1748,6 +2082,9 @@ function showBirthdayEmployees(month) {
 }
 
 function openBirthdayPage() {
+    listPage.style.display = "none";
+    adminButton.style.setProperty("display", "none", "important");
+    document.getElementById("appTitle").style.display = "none";
     departmentSection.style.display = "none";
     employeeList.style.display = "none";
     departmentPage.style.display = "none";
@@ -1766,6 +2103,9 @@ if (birthdayButton) {
 if (birthdayBackButton) {
     birthdayBackButton.addEventListener("click", () => {
         birthdayPage.style.display = "none";
+        listPage.style.display = "block";
+        adminButton.style.removeProperty("display");
+        document.getElementById("appTitle").style.display = "";
         departmentSection.style.display = "block";
         employeeList.style.display = "block";
     });
@@ -1783,3 +2123,1340 @@ if (birthdayMonths) {
         });
     });
 }
+
+/* =========================
+   DESIGNATION FILTER
+========================= */
+
+const designationFilter =
+    document.getElementById("designationFilter");
+
+if (designationFilter) {
+
+    designationFilter.addEventListener(
+        "change",
+        function() {
+
+            const selectedDesignation =
+                this.value;
+
+            const searchText =
+                searchInput.value
+                    .toLowerCase()
+                    .trim();
+
+            const filtered =
+                employees.filter(employee => {
+
+                    const matchesDesignation =
+                        !selectedDesignation ||
+                        normalizeDesignation(
+                            employee.designation
+                        ) === selectedDesignation;
+
+                    const text =
+                        `${employee.employee_name || ""} ` +
+                        `${employee.employee_no || ""} ` +
+                        `${employee.company || ""} ` +
+                        `${employee.department || ""} ` +
+                        `${employee.designation || ""}`;
+
+                    const matchesSearch =
+                        !searchText ||
+                        text.toLowerCase()
+                            .includes(searchText);
+
+                    return matchesDesignation &&
+                           matchesSearch;
+                });
+
+            showEmployees(filtered);
+
+        }
+    );
+
+}
+
+/* =========================
+   ADD NEW EMPLOYEE
+========================= */
+
+const showAddEmployeeButton =
+    document.getElementById("showAddEmployeeButton");
+
+const addEmployeeForm =
+    document.getElementById("addEmployeeForm");
+
+const saveNewEmployeeButton =
+    document.getElementById("saveNewEmployeeButton");
+
+const addEmployeeStatus =
+    document.getElementById("addEmployeeStatus");
+
+if (showAddEmployeeButton && addEmployeeForm) {
+
+    showAddEmployeeButton.addEventListener(
+        "click",
+        function() {
+
+            if (addEmployeeForm.style.display === "none") {
+
+                addEmployeeForm.style.display = "block";
+
+                showAddEmployeeButton.textContent =
+                    "− Close Add Employee";
+
+            } else {
+
+                addEmployeeForm.style.display = "none";
+
+                showAddEmployeeButton.textContent =
+                    "+ Add New Employee";
+            }
+
+        }
+    );
+}
+
+if (saveNewEmployeeButton) {
+
+    saveNewEmployeeButton.addEventListener(
+        "click",
+        async function() {
+
+            const employeeName =
+                document.getElementById("newEmployeeName").value.trim();
+
+            const designation =
+                document.getElementById("newEmployeeDesignation").value.trim();
+
+            const company =
+                document.getElementById("newEmployeeCompany").value.trim();
+
+            const employeeNo =
+                document.getElementById("newEmployeeNo").value.trim();
+
+            const department =
+                document.getElementById("newEmployeeDepartment").value.trim();
+
+            const officialNo =
+                document.getElementById("newEmployeeOfficialNo").value.trim();
+
+            const personalNo =
+                document.getElementById("newEmployeePersonalNo").value.trim();
+
+            const emailOfficial =
+                document.getElementById("newEmployeeEmail").value.trim();
+
+            const pabxNumber =
+                document.getElementById("newEmployeePabx").value.trim();
+
+            const bloodGroup =
+                document.getElementById("newEmployeeBloodGroup").value.trim();
+
+            const joiningDate =
+                document.getElementById("newEmployeeJoiningDate").value;
+
+            const birthday =
+                document.getElementById("newEmployeeBirthday").value.trim();
+
+            const nid =
+                document.getElementById("newEmployeeNid").value.trim();
+
+            const tinNo =
+                document.getElementById("newEmployeeTin").value.trim();
+
+            const bankName =
+                document.getElementById("newEmployeeBankName").value.trim();
+
+            const accountNo =
+                document.getElementById("newEmployeeAccountNo").value.trim();
+
+            if (!employeeName) {
+                alert("Employee Name is required.");
+                return;
+            }
+
+            if (!employeeNo) {
+                alert("Employee ID is required.");
+                return;
+            }
+
+            if (!accessToken) {
+                alert("Please login first.");
+                return;
+            }
+
+            saveNewEmployeeButton.disabled = true;
+            saveNewEmployeeButton.textContent = "Saving...";
+
+            addEmployeeStatus.textContent =
+                "Saving employee...";
+
+            try {
+
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/employee_dekko_v2`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization":
+                                `Bearer ${accessToken}`,
+                            "Content-Type":
+                                "application/json",
+                            "Prefer":
+                                "return=representation"
+                        },
+
+                        body: JSON.stringify({
+                            employee_name: employeeName,
+                            designation: designation,
+                            company: company,
+                            employee_no: employeeNo,
+                            department: department,
+                            phone_official: officialNo,
+                            personal_no: personalNo,
+                            email_official: emailOfficial,
+                            pabx_number: pabxNumber,
+                            blood_group: bloodGroup,
+                            joining_date: joiningDate || null,
+                            birthday: birthday,
+                            nid: nid,
+                            tin_no: tinNo,
+                            bank_name: bankName,
+                            account_no: accountNo
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                console.log(
+                    "Add Employee Response:",
+                    data
+                );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.details ||
+                        data.hint ||
+                        data.error ||
+                        "Employee could not be added."
+                    );
+                }
+
+                addEmployeeStatus.textContent =
+                    "Employee added successfully.";
+
+                alert(
+                    "Employee added successfully!"
+                );
+
+                document.getElementById(
+                    "newEmployeeName"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeDesignation"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeCompany"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeNo"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeDepartment"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeOfficialNo"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeePersonalNo"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeEmail"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeePabx"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeBloodGroup"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeJoiningDate"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeBirthday"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeNid"
+                ).value = "";
+
+                document.getElementById(
+                    "newEmployeeTin"
+                ).value = "";
+
+                document.getElementById("newEmployeeBankName").value = "";
+                document.getElementById("newEmployeeAccountNo").value = "";
+
+                await loadEmployees();
+
+            } catch (error) {
+
+                console.error(
+                    "Add Employee Error:",
+                    error
+                );
+
+                addEmployeeStatus.textContent =
+                    "Error: " + error.message;
+
+                alert(
+                    "Employee could not be added:\n\n" +
+                    error.message
+                );
+
+            } finally {
+
+                saveNewEmployeeButton.disabled = false;
+
+                saveNewEmployeeButton.textContent =
+                    "Save Employee";
+            }
+
+        }
+    );
+
+}
+
+
+
+
+/* ATTENDANCE CHECK IN/OUT - SUPABASE */
+(function () {
+    const page = document.getElementById("attendancePage");
+    if (!page) return;
+
+    const checkIn = document.getElementById("checkInButton");
+    const checkOut = document.getElementById("checkOutButton");
+    const status = document.getElementById("attendanceStatus");
+    const inTime = document.getElementById("attendanceCheckInTime");
+    const outTime = document.getElementById("attendanceCheckOutTime");
+    const hours = document.getElementById("attendanceWorkingHours");
+    const message = document.getElementById("attendanceMessage");
+    const history = document.getElementById("attendanceHistory");
+    const present = document.getElementById("attendancePresentDays");
+    const openButton = document.getElementById("attendanceButton");
+
+    if (!checkIn || !checkOut) return;
+
+    const todayKey = () => new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Dhaka",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date());
+
+    const monthStartKey = () => todayKey().slice(0, 7) + "-01";
+
+    const timeText = value => value
+        ? new Date(value).toLocaleTimeString("en-GB", {
+            timeZone: "Asia/Dhaka",
+            hour: "2-digit",
+            minute: "2-digit"
+        })
+        : "—";
+
+    const dateText = value => new Date(value + "T12:00:00+06:00")
+        .toLocaleDateString("en-GB", {
+            timeZone: "Asia/Dhaka",
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+
+    async function api(path, options = {}) {
+        if (!accessToken) {
+            throw new Error("Please log in to use Attendance.");
+        }
+
+        const response = await fetch(`${SUPABASE_URL}${path}`, {
+            ...options,
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + accessToken,
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
+        });
+
+        const text = await response.text();
+        let data = null;
+        try {
+            data = text ? JSON.parse(text) : null;
+        } catch (_) {
+            data = text;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data && data.message
+                    ? data.message
+                    : "Attendance request failed (" + response.status + ")."
+            );
+        }
+
+        return data;
+    }
+
+    function showWorkingHours(record) {
+        if (!record || !record.check_in) {
+            hours.textContent = "—";
+            return;
+        }
+
+        const start = new Date(record.check_in).getTime();
+        const end = record.check_out
+            ? new Date(record.check_out).getTime()
+            : Date.now();
+        const minutes = Math.max(0, Math.floor((end - start) / 60000));
+
+        hours.textContent =
+            Math.floor(minutes / 60) + "h " + (minutes % 60) + "m";
+    }
+
+    function showToday(record) {
+        inTime.textContent = timeText(record && record.check_in);
+        outTime.textContent = timeText(record && record.check_out);
+        showWorkingHours(record);
+
+        if (!record || !record.check_in) {
+            status.textContent = "Not Checked In";
+            checkIn.disabled = false;
+            checkOut.disabled = true;
+        } else if (!record.check_out) {
+            status.textContent = "Checked In";
+            checkIn.disabled = true;
+            checkOut.disabled = false;
+        } else {
+            status.textContent = "Checked Out";
+            checkIn.disabled = true;
+            checkOut.disabled = true;
+        }
+    }
+
+    async function loadAttendance() {
+        if (!accessToken) {
+            checkIn.disabled = true;
+            checkOut.disabled = true;
+            message.textContent = "Please log in before using Attendance.";
+            return;
+        }
+
+        checkIn.disabled = true;
+        checkOut.disabled = true;
+        message.textContent = "Loading attendance…";
+
+        try {
+            const query =
+                "/rest/v1/employee_attendance" +
+                "?select=attendance_date,check_in,check_out" +
+                "&attendance_date=gte." + monthStartKey() +
+                "&order=attendance_date.desc";
+
+            const rows = await api(query);
+            const records = Array.isArray(rows) ? rows : [];
+            const today = records.find(r => r.attendance_date === todayKey());
+
+            showToday(today || null);
+            present.textContent = String(
+                records.filter(r => r.check_in).length
+            );
+
+            history.replaceChildren();
+
+            if (!records.length) {
+                const empty = document.createElement("p");
+                empty.textContent = "No attendance records this month.";
+                history.appendChild(empty);
+            } else {
+                records.forEach(record => {
+                    const row = document.createElement("p");
+                    const label = record.check_out
+                        ? timeText(record.check_in) + " to " + timeText(record.check_out)
+                        : timeText(record.check_in) + " — Checked In";
+                    row.textContent = dateText(record.attendance_date) + " — " + label;
+                    history.appendChild(row);
+                });
+            }
+
+            const todayDate = document.getElementById("attendanceTodayDate");
+            if (todayDate) {
+                todayDate.textContent = new Date().toLocaleDateString("en-GB", {
+                    timeZone: "Asia/Dhaka",
+                    weekday: "long",
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric"
+                });
+            }
+
+            message.textContent = "";
+        } catch (error) {
+            message.textContent = error.message || "Could not load attendance.";
+            console.error("Attendance load failed:", error);
+        }
+    }
+
+    async function submitAttendance(action) {
+        checkIn.disabled = true;
+        checkOut.disabled = true;
+        message.textContent = "Saving attendance…";
+
+        try {
+            await api("/rest/v1/rpc/attendance_" + action, {
+                method: "POST",
+                body: "{}"
+            });
+
+            message.textContent = "Attendance saved successfully.";
+            await loadAttendance();
+        } catch (error) {
+            message.textContent = error.message || "Could not save attendance.";
+            console.error("Attendance save failed:", error);
+            await loadAttendance();
+        }
+    }
+
+    checkIn.addEventListener("click", () => submitAttendance("check_in"));
+    checkOut.addEventListener("click", () => submitAttendance("check_out"));
+
+    if (openButton) {
+        openButton.addEventListener("click", () => {
+            if (page.style.display !== "none") loadAttendance();
+        });
+    }
+
+    page.addEventListener("click", event => {
+        if (event.target && event.target.id === "attendanceBackButton") return;
+    });
+
+    loadAttendance();
+})();
+/* ATTENDANCE PAGE NAVIGATION */
+(function () {
+    const openButton = document.getElementById("attendanceButton");
+    const page = document.getElementById("attendancePage");
+    const backButton = document.getElementById("attendanceBackButton");
+    if (!openButton || !page || !backButton) return;
+
+    openButton.addEventListener("click", function () {
+        document.getElementById("listPage").style.display = "none";
+        document.getElementById("departmentSection").style.display = "none";
+        page.style.display = "block";
+        const date = document.getElementById("attendanceTodayDate");
+        if (date) date.textContent = new Date().toLocaleDateString(undefined, {
+            weekday: "long", year: "numeric", month: "long", day: "numeric"
+        });
+    });
+
+    backButton.addEventListener("click", function () {
+        page.style.display = "none";
+        document.getElementById("listPage").style.display = "block";
+        document.getElementById("departmentSection").style.display = "block";
+    });
+})();
+
+/* ATTENDANCE CALENDAR DATE */
+(function () {
+    function updateAttendanceCalendar() {
+        const month = document.getElementById("attendanceMonth");
+        const date = document.getElementById("attendanceDate");
+        if (!month || !date) return;
+
+        const today = new Date();
+        month.textContent = today.toLocaleDateString("en-US", { month: "long" }).toUpperCase();
+        date.textContent = today.getDate();
+    }
+
+    updateAttendanceCalendar();
+    setInterval(updateAttendanceCalendar, 60000);
+})();
+
+/* SALARY MANAGEMENT - ADMIN ONLY */
+(function () {
+    "use strict";
+
+    const ADMIN_UID = "e5090917-b885-41b4-8062-e208fd6ab287";
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const $ = id => document.getElementById(id);
+        const salaryButton = $("salaryButton");
+        const salaryPage = $("salaryPage");
+        const salaryStatus = $("salaryStatus");
+        const management = $("salaryManagement");
+        const loginButton = $("salaryLoginButton");
+        const employeeSelect = $("salaryEmployee");
+        const slipEmployee = $("paySlipEmployee");
+        const monthInput = $("salaryMonth");
+        const slipMonth = $("paySlipMonth");
+        const saveStatus = $("salarySaveStatus");
+        const slipResult = $("paySlipResult");
+        const slipSearchInput = $("paySlipEmployeeSearch");
+        if (slipSearchInput && slipEmployee) {
+            slipSearchInput.addEventListener("input", function () {
+                const typedLabel = slipSearchInput.value.trim();
+                const match = Array.from(slipEmployee.options).find(
+                    option => option.value && option.textContent === typedLabel
+                );
+                slipEmployee.value = match ? match.value : "";
+            });
+        }
+
+
+        if (!salaryButton || !salaryPage || !management) {
+            console.error("Salary HTML elements not found.");
+            return;
+        }
+
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        if (monthInput) monthInput.value = currentMonth;
+        if (slipMonth) slipMonth.value = currentMonth;
+
+        let employeeNumbers = new Set();
+        let employeeInfo = new Map();
+
+        async function checkAdmin() {
+            if (!accessToken) throw new Error("Please log in first.");
+
+            const response = await fetch(SUPABASE_URL + "/auth/v1/user", {
+                headers: {
+                    apikey: SUPABASE_KEY,
+                    Authorization: "Bearer " + accessToken
+                }
+            });
+
+            if (!response.ok) throw new Error("Session expired. Please log in again.");
+
+            const user = await response.json();
+            if (user.id !== ADMIN_UID) {
+                throw new Error("This account is not authorized for Salary Management.");
+            }
+        }
+
+        function apiHeaders() {
+            return {
+                apikey: SUPABASE_KEY,
+                Authorization: "Bearer " + accessToken,
+                "Content-Type": "application/json"
+            };
+        }
+
+        async function loadEmployees() {
+            const response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/employee_dekko_v2?select=employee_no,employee_name,department,designation,joining_date,bank_name,account_no&order=employee_name.asc",
+                { headers: apiHeaders() }
+            );
+
+            if (!response.ok) {
+                throw new Error("Employee list error: " + await response.text());
+            }
+
+            const employees = await response.json();
+            employeeNumbers = new Set();
+            employeeInfo = new Map();
+
+            const slipSearch = $("paySlipEmployeeSearch");
+            const slipOptions = $("paySlipEmployeeOptions");
+
+            [employeeSelect, slipEmployee].forEach(select => {
+                if (select) select.replaceChildren(new Option("Select employee", ""));
+            });
+            if (slipOptions) slipOptions.replaceChildren();
+            if (slipSearch) slipSearch.value = "";
+
+            employees.sort((a, b) =>
+                String(a.employee_no || "").localeCompare(
+                    String(b.employee_no || ""),
+                    undefined,
+                    { numeric: true, sensitivity: "base" }
+                )
+            );
+
+            employees.forEach(employee => {
+                if (!employee.employee_no) return;
+
+                const no = String(employee.employee_no);
+                const name = employee.employee_name || "Unnamed";
+                employeeNumbers.add(no);
+                employeeInfo.set(no, employee);
+
+                const salaryLabel = [
+                    name,
+                    no,
+                    employee.department || ""
+                ].filter(Boolean).join(" — ");
+
+                const slipLabel = `${no} (${name})`;
+
+                if (employeeSelect) {
+                    employeeSelect.add(new Option(salaryLabel, no));
+                }
+                if (slipEmployee) {
+                    slipEmployee.add(new Option(slipLabel, no));
+                }
+                if (slipOptions) {
+                    slipOptions.appendChild(new Option(slipLabel, slipLabel));
+                }
+            });
+
+            if (!employeeNumbers.size) throw new Error("No employees found.");
+        }
+
+        async function initializeSalary() {
+            management.style.display = "none";
+            if (loginButton) loginButton.style.display = "none";
+            salaryStatus.textContent = "Checking Admin access...";
+
+            try {
+                await checkAdmin();
+                await loadEmployees();
+                management.style.display = "block";
+                salaryStatus.textContent = "Admin verified. Salary Management is ready.";
+            } catch (error) {
+                salaryStatus.textContent = error.message;
+                if (loginButton) loginButton.style.display = "inline-block";
+            }
+        }
+
+        salaryButton.addEventListener("click", async function () {
+            try {
+                await checkAdmin();
+            } catch (error) {
+                if (!accessToken) {
+                    window.__openSalaryAfterLogin = true;
+
+                    if (listPage) listPage.style.display = "none";
+                    if (detailsPage) detailsPage.style.display = "none";
+                    if (loginPage) loginPage.style.display = "block";
+
+                    if (loginStatus) {
+                        loginStatus.textContent =
+                            "Please log in to access Salary Management.";
+                    }
+                    return;
+                }
+
+                window.alert(error.message || "Access denied.");
+                return;
+            }
+
+            const idsToHide = [
+                "listPage", "allEmployeesPage", "favoritePage",
+                "birthdayPage", "departmentPage", "detailsPage",
+                "attendancePage", "adminPage", "loginPage"
+            ];
+
+            idsToHide.forEach(id => {
+                const page = $(id);
+                if (page) page.style.display = "none";
+            });
+
+            const departmentSection = $("departmentSection");
+            const employeeList = $("employeeList");
+            const appTitle = $("appTitle");
+
+            if (departmentSection) departmentSection.style.display = "none";
+            if (employeeList) employeeList.style.display = "none";
+            if (appTitle) appTitle.style.display = "none";
+
+            salaryPage.style.display = "block";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            initializeSalary();
+        });
+
+        const salaryBackButton = $("salaryBackButton");
+        if (salaryBackButton) {
+            salaryBackButton.addEventListener("click", function () {
+                salaryPage.style.display = "none";
+
+                const homePage = $("listPage");
+                const adminButton = $("adminButton");
+                const appTitle = $("appTitle");
+                const departmentSection = $("departmentSection");
+                const employeeList = $("employeeList");
+
+                if (homePage) homePage.style.display = "block";
+                if (adminButton) adminButton.style.removeProperty("display");
+                if (appTitle) appTitle.style.display = "";
+                if (departmentSection) departmentSection.style.display = "block";
+                if (employeeList) employeeList.style.display = "block";
+
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+        }
+
+        if (loginButton) {
+            loginButton.addEventListener("click", function () {
+                salaryPage.style.display = "none";
+                const adminButton = $("adminButton");
+                if (adminButton) adminButton.click();
+            });
+        }
+
+        function getAmount(id) {
+            const n = Number($(id).value);
+            if (!Number.isFinite(n) || n < 0) {
+                throw new Error("Enter valid non-negative salary amounts.");
+            }
+            return Math.round(n * 100) / 100;
+        }
+
+        const earningIds = [
+            "houseRentAllowance",
+            "medicalAllowance",
+            "conveyanceAllowance",
+            "specialAllowance"
+        ];
+
+        const deductionIds = [
+            "employeeProvidentFund",
+            "incomeTax",
+            "healthInsurance",
+            "loanRepayment",
+            "otherDeductions"
+        ];
+
+        function componentTotal(ids) {
+            return ids.reduce((sum, id) => sum + getAmount(id), 0);
+        }
+
+        function updateNet() {
+            try {
+                const basic = getAmount("basicSalary");
+                const allowances = componentTotal(earningIds);
+                const deductions = componentTotal(deductionIds);
+
+                $("salaryAllowances").value = allowances.toFixed(2);
+                $("salaryDeductions").value = deductions.toFixed(2);
+                $("salaryNetPreview").textContent =
+                    (basic + allowances - deductions).toFixed(2);
+            } catch (_) {
+                $("salaryNetPreview").textContent = "Invalid amount";
+            }
+        }
+
+        ["basicSalary", ...earningIds, ...deductionIds].forEach(id => {
+            if ($(id)) $(id).addEventListener("input", updateNet);
+        });
+
+        async function saveRecords(records) {
+            const response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/salary_records?on_conflict=employee_no,salary_month",
+                {
+                    method: "POST",
+                    headers: {
+                        ...apiHeaders(),
+                        Prefer: "resolution=merge-duplicates,return=minimal"
+                    },
+                    body: JSON.stringify(records)
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Database error (" + response.status + "): " +
+                    await response.text());
+            }
+        }
+
+        const form = $("salaryEntryForm");
+        if (form) {
+            form.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                saveStatus.textContent = "Saving...";
+
+                try {
+                    await checkAdmin();
+
+                    const employeeNo = employeeSelect.value;
+                    const month = monthInput.value;
+                    const workingDays = Number($("salaryWorkingDays").value);
+                    const presentDays = Number($("salaryPresentDays").value);
+                    const leaveDays = Number($("salaryLeaveDays").value);
+                    const absentDays = Number($("salaryAbsentDays").value);
+
+                    const basic = getAmount("basicSalary");
+
+                    const houseRent = getAmount("houseRentAllowance");
+                    const medical = getAmount("medicalAllowance");
+                    const conveyance = getAmount("conveyanceAllowance");
+                    const special = getAmount("specialAllowance");
+                    const allowances = houseRent + medical + conveyance + special;
+
+                    const providentFund = getAmount("employeeProvidentFund");
+                    const incomeTaxAmount = getAmount("incomeTax");
+                    const healthInsurance = getAmount("healthInsurance");
+                    const loanRepayment = getAmount("loanRepayment");
+                    const otherDeductionsAmount = getAmount("otherDeductions");
+                    const deductions = providentFund + incomeTaxAmount +
+                        healthInsurance + loanRepayment + otherDeductionsAmount;
+
+                    const attendance = [workingDays, presentDays, leaveDays, absentDays];
+                    if (!attendance.every(n => Number.isInteger(n) && n >= 0)) {
+                        throw new Error("Attendance days must be non-negative whole numbers.");
+                    }
+
+                    if (!employeeNumbers.has(employeeNo)) {
+                        throw new Error("Select a valid employee.");
+                    }
+                    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+                        throw new Error("Select a valid salary month.");
+                    }
+                    if (deductions > basic + allowances) {
+                        throw new Error("Deductions cannot exceed total earnings.");
+                    }
+
+                    await saveRecords([{
+                        employee_no: employeeNo,
+                        salary_month: month,
+                        working_days: workingDays,
+                        present_days: presentDays,
+                        leave_days: leaveDays,
+                        absent_days: absentDays,
+                        basic_salary: basic,
+                        house_rent_allowance: houseRent,
+                        medical_allowance: medical,
+                        conveyance_allowance: conveyance,
+                        special_allowance: special,
+                        employee_provident_fund: providentFund,
+                        income_tax: incomeTaxAmount,
+                        health_insurance: healthInsurance,
+                        loan_repayment: loanRepayment,
+                        other_deductions: otherDeductionsAmount,
+                        allowances: allowances,
+                        deductions: deductions,
+                        payment_method: $("salaryPublishStatus").value,
+                        status: "Published"
+                    }]);
+
+                    saveStatus.textContent = "Salary saved successfully.";
+                } catch (error) {
+                    saveStatus.textContent = error.message;
+                }
+            });
+        }
+
+        function parseCsvLine(line) {
+            const fields = [];
+            let value = "";
+            let quoted = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const ch = line[i];
+
+                if (ch === '"' && quoted && line[i + 1] === '"') {
+                    value += '"';
+                    i++;
+                } else if (ch === '"') {
+                    quoted = !quoted;
+                } else if (ch === "," && !quoted) {
+                    fields.push(value.trim());
+                    value = "";
+                } else {
+                    value += ch;
+                }
+            }
+
+            fields.push(value.trim());
+            return fields;
+        }
+
+        const viewButton = $("viewPaySlipButton");
+        if (viewButton) {
+            viewButton.addEventListener("click", async function () {
+                slipResult.replaceChildren();
+                slipResult.textContent = "Loading Pay Slip...";
+
+                try {
+                    await checkAdmin();
+
+                    const employeeNo = slipEmployee.value;
+                    const month = slipMonth.value;
+
+                    if (!employeeNumbers.has(employeeNo)) throw new Error("Select an employee.");
+                    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+                        throw new Error("Select a valid month.");
+                    }
+
+                    const query = new URLSearchParams({
+                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,payment_method,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days",
+                        employee_no: "eq." + employeeNo,
+                        salary_month: "eq." + month
+                    });
+
+                    const response = await fetch(
+                        SUPABASE_URL + "/rest/v1/salary_records?" + query,
+                        { headers: apiHeaders() }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Pay Slip request failed: " + await response.text());
+                    }
+
+                    const rows = await response.json();
+                    slipResult.replaceChildren();
+
+                    if (!rows.length) {
+                        slipResult.textContent = "No salary record found for this employee/month.";
+                        return;
+                    }
+
+                    const record = rows[0];
+                    const employee = employeeInfo.get(employeeNo) || {};
+
+                    const safe = value => String(value ?? "—").replace(
+                        /[&<>"']/g,
+                        char => ({
+                            "&": "&amp;",
+                            "<": "&lt;",
+                            ">": "&gt;",
+                            '"': "&quot;",
+                            "'": "&#39;"
+                        })[char]
+                    );
+
+                    const amount = value =>
+                        Number(value || 0).toLocaleString("en-BD", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                    const getEmployeeValue = (...keys) => {
+                        for (const key of keys) {
+                            const value = employee[key];
+                            if (value !== undefined && value !== null && value !== "") {
+                                return value;
+                            }
+                        }
+                        return "—";
+                    };
+
+                    const monthDate = new Date(record.salary_month + "-01T12:00:00");
+                    const monthName = Number.isNaN(monthDate.getTime())
+                        ? record.salary_month
+                        : monthDate.toLocaleDateString("en-GB", {
+                            month: "long",
+                            year: "numeric"
+                        });
+
+                    const year = Number(String(record.salary_month).slice(0, 4));
+                    const monthNumber = Number(String(record.salary_month).slice(5, 7));
+                    const lastDay = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
+
+                    const period = Number.isNaN(monthDate.getTime())
+                        ? record.salary_month
+                        : "01 " + monthDate.toLocaleDateString("en-GB", {
+                            month: "short",
+                            year: "numeric"
+                        }) + " – " + lastDay + " " +
+                        monthDate.toLocaleDateString("en-GB", {
+                            month: "short",
+                            year: "numeric"
+                        });
+
+                    const basic = Number(record.basic_salary || 0);
+
+                    const houseRent = Number(record.house_rent_allowance || 0);
+                    const medical = Number(record.medical_allowance || 0);
+                    const conveyance = Number(record.conveyance_allowance || 0);
+                    const special = Number(record.special_allowance || 0);
+
+                    const providentFund = Number(record.employee_provident_fund || 0);
+                    const incomeTax = Number(record.income_tax || 0);
+                    const healthInsurance = Number(record.health_insurance || 0);
+                    const loanRepayment = Number(record.loan_repayment || 0);
+                    const otherDeductions = Number(record.other_deductions || 0);
+
+                    const storedAllowances = Number(record.allowances || 0);
+                    const storedDeductions = Number(record.deductions || 0);
+
+                    const hasEarningComponents =
+                        houseRent !== 0 || medical !== 0 ||
+                        conveyance !== 0 || special !== 0;
+
+                    const hasDeductionComponents =
+                        providentFund !== 0 || incomeTax !== 0 ||
+                        healthInsurance !== 0 || loanRepayment !== 0 ||
+                        otherDeductions !== 0;
+
+                    const legacyAllowances =
+                        !hasEarningComponents ? storedAllowances : 0;
+                    const legacyDeductions =
+                        !hasDeductionComponents ? storedDeductions : 0;
+
+                    const allowances = houseRent + medical + conveyance + special;
+                    const deductions = providentFund + incomeTax +
+                        healthInsurance + loanRepayment + otherDeductions;
+
+                    const totalEarnings = basic + allowances + legacyAllowances;
+                    const totalDeductions = deductions + legacyDeductions;
+                    const netPay = Number(record.net_pay || 0);
+
+                    function wordsUnderThousand(number) {
+                        const ones = [
+                            "Zero", "One", "Two", "Three", "Four", "Five",
+                            "Six", "Seven", "Eight", "Nine", "Ten", "Eleven",
+                            "Twelve", "Thirteen", "Fourteen", "Fifteen",
+                            "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+                        ];
+                        const tens = [
+                            "", "", "Twenty", "Thirty", "Forty", "Fifty",
+                            "Sixty", "Seventy", "Eighty", "Ninety"
+                        ];
+                        let result = "";
+
+                        if (number >= 100) {
+                            result += ones[Math.floor(number / 100)] + " Hundred";
+                            number %= 100;
+                            if (number) result += " ";
+                        }
+
+                        if (number >= 20) {
+                            result += tens[Math.floor(number / 10)];
+                            number %= 10;
+                            if (number) result += "-" + ones[number];
+                        } else if (number > 0 || !result) {
+                            result += ones[number];
+                        }
+
+                        return result;
+                    }
+
+                    function amountInWords(value) {
+                        let number = Math.floor(Math.abs(value));
+                        if (number === 0) return "Zero Taka Only";
+
+                        const groups = [
+                            [10000000, "Crore"],
+                            [100000, "Lakh"],
+                            [1000, "Thousand"],
+                            [1, ""]
+                        ];
+                        const parts = [];
+
+                        for (const [size, label] of groups) {
+                            if (number >= size) {
+                                const count = Math.floor(number / size);
+                                number %= size;
+                                parts.push(
+                                    wordsUnderThousand(count) +
+                                    (label ? " " + label : "")
+                                );
+                            }
+                        }
+
+                        return parts.join(" ") + " Taka Only";
+                    }
+
+                    const optionalDetails = [
+                        ["Designation", getEmployeeValue("designation", "job_title")],
+                        ["Joining Date", getEmployeeValue("joining_date", "date_of_joining", "date_joined")],
+                        ["Working Days", record.working_days],
+                        ["Present Days", record.present_days],
+                        ["Leave Days", record.leave_days],
+                        ["Absent Days", record.absent_days]
+                    ];
+
+                    const detail = (label, value, showEmpty = false) => {
+                        if (!showEmpty && (value === undefined || value === null || value === "" || value === "—")) return "";
+                        return `<div class="payslip-detail">
+                            <span>${safe(label)}</span>
+                            <strong>${safe(value)}</strong>
+                        </div>`;
+                    };
+
+                    const infoTable = (rows) => `
+                        <table class="payslip-info-table">
+                            <tbody>
+                                ${rows.map(([label, value, showEmpty = false]) => {
+                                    if (!showEmpty && (value === undefined || value === null || value === "" || value === "—")) return "";
+                                    return `<tr>
+                                        <th>${safe(label)}</th>
+                                        <td>${safe(value)}</td>
+                                    </tr>`;
+                                }).join("")}
+                            </tbody>
+                        </table>
+                    `;
+
+                    slipResult.innerHTML = `
+                        <article class="professional-payslip">
+                            <header class="payslip-company">
+                                <img src="assets/icons/Dekko%20logo.jpg" alt="Dekko Logo" class="payslip-company-logo">
+                                <div class="payslip-company-text">
+                                    <h2>Dekko Accessories Ltd.</h2>
+
+
+                                    <p>Head Office: Shimanto Shambhar (8th Floor),</p>
+                                    <p>Road No. 2, Dhanmondi, Dhaka-1205</p>
+                                    <p>Phone: +880 9666774400</p>
+                                    <p>www.dekkolegacy.com</p>
+                                </div>
+                            </header>
+
+                            <div class="payslip-heading">
+                                <h3>Pay Slip</h3>
+                                <p>For the Month of ${safe(monthName)}</p>
+                                <span class="payslip-status">${safe(record.payment_method || "BANK")}</span>
+                            </div>
+
+                            <section class="payslip-section payslip-employee-section">
+                                <h4><span aria-hidden="true">👤</span> Employee Information</h4>
+                                <div class="payslip-info-tables-grid">
+                                    ${infoTable([
+                                        ["Employee ID", record.employee_no || employee.employee_no || "—"],
+                                        ["Employee Name", employee.employee_name || "—"],
+                                        ["Designation", optionalDetails[0][1]],
+                                        ["Department", employee.department || "—"],
+                                        ["Joining Date", optionalDetails[1][1]],
+                                        ["Pay Period", period]
+                                    ])}
+                                    ${infoTable([
+                                        ["Bank Name", getEmployeeValue("bank_name"), true],
+                                        ["Account No.", getEmployeeValue("account_no"), true],
+                                        ["Working Days", optionalDetails[2][1]],
+                                        ["Present Days", optionalDetails[3][1]],
+                                        ["Leave Days", optionalDetails[4][1]],
+                                        ["Absent Days", optionalDetails[5][1]]
+                                    ])}
+                                </div>
+                            </section>
+
+                            <div class="payslip-components-grid">
+<section class="payslip-section">
+                                <h4><span aria-hidden="true">💰</span> Earning</h4>
+                                <table class="payslip-table">
+                                    <thead>
+                                        <tr><th>Particulars</th><th>Amount</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Basic Salary</td><td>${amount(basic)}</td></tr>
+                                        <tr><td>House Rent Allowance</td><td>${amount(houseRent)}</td></tr>
+                                        <tr><td>Medical Allowance</td><td>${amount(medical)}</td></tr>
+                                        <tr><td>Conveyance Allowance</td><td>${amount(conveyance)}</td></tr>
+                                        <tr><td>Special Allowance</td><td>${amount(special)}</td></tr>
+                                        ${legacyAllowances ? `<tr><td>Allowances (legacy record)</td><td>${amount(legacyAllowances)}</td></tr>` : ""}
+                                        <tr class="payslip-total-row"><td>Total Earnings</td><td>${amount(totalEarnings)}</td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+
+                            <section class="payslip-section">
+                                <h4><span aria-hidden="true">➖</span> Deduct</h4>
+                                <table class="payslip-table">
+                                    <thead>
+                                        <tr><th>Particulars</th><th>Amount</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Employee Provident Fund</td><td>${amount(providentFund)}</td></tr>
+                                        <tr><td>Income Tax</td><td>${amount(incomeTax)}</td></tr>
+                                        <tr><td>Health Insurance</td><td>${amount(healthInsurance)}</td></tr>
+                                        <tr><td>Loan Repayment</td><td>${amount(loanRepayment)}</td></tr>
+                                        <tr><td>Other Deductions</td><td>${amount(otherDeductions)}</td></tr>
+                                        ${legacyDeductions ? `<tr><td>Deductions (legacy record)</td><td>${amount(legacyDeductions)}</td></tr>` : ""}
+                                        <tr class="payslip-total-row"><td>Total Deductions</td><td>${amount(totalDeductions)}</td></tr>
+                                    </tbody>
+                                </table>
+                            </section>
+
+                                                        </div>
+
+                            <section class="payslip-net">
+                                <span>NET PAY (BDT)</span>
+                                <strong>${amount(netPay)}</strong>
+                            </section>
+
+                            <section class="payslip-words">
+                                <p><strong>Net Pay (in Words):</strong> ${safe(amountInWords(netPay))}</p>
+                            </section>
+
+                            <footer class="payslip-footer">
+                                <p>This is a system-generated payslip. For any query, please contact the HR Department.</p>
+                                <div class="payslip-signature">
+                                    <div class="payslip-signature-line"></div>
+                                    <strong>Authorized Signature</strong>
+                                    <span>HR Department</span>
+                                </div>
+                            </footer>
+                        </article>
+                    `;
+
+                    const page = $("paySlipPage");
+                    const pageContent = $("paySlipPageContent");
+                    const salaryPage = $("salaryPage");
+
+                    if (!page || !pageContent || !salaryPage) {
+                        throw new Error("Pay Slip page could not be opened.");
+                    }
+
+                    pageContent.innerHTML = slipResult.innerHTML;
+                    page.style.display = "block";
+                    salaryPage.style.display = "none";
+                    window.scrollTo(0, 0);
+
+                    const printButton = $("printPaySlipButton");
+                    if (printButton) printButton.style.display = "inline-block";
+                } catch (error) {
+                    slipResult.textContent = error.message;
+                }
+            });
+        }
+
+        const printButton = $("printPaySlipButton");
+        if (printButton) {
+            printButton.addEventListener("click", function () {
+                window.print();
+            });
+        }
+
+        const paySlipPageBackButton = $("paySlipPageBackButton");
+        if (paySlipPageBackButton) {
+            paySlipPageBackButton.addEventListener("click", function () {
+                const page = $("paySlipPage");
+                const salaryPage = $("salaryPage");
+                if (page) page.style.display = "none";
+                if (salaryPage) salaryPage.style.display = "block";
+            });
+        }
+
+        const paySlipPagePrintButton = $("paySlipPagePrintButton");
+        if (paySlipPagePrintButton) {
+            paySlipPagePrintButton.addEventListener("click", function () {
+                if (window.AndroidPaySlipPdf &&
+                    typeof window.AndroidPaySlipPdf.downloadPaySlipPdf === "function") {
+                    window.AndroidPaySlipPdf.downloadPaySlipPdf();
+                } else {
+                    window.print();
+                }
+            });
+        }
+    });
+})();

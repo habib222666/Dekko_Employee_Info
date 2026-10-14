@@ -1,18 +1,18 @@
-@font-face { font-family: "Calibri"; src: url("fonts/Calibri.ttf") format("truetype"); font-weight: 400; font-style: normal; }
-@font-face { font-family: "Calibri"; src: url("fonts/Calibri Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; }
-@font-face { font-family: "Calibri"; src: url("fonts/Calibri Italic.ttf") format("truetype"); font-weight: 400; font-style: italic; }
-@font-face { font-family: "Calibri"; src: url("fonts/Calibri Bold Italic.ttf") format("truetype"); font-weight: 700; font-style: italic; }
+@font-face { font-family: "Trebuchet MS"; src: url("fonts/Trebuchet MS.ttf") format("truetype"); font-weight: 400; font-style: normal; }
+@font-face { font-family: "Trebuchet MS"; src: url("fonts/Trebuchet MS Bold.ttf") format("truetype"); font-weight: 700; font-style: normal; }
+@font-face { font-family: "Trebuchet MS"; src: url("fonts/Trebuchet MS Italic.ttf") format("truetype"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Trebuchet MS"; src: url("fonts/Trebuchet MS Bold Italic.ttf") format("truetype"); font-weight: 700; font-style: italic; }
 
 * {
     box-sizing: border-box;
 }
 
-* { font-family: "Calibri", sans-serif !important; }
+* { font-family: "Trebuchet MS", sans-serif !important; }
 
 body {
     margin: 0;
     padding: 20px;
-    font-family: "Calibri", sans-serif !important;
+    font-family: "Trebuchet MS", sans-serif !important;
 background: #f5f7fb;
     color: #1f2937;
 }
@@ -1186,6 +1186,30 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 }
 
 /* =========================
+   ALL EMPLOYEES PAGE PORTRAIT
+========================= */
+
+#allEmployeesPage {
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+}
+
+#allEmployeesPage #employeeList {
+    width: 100% !important;
+    max-width: 600px !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 601px) {
+    #allEmployeesPage {
+        max-width: 600px !important;
+    }
+}
+
+/* =========================
    EMPLOYEE PAGES PORTRAIT LAYOUT
 ========================= */
 
@@ -1438,7 +1462,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 
 #departmentHeader button {
     font-size: 16px !important;
-    font-family: Arial, sans-serif !important;
+    font-family: "Trebuchet MS", sans-serif !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -1506,7 +1530,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 /* FINAL HOME SCREEN TITLE + 2-GAP SPACING */
 #appTitle {
     text-align: center !important;
-    font-family: Arial, sans-serif !important;
+    font-family: "Trebuchet MS", sans-serif !important;
     font-size: 22px !important;
     font-weight: 700 !important;
     line-height: 1.25 !important;
@@ -1517,4 +1541,1313 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 #appTitle div {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* FINAL HOME BUTTON SIZE */
+#listPage > #adminButton {
+    width: fit-content !important;
+    min-width: 110px !important;
+    max-width: 160px !important;
+    padding: 0 20px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+#departmentHeader {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+}
+
+#departmentHeader button {
+    width: 90% !important;
+    justify-self: center !important;
+    height: 96px !important;
+    min-height: 96px !important;
+}
+
+#allDepartmentsButton {
+    background: #2e7d32 !important;
+}
+
+#allEmployeesButton {
+    background: #1976d2 !important;
+}
+
+#favoriteEmployeesButton {
+    background: #8e44ad !important;
+}
+
+#birthdayButton {
+    background: #00897b !important;
+}
+
+#appTitle {
+    color: #b8860b !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader button {
+        width: 88% !important;
+        height: 96px !important;
+        min-height: 96px !important;
+    }
+}
+
+/* FINAL COMPACT HOME BUTTONS */
+#departmentHeader {
+    column-gap: 18px !important;
+    row-gap: 14px !important;
+}
+
+#departmentHeader button {
+    width: 78% !important;
+    justify-self: center !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        column-gap: 14px !important;
+        row-gap: 14px !important;
+    }
+
+    #departmentHeader button {
+        width: 78% !important;
+    }
+}
+
+/* FINAL DASHBOARD ICON + TEXT */
+#departmentHeader button {
+    gap: 15px !important;
+}
+
+#departmentHeader .dashboard-icon {
+    font-size: 32px !important;
+}
+
+#departmentHeader .dashboard-label {
+    font-size: 19px !important;
+    font-weight: 700 !important;
+}
+
+/* FINAL DASHBOARD 2-COLUMN LAYOUT */
+#departmentHeader {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 15px !important;
+    row-gap: 15px !important;
+    width: 100% !important;
+}
+
+#departmentHeader button {
+    width: 100% !important;
+    justify-self: stretch !important;
+    box-sizing: border-box !important;
+}
+
+/* FINAL DASHBOARD SPACING */
+#departmentHeader {
+    column-gap: 30px !important;
+    row-gap: 30px !important;
+}
+
+#departmentHeader button {
+    width: 85% !important;
+    justify-self: center !important;
+}
+
+/* =========================
+   DESIGNATION FILTER
+========================= */
+
+#designationFilterBox {
+    width: 100%;
+    max-width: 600px;
+    margin: 12px auto 16px;
+    box-sizing: border-box;
+}
+
+#designationFilter {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 16px;
+    font-family: "Trebuchet MS", sans-serif !important;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#designationFilter:focus {
+    outline: none;
+    border-color: #999;
+}
+
+
+/* =========================
+   ADMIN LOGIN - CENTER PORTRAIT
+========================= */
+
+#loginPage {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    box-sizing: border-box;
+}
+
+#loginPage h1 {
+    text-align: center;
+}
+
+#loginPage .admin-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 20px auto;
+    box-sizing: border-box;
+}
+
+#loginPage .admin-card input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#loginPage #rememberLogin {
+    width: auto !important;
+}
+
+@media (max-width: 600px) {
+
+    #loginPage {
+        padding: 16px 14px;
+    }
+
+    #loginPage .admin-card {
+        max-width: 100%;
+    }
+
+}
+
+/* =========================
+   ADD EMPLOYEE - LABEL + INPUT SIDE BY SIDE
+========================= */
+
+#addEmployeeForm {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 10px;
+    align-items: center;
+}
+
+#addEmployeeForm label {
+    margin: 0 !important;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#addEmployeeForm input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 42px;
+}
+
+#addEmployeeForm #saveNewEmployeeButton,
+#addEmployeeForm #addEmployeeStatus {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 600px) {
+
+    #addEmployeeForm {
+        grid-template-columns: 115px minmax(0, 1fr);
+        column-gap: 10px;
+    }
+
+    #addEmployeeForm label {
+        font-size: 13px;
+    }
+
+}
+
+/* =========================
+   ADD EMPLOYEE ROW LAYOUT
+========================= */
+
+#addEmployeeForm .add-employee-row {
+    display: grid !important;
+    grid-template-columns: 140px minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+#addEmployeeForm .add-employee-row label {
+    display: block !important;
+    margin: 0 !important;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#addEmployeeForm .add-employee-row input {
+    width: 100% !important;
+    min-height: 42px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+
+    #addEmployeeForm .add-employee-row {
+        grid-template-columns: 115px minmax(0, 1fr);
+        column-gap: 10px;
+    }
+
+    #addEmployeeForm .add-employee-row label {
+        font-size: 13px;
+    }
+
+}
+
+
+/* BIRTHDAY PAGE: CLEAN TOP AREA AND COLORED HEADINGS */
+#birthdayPage h1 {
+    color: #00897b !important;
+}
+
+#birthdayPage .birthday-table thead th {
+    background-color: #00897b !important;
+    color: #ffffff !important;
+    border-color: #00796b !important;
+}
+
+
+/* BIRTHDAY PAGE: ADMIN VISIBILITY AND COMPACT TABLE COLUMNS */
+#listPage > #adminButton {
+    #display: none;
+}
+
+.birthday-table th:first-child,
+.birthday-table td:first-child {
+    width: 34px !important;
+    min-width: 34px !important;
+    max-width: 34px !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    white-space: nowrap;
+}
+
+.birthday-table th:last-child,
+.birthday-table td:last-child {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    white-space: nowrap;
+}
+
+
+/* BIRTHDAY PAGE: BRITTANY SIGNATURE HEADING AND DATE COLUMN FIX */
+@font-face {
+    font-family: "BrittanySignature";
+    src: url("fonts/BrittanySignature.ttf") format("truetype");
+    font-display: swap;
+}
+
+#birthdayPage h1 {
+    font-family: "BrittanySignature", cursive !important;
+    font-size: clamp(30px, 6vw, 42px) !important;
+    line-height: 1.25 !important;
+}
+
+#birthdayPage .birthday-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+#birthdayPage .birthday-table th:last-child,
+#birthdayPage .birthday-table td:last-child {
+    width: 112px !important;
+    min-width: 0 !important;
+    max-width: 112px !important;
+    box-sizing: border-box !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 12px !important;
+}
+
+/* BIRTHDAY TABLE: UNIFORM FONT SIZES AND WIDER EMPLOYEE NAME */
+#birthdayPage .birthday-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+}
+
+#birthdayPage .birthday-table th {
+    font-size: 13px !important;
+    box-sizing: border-box !important;
+}
+
+#birthdayPage .birthday-table td {
+    font-size: 12px !important;
+    box-sizing: border-box !important;
+}
+
+#birthdayPage .birthday-table th:nth-child(2),
+#birthdayPage .birthday-table td:nth-child(2) {
+    width: 36% !important;
+    overflow-wrap: anywhere !important;
+}
+
+#birthdayPage .birthday-table th:last-child,
+#birthdayPage .birthday-table td:last-child {
+    width: 112px !important;
+    min-width: 0 !important;
+    max-width: 112px !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+/* BIRTHDAY MOBILE FIX: PREVENT TEXT OVERLAP */
+#birthdayPage .birthday-table th {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+@media (max-width: 600px) {
+    #birthdayPage .birthday-table-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #birthdayPage .birthday-table {
+        width: 650px !important;
+        min-width: 650px !important;
+        table-layout: fixed !important;
+    }
+
+    #birthdayPage .birthday-table th,
+    #birthdayPage .birthday-table td {
+        box-sizing: border-box !important;
+        font-size: 12px !important;
+        padding: 7px 5px !important;
+        vertical-align: middle !important;
+    }
+
+    #birthdayPage .birthday-table th {
+        font-size: 13px !important;
+        text-align: center !important;
+        white-space: normal !important;
+        overflow-wrap: normal !important;
+    }
+
+    #birthdayPage .birthday-table th:nth-child(1),
+    #birthdayPage .birthday-table td:nth-child(1) { width: 40px !important; }
+
+    #birthdayPage .birthday-table th:nth-child(2),
+    #birthdayPage .birthday-table td:nth-child(2) {
+        width: 200px !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    #birthdayPage .birthday-table th:nth-child(3),
+    #birthdayPage .birthday-table td:nth-child(3) { width: 150px !important; }
+
+    #birthdayPage .birthday-table th:nth-child(4),
+    #birthdayPage .birthday-table td:nth-child(4) { width: 135px !important; }
+
+    #birthdayPage .birthday-table th:nth-child(5),
+    #birthdayPage .birthday-table td:nth-child(5) {
+        width: 125px !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+}
+
+/* BIRTHDAY TABLE: FIT PHONE SCREEN WITHOUT HORIZONTAL SCROLL */
+@media (max-width: 600px) {
+    #birthdayPage .birthday-table-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+
+    #birthdayPage .birthday-table {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+    }
+
+    #birthdayPage .birthday-table th,
+    #birthdayPage .birthday-table td {
+        box-sizing: border-box !important;
+        padding: 6px 2px !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+    }
+
+    #birthdayPage .birthday-table th {
+        font-size: 13px !important;
+        line-height: 1.2 !important;
+    }
+
+    #birthdayPage .birthday-table td {
+        font-size: 12px !important;
+        line-height: 1.25 !important;
+    }
+
+    #birthdayPage .birthday-table th:nth-child(1),
+    #birthdayPage .birthday-table td:nth-child(1) { width: 8% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(2),
+    #birthdayPage .birthday-table td:nth-child(2) { width: 28% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(3),
+    #birthdayPage .birthday-table td:nth-child(3) { width: 24% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(4),
+    #birthdayPage .birthday-table td:nth-child(4) { width: 20% !important; }
+
+    #birthdayPage .birthday-table th:nth-child(5),
+    #birthdayPage .birthday-table td:nth-child(5) { width: 20% !important; }
+}
+
+/* BIRTHDAY WEB TABLE: CENTER ALL CELL TEXT */
+@media (min-width: 601px) {
+    #birthdayPage .birthday-table th,
+    #birthdayPage .birthday-table td {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+}
+
+
+/* NEW HOME CARDS */
+#attendanceButton {
+    background: #1565c0 !important;
+    color: #ffffff !important;
+}
+
+#salaryButton {
+    background: #b8860b !important;
+    color: #ffffff !important;
+}
+
+
+/* HOME CARD SPACING, COLORS AND SINGLE-LINE TITLE */
+#appTitle {
+    white-space: nowrap !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+#appTitle div {
+    white-space: nowrap !important;
+    font-size: clamp(16px, 4.5vw, 22px) !important;
+}
+
+#departmentHeader {
+    row-gap: 42px !important;
+}
+
+#allEmployeesButton {
+    background: #1976d2 !important;
+    color: #ffffff !important;
+}
+
+#attendanceButton {
+    background: #e65100 !important;
+    color: #ffffff !important;
+}
+
+@media (max-width: 600px) {
+    #departmentHeader {
+        row-gap: 28px !important;
+    }
+
+    #appTitle div {
+        font-size: clamp(15px, 4.5vw, 19px) !important;
+    }
+}
+
+
+/* DEKKO ICON WATERMARK - HOME PAGE */
+#listPage {
+    min-height: 100vh;
+    position: relative !important;
+    isolation: isolate !important;
+}
+
+#listPage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("assets/icons/Dekko%20icon.jpg");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    opacity: 0.10;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#listPage > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* WELCOME TITLE AND BOTTOM LOGO */
+@font-face {
+    font-family: "Times New Roman";
+    src: url("fonts/Times%20New%20Roman%20Bold%20Italic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Times New Roman";
+    src: url("fonts/Times%20New%20Roman%20Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+}
+#appTitle {
+    white-space: normal !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 24px !important;
+}
+#appTitle .welcome-title {
+    color: #17365D !important;
+    font-family: "Times New Roman", serif !important;
+    font-weight: 700 !important;
+    font-style: italic !important;
+    font-size: clamp(18px, 5vw, 24px) !important;
+    white-space: normal !important;
+}
+#appTitle .welcome-subtitle {
+    color: #17365D !important;
+    font-family: "Times New Roman", serif !important;
+    font-weight: 400 !important;
+    font-style: italic !important;
+    font-size: clamp(14px, 3.8vw, 18px) !important;
+    white-space: normal !important;
+}
+#homeBottomLogo {
+    position: absolute !important;
+    bottom: 25px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 195px !important;
+    max-width: 52vw !important;
+    max-height: 130px !important;
+    object-fit: contain !important;
+    z-index: 1 !important;
+}
+#listPage {
+    padding-bottom: 105px !important;
+    box-sizing: border-box !important;
+}
+
+
+/* ATTENDANCE BUTTON CALENDAR */
+#attendanceButton #attendanceCalendar {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    line-height: 1 !important;
+    margin: 0 auto 5px !important;
+}
+
+#attendanceButton #attendanceMonth {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+}
+
+#attendanceButton #attendanceDate {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 38px !important;
+    height: 34px !important;
+    padding: 0 5px !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    color: #e65100 !important;
+    border-radius: 4px !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+}
+
+#attendanceButton {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+
+/* Slightly taller six home dashboard buttons */
+#departmentHeader > button {
+    min-height: 100px !important;
+    box-sizing: border-box !important;
+}
+
+/* ATTENDANCE PAGE UI */
+#attendancePage {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 16px;
+    box-sizing: border-box;
+    color: #1f2937;
+}
+#attendancePage h1 {
+    margin: 18px 0;
+    font-size: 26px;
+}
+#attendanceTodayCard,
+#attendanceMonthlySummary {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    margin: 14px 0;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+#attendanceTodayCard h2,
+#attendanceMonthlySummary h2 {
+    margin-top: 0;
+    font-size: 19px;
+}
+#attendancePage button {
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+#checkInButton {
+    background: #15803d;
+    color: #ffffff;
+}
+#checkOutButton {
+    background: #b91c1c;
+    color: #ffffff;
+    margin-left: 8px;
+}
+#attendancePage button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+#attendanceMessage {
+    color: #64748b;
+    font-size: 13px;
+}
+#attendanceHistory {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 8px;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+    #attendancePage {
+        padding: 12px;
+    }
+    #attendanceTodayCard,
+    #attendanceMonthlySummary {
+        padding: 14px;
+    }
+    #attendancePage h1 {
+        font-size: 23px;
+    }
+}
+
+
+
+/* Salary Management */
+#salaryManagement .admin-card {
+    margin: 18px 0;
+    box-sizing: border-box;
+}
+
+#salaryManagement input,
+#salaryManagement select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 11px;
+    margin: 6px 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font: inherit;
+}
+
+#salaryManagement form button,
+#salaryManagement > .admin-card > button,
+#salaryPage > button,
+#salaryLoginButton {
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+#salaryNetPreview {
+    font-variant-numeric: tabular-nums;
+}
+
+.payslip-page-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 900px;
+    margin: 16px auto;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+#paySlipPage {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+    #paySlipPage, #paySlipPage * {
+        visibility: visible !important;
+    }
+    #paySlipPage {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        color: #000;
+        background: #fff;
+    }
+    .payslip-page-actions {
+        display: none !important;
+    }
+}
+
+
+/* Salary page centered layout */
+#salaryPage {
+    width: min(100% - 24px, 760px);
+    margin: 24px auto;
+    box-sizing: border-box;
+}
+
+#salaryPage > h1 {
+    text-align: center;
+    margin: 18px 0 24px;
+}
+
+#salaryPage > .admin-card,
+#salaryManagement > .admin-card {
+    width: 100%;
+    max-width: 100%;
+    margin: 18px auto;
+    box-sizing: border-box;
+}
+
+#salaryPage > #salaryBackButton {
+    display: block;
+    margin: 0 auto 16px;
+}
+
+#salaryManagement {
+    width: 100%;
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    #salaryPage {
+        width: calc(100% - 20px);
+        margin: 12px auto;
+    }
+
+    #salaryPage > h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Salary Management centering fix v1 */
+#salaryPage {
+    display: block;
+    width: calc(100% - 24px);
+    max-width: 760px;
+    margin: 24px auto !important;
+    box-sizing: border-box;
+    position: relative;
+    left: auto;
+    right: auto;
+    transform: none;
+}
+
+#salaryPage > .admin-card,
+#salaryManagement > .admin-card {
+    width: 100%;
+    max-width: 100%;
+    margin: 18px auto;
+    box-sizing: border-box;
+}
+
+#salaryManagement {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 600px) {
+    #salaryPage {
+        width: calc(100% - 20px);
+        max-width: 760px;
+        margin: 12px auto !important;
+    }
+}
+
+/* Salary Management: centered page and compact horizontal form */
+#salaryPage {
+    display: block;
+    width: calc(100% - 32px);
+    max-width: 820px;
+    margin: 24px auto !important;
+    float: none !important;
+    position: static;
+    transform: none;
+    box-sizing: border-box;
+}
+
+#salaryPage > .admin-card,
+#salaryManagement > .admin-card {
+    width: 100%;
+    max-width: 100%;
+    margin: 12px auto;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+#salaryManagement {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#salaryEntryForm {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 8px;
+    align-items: center;
+}
+
+#salaryEntryForm label {
+    margin: 0;
+    line-height: 1.35;
+}
+
+#salaryEntryForm input,
+#salaryEntryForm select {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#salaryEntryForm button {
+    grid-column: 2;
+    justify-self: start;
+    margin: 4px 0 0;
+}
+
+@media (max-width: 600px) {
+    #salaryPage {
+        width: calc(100% - 20px);
+        margin: 12px auto !important;
+    }
+
+    #salaryEntryForm {
+        grid-template-columns: 110px minmax(0, 1fr);
+        column-gap: 8px;
+        row-gap: 8px;
+    }
+
+    #salaryPage > .admin-card,
+    #salaryManagement > .admin-card {
+        padding: 12px;
+    }
+}
+
+/* MOBILE LAYOUT FIX - 2026-10-12 */
+@media (max-width: 600px) {
+    body {
+        padding: 12px !important;
+        overflow-x: hidden;
+    }
+
+    #appTitle {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 2px;
+        box-sizing: border-box;
+    }
+
+    #appTitle .welcome-title,
+    #appTitle .welcome-subtitle {
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    #appTitle .welcome-title {
+        font-size: clamp(17px, 5vw, 22px) !important;
+    }
+
+    #appTitle .welcome-subtitle {
+        font-size: 14px !important;
+    }
+
+    #departmentHeader {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        row-gap: 12px !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #departmentHeader > button {
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 88px !important;
+        margin: 0 !important;
+        padding: 10px 5px !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere;
+    }
+
+    #departmentHeader .dashboard-label {
+        max-width: 100%;
+        white-space: normal !important;
+        text-align: center;
+        font-size: 13px !important;
+        line-height: 1.3;
+    }
+
+    #departmentCards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #departmentCards > * {
+        min-width: 0;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    #homeBottomLogo {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #listPage,
+    #departmentPage,
+    #allEmployeesPage,
+    #favoritePage,
+    #birthdayPage,
+    #attendancePage {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #salaryPage {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 12px auto !important;
+        box-sizing: border-box;
+    }
+}
+
+
+/* Manual Salary Entry: six details in two columns */
+.salary-entry-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 20px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.salary-entry-details-grid .salary-entry-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    margin-bottom: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+}
+
+@media (max-width: 480px) {
+    .salary-entry-details-grid {
+        gap: 12px;
+    }
+}
+
+/* Manual Salary Entry: align labels and inputs like Earnings/Deductions */
+.salary-entry-details-grid .salary-entry-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: center;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Fix: keep Manual Salary Entry labels from breaking letter by letter */
+.salary-entry-details-grid .salary-entry-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: center;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: normal;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Manual Salary Entry: match Earnings Basic Salary alignment */
+.salary-entry-details-grid .salary-entry-field {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    display: block;
+    width: 100%;
+    margin: 0;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Manual Salary Entry: keep each label beside its input */
+.salary-entry-details-grid .salary-entry-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 10px;
+    row-gap: 0;
+    align-items: center;
+    min-width: 0;
+}
+
+.salary-entry-details-grid .salary-entry-field label {
+    width: auto;
+    margin: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.salary-entry-details-grid .salary-entry-field input,
+.salary-entry-details-grid .salary-entry-field select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Fix: let all six Manual Salary Entry fields use the full form width */
+#salaryEntryForm > .salary-entry-details-grid {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Final fix: Manual Salary Entry information alignment */
+#salaryPage .salary-entry-details-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    gap: 14px 24px;
+}
+
+#salaryPage .salary-entry-details-grid .salary-entry-field {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(100px, 1fr) !important;
+    align-items: center;
+    gap: 8px 12px;
+    min-width: 0;
+}
+
+#salaryPage .salary-entry-details-grid .salary-entry-field label {
+    display: block;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+#salaryPage .salary-entry-details-grid .salary-entry-field input,
+#salaryPage .salary-entry-details-grid .salary-entry-field select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+    #salaryPage .salary-entry-details-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px;
+    }
+
+    #salaryPage .salary-entry-details-grid .salary-entry-field {
+        grid-template-columns: minmax(0, 1fr) minmax(110px, 1fr) !important;
+    }
+}
+
+
+/* Fix: keep Earnings and Deductions side by side on Android WebView */
+#salaryPage .salary-components-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: start;
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Final layout override: Earnings and Deductions side by side */
+#salaryPage .salary-components-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group {
+    display: block !important;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 50% !important;
+    box-sizing: border-box !important;
+    overflow-wrap: anywhere;
+}
+
+#salaryPage .salary-components-grid > .salary-component-group input {
+    display: block;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }

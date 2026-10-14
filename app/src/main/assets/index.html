@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIVE TEST - Employee App</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20261014payslipicons35">
+<link rel="stylesheet" href="salary-layout.css?v=20261014payslipicons35">
 </head>
 
 <body>
@@ -14,8 +15,8 @@
 <button id="adminButton">Admin</button>
 
 <div id="appTitle">
-    <div>Dekko Employee</div>
-    <div>Information</div>
+    <div class="welcome-title">Welcome to Dekko Employee Info!</div>
+    <div class="welcome-subtitle">Explore employee information quickly and easily.</div>
 </div>
 
 <div id="departmentSection">
@@ -24,9 +25,11 @@
         <button id="allEmployeesButton"><span class="dashboard-icon">👥</span><span class="dashboard-label">All Employees</span></button>
         <button id="favoriteEmployeesButton"><span class="dashboard-icon">❤️</span><span class="dashboard-label">Favorite Employees</span></button>
         <button id="birthdayButton"><span class="dashboard-icon">🎂</span><span class="dashboard-label">Birthday</span></button>
+        <button id="attendanceButton"><span id="attendanceCalendar"><span id="attendanceMonth"></span><span id="attendanceDate"></span></span><span class="dashboard-label">Attendance</span></button>
+        <button id="salaryButton"><span class="dashboard-icon">💰</span><span class="dashboard-label">Salary 🔒</span></button>
     </div>
 </div>
-
+<img id="homeBottomLogo" src="assets/icons/Dekko%20icon-2.jpg" alt="Dekko logo">
 </div>
 
 <div id="allEmployeesPage" style="display:none;">
@@ -36,6 +39,12 @@
     <div class="searchBox">
         <input type="text" id="searchInput" placeholder="Search employee...">
         <button id="clearSearch">Clear</button>
+    </div>
+
+    <div id="designationFilterBox">
+        <select id="designationFilter">
+            <option value="">All Designations</option>
+        </select>
     </div>
 
     <div id="resultCount">Loading...</div>
@@ -78,6 +87,33 @@
 <div id="birthdayEmployeeList"></div>
 </div>
 
+<div id="attendancePage" style="display:none;">
+    <button id="attendanceBackButton">← Back</button>
+    <h1>🕒 Attendance</h1>
+
+    <div id="attendanceTodayCard">
+        <h2>Today's Attendance</h2>
+        <p id="attendanceTodayDate"></p>
+        <p>Status: <strong id="attendanceStatus">Not Checked In</strong></p>
+        <p>Check In: <span id="attendanceCheckInTime">—</span></p>
+        <p>Check Out: <span id="attendanceCheckOutTime">—</span></p>
+        <p>Working Hours: <span id="attendanceWorkingHours">—</span></p>
+
+        <button id="checkInButton" type="button">Check In</button>
+        <button id="checkOutButton" type="button" disabled>Check Out</button>
+        <p id="attendanceMessage" role="status"></p>
+    </div>
+
+    <div id="attendanceMonthlySummary">
+        <h2>Monthly Summary</h2>
+        <p>Present: <span id="attendancePresentDays">0</span></p>
+        <p>Attendance History</p>
+        <div id="attendanceHistory">
+            <p>No attendance records yet.</p>
+        </div>
+    </div>
+</div>
+
 <div id="detailsPage" style="display:none;">
 <button id="backButton">← Back</button>
 <h1>Employee Details</h1>
@@ -95,6 +131,11 @@
 
 <label>Password</label>
 <input type="password" id="adminPassword" placeholder="Password">
+
+<label style="display:flex;align-items:center;gap:8px;margin:12px 0;">
+    <input type="checkbox" id="rememberLogin" style="width:auto;">
+    Remember Login
+</label>
 
 <button id="loginButton">Login</button>
 <button id="forgotPasswordButton" type="button">Forgot Password?</button>
@@ -152,10 +193,265 @@
 
 </div>
 
+<div class="admin-card">
+
+<h2>Add New Employee</h2>
+
+<button id="showAddEmployeeButton"
+        type="button"
+        style="display:block !important;width:100%;background:#16a34a !important;color:white !important;">
+    + Add New Employee
+</button>
+
+<div id="addEmployeeForm"
+     style="display:none;margin-top:20px;">
+
+<div class="add-employee-row">
+<label>Employee Name</label>
+<input type="text" id="newEmployeeName" placeholder="Md. Habibur Rahman">
+</div>
+
+<div class="add-employee-row">
+<label>Designation</label>
+<input type="text" id="newEmployeeDesignation" placeholder="Asst. Manager">
+</div>
+
+<div class="add-employee-row">
+<label>Company</label>
+<input type="text" id="newEmployeeCompany" placeholder="Dekko Accessories Ltd.">
+</div>
+
+<div class="add-employee-row">
+<label>Employee ID</label>
+<input type="text" id="newEmployeeNo" placeholder="Employee ID">
+</div>
+
+<div class="add-employee-row">
+<label>Department</label>
+<input type="text" id="newEmployeeDepartment" placeholder="Department">
+</div>
+
+<div class="add-employee-row">
+<label>Official No.</label>
+<input type="text" id="newEmployeeOfficialNo" placeholder="Official No.">
+</div>
+
+<div class="add-employee-row">
+<label>Personal No.</label>
+<input type="text" id="newEmployeePersonalNo" placeholder="Personal No.">
+</div>
+
+<div class="add-employee-row">
+<label>Email Address</label>
+<input type="email" id="newEmployeeEmail" placeholder="Email Address">
+</div>
+
+<div class="add-employee-row">
+<label>PABX No.</label>
+<input type="text" id="newEmployeePabx" placeholder="PABX No.">
+</div>
+
+<div class="add-employee-row">
+<label>Blood Group</label>
+<input type="text" id="newEmployeeBloodGroup" placeholder="Blood Group">
+</div>
+
+<div class="add-employee-row">
+<label>Joining Date</label>
+<input type="date" id="newEmployeeJoiningDate">
+</div>
+
+<div class="add-employee-row">
+<label>Date of Birth</label>
+<input type="text" id="newEmployeeBirthday" placeholder="DD-MM">
+</div>
+
+<div class="add-employee-row">
+<label>NID No.</label>
+<input type="text" id="newEmployeeNid" placeholder="NID No.">
+</div>
+
+<div class="add-employee-row">
+<label>TIN No.</label>
+<input type="text" id="newEmployeeTin" placeholder="TIN No.">
+</div>
+
+<div class="add-employee-row">
+<label>Bank Name</label>
+<input type="text" id="newEmployeeBankName" placeholder="Bank Name">
+</div>
+
+<div class="add-employee-row">
+<label>Account No.</label>
+<input type="text" id="newEmployeeAccountNo" placeholder="Account No.">
+</div>
+
+<button id="saveNewEmployeeButton"
+        type="button"
+        style="display:block !important;width:100%;background:#2563eb !important;color:white !important;margin-top:20px;">
+    Save Employee
+</button>
+
+<div id="addEmployeeStatus"
+     style="margin-top:12px;"></div>
+
+</div>
+
+</div>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="app.js?v=20261005"></script>
+<script src="app.js?v=20261014payslipicons35"></script>
 
+
+<div id="salaryPage" style="display:none;">
+    <button id="salaryBackButton" type="button">← Back</button>
+    <h1>💰 Salary Management</h1>
+
+    <div class="admin-card">
+        <h2>Salary Access</h2>
+        <p id="salaryStatus" role="status" aria-live="polite">
+            Checking authorized Admin access...
+        </p>
+        <button id="salaryLoginButton" type="button" style="display:none;">
+            Open Admin Login
+        </button>
+    </div>
+
+    <div id="salaryManagement" style="display:none;">
+        <div class="admin-card">
+            <h2>Manual Salary Entry</h2>
+
+            <form id="salaryEntryForm">
+
+                <div class="salary-entry-details-grid">
+                    <div class="salary-entry-field">
+                        <label for="salaryEmployee">Employee</label>
+                        <select id="salaryEmployee" required>
+                            <option value="">Select employee</option>
+                        </select>
+                    </div>
+
+                    <div class="salary-entry-field">
+                        <label for="salaryPresentDays">Present Days</label>
+                        <input type="number" id="salaryPresentDays" min="0" step="1" required>
+                    </div>
+
+                    <div class="salary-entry-field">
+                        <label for="salaryMonth">Salary Month</label>
+                        <input type="month" id="salaryMonth" required>
+                    </div>
+
+                    <div class="salary-entry-field">
+                        <label for="salaryLeaveDays">Leave Days</label>
+                        <input type="number" id="salaryLeaveDays" min="0" step="1" required>
+                    </div>
+
+                    <div class="salary-entry-field">
+                        <label for="salaryWorkingDays">Working Days</label>
+                        <input type="number" id="salaryWorkingDays" min="0" step="1" required>
+                    </div>
+
+                    <div class="salary-entry-field">
+                        <label for="salaryAbsentDays">Absent Days</label>
+                        <input type="number" id="salaryAbsentDays" min="0" step="1" required>
+                    </div>
+                </div>
+
+
+
+                <div class="salary-components-grid">
+                    <section class="salary-component-group salary-earnings">
+                    <h3>Earnings</h3>
+                    <label for="basicSalary">Basic Salary</label>
+                    <input type="number" id="basicSalary" min="0" step="0.01" required value="0">
+
+                    <label for="houseRentAllowance">House Rent Allowance</label>
+                    <input type="number" id="houseRentAllowance" min="0" step="0.01" required value="0">
+
+                    <label for="medicalAllowance">Medical Allowance</label>
+                    <input type="number" id="medicalAllowance" min="0" step="0.01" required value="0">
+
+                    <label for="conveyanceAllowance">Conveyance Allowance</label>
+                    <input type="number" id="conveyanceAllowance" min="0" step="0.01" required value="0">
+
+                    <label for="specialAllowance">Special Allowance</label>
+                    <input type="number" id="specialAllowance" min="0" step="0.01" required value="0">
+
+                    </section>
+                    <section class="salary-component-group salary-deductions">
+                    <h3>Deductions</h3>
+                    <label for="employeeProvidentFund">Employee Provident Fund</label>
+                    <input type="number" id="employeeProvidentFund" min="0" step="0.01" required value="0">
+
+                    <label for="incomeTax">Income Tax</label>
+                    <input type="number" id="incomeTax" min="0" step="0.01" required value="0">
+
+                    <label for="healthInsurance">Health Insurance</label>
+                    <input type="number" id="healthInsurance" min="0" step="0.01" required value="0">
+
+                    <label for="loanRepayment">Loan Repayment</label>
+                    <input type="number" id="loanRepayment" min="0" step="0.01" required value="0">
+
+                    <label for="otherDeductions">Other Deductions</label>
+                    <input type="number" id="otherDeductions" min="0" step="0.01" required value="0">
+
+                    </section>
+                </div>
+
+                <input type="hidden" id="salaryAllowances" value="0">
+                <input type="hidden" id="salaryDeductions" value="0">
+
+
+                <label for="salaryPublishStatus">Status</label>
+                <select id="salaryPublishStatus">
+                    <option value="BANK" selected>BANK</option>
+                    <option value="CASH">CASH</option>
+                </select>
+
+                <p>Net Pay: <strong id="salaryNetPreview">0.00</strong></p>
+
+                <button type="submit" id="saveSalaryButton">
+                    Save Salary
+                </button>
+            </form>
+            <p id="salarySaveStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        
+
+        <div class="admin-card">
+            <h2>Monthly Pay Slip</h2>
+            <label for="paySlipEmployeeSearch">Employee</label>
+            <input type="text" id="paySlipEmployeeSearch"
+                   list="paySlipEmployeeOptions"
+                   placeholder="Search Emp ID or Name"
+                   autocomplete="off" required>
+            <datalist id="paySlipEmployeeOptions"></datalist>
+            <select id="paySlipEmployee" style="display:none"
+                    aria-hidden="true">
+                <option value="">Select employee</option>
+            </select>
+
+            <label for="paySlipMonth">Salary Month</label>
+            <input type="month" id="paySlipMonth" required>
+
+            <button id="viewPaySlipButton" type="button">View Pay Slip</button>
+            <button id="printPaySlipButton" type="button"
+                    style="display:none;">Print Pay Slip</button>
+            <div id="paySlipResult"></div>
+        </div>
+    </div>
+
+</div>
+
+<div id="paySlipPage" style="display:none;">
+    <div class="payslip-page-actions">
+        <button id="paySlipPageBackButton" type="button">← Back to Salary</button>
+        <button id="paySlipPagePrintButton" type="button">Download Pay Slip PDF</button>
+    </div>
+    <div id="paySlipPageContent"></div>
+</div>
 </body>
 </html>
