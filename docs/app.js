@@ -2718,6 +2718,17 @@ if (saveNewEmployeeButton) {
         const slipMonth = $("paySlipMonth");
         const saveStatus = $("salarySaveStatus");
         const slipResult = $("paySlipResult");
+        const slipSearchInput = $("paySlipEmployeeSearch");
+        if (slipSearchInput && slipEmployee) {
+            slipSearchInput.addEventListener("input", function () {
+                const typedLabel = slipSearchInput.value.trim();
+                const match = Array.from(slipEmployee.options).find(
+                    option => option.value && option.textContent === typedLabel
+                );
+                slipEmployee.value = match ? match.value : "";
+            });
+        }
+
 
         if (!salaryButton || !salaryPage || !management) {
             console.error("Salary HTML elements not found.");
@@ -2772,26 +2783,40 @@ if (saveNewEmployeeButton) {
             employeeNumbers = new Set();
             employeeInfo = new Map();
 
+            const slipSearch = $("paySlipEmployeeSearch");
+            const slipOptions = $("paySlipEmployeeOptions");
+
             [employeeSelect, slipEmployee].forEach(select => {
                 if (select) select.replaceChildren(new Option("Select employee", ""));
             });
+            if (slipOptions) slipOptions.replaceChildren();
+            if (slipSearch) slipSearch.value = "";
 
             employees.forEach(employee => {
                 if (!employee.employee_no) return;
 
                 const no = String(employee.employee_no);
+                const name = employee.employee_name || "Unnamed";
                 employeeNumbers.add(no);
                 employeeInfo.set(no, employee);
 
-                const label = [
-                    employee.employee_name || "Unnamed",
+                const salaryLabel = [
+                    name,
                     no,
                     employee.department || ""
                 ].filter(Boolean).join(" — ");
 
-                [employeeSelect, slipEmployee].forEach(select => {
-                    if (select) select.add(new Option(label, no));
-                });
+                const slipLabel = `${no} (${name})`;
+
+                if (employeeSelect) {
+                    employeeSelect.add(new Option(salaryLabel, no));
+                }
+                if (slipEmployee) {
+                    slipEmployee.add(new Option(slipLabel, no));
+                }
+                if (slipOptions) {
+                    slipOptions.appendChild(new Option(slipLabel, slipLabel));
+                }
             });
 
             if (!employeeNumbers.size) throw new Error("No employees found.");
