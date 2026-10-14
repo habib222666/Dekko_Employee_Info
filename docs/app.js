@@ -2720,19 +2720,63 @@ if (saveNewEmployeeButton) {
         const slipResult = $("paySlipResult");
         const slipSearchInput = $("paySlipEmployeeSearch");
         const salarySearchInput = $("salaryEmployeeSearch");
-        const salaryOptions = $("salaryEmployeeOptions");
+        const salarySuggestions = $("salaryEmployeeSuggestions");
 
-        if (salarySearchInput && employeeSelect) {
+        if (salarySearchInput && employeeSelect && salarySuggestions) {
+            function hideSalarySuggestions() {
+                salarySuggestions.replaceChildren();
+                salarySuggestions.hidden = true;
+            }
+
             salarySearchInput.addEventListener("input", function () {
-                const typedLabel = salarySearchInput.value.trim();
-                const match = Array.from(employeeSelect.options).find(option => {
-                    if (!option.value) return false;
-                    const employee = employeeInfo.get(option.value);
-                    const name = employee?.employee_name || "Unnamed";
-                    return option.textContent === typedLabel ||
-                           `${option.value} (${name})` === typedLabel;
+                const query = salarySearchInput.value.trim().toLowerCase();
+                employeeSelect.value = "";
+                hideSalarySuggestions();
+
+                if (!query) return;
+
+                const matches = Array.from(employeeSelect.options)
+                    .filter(option => {
+                        if (!option.value) return false;
+                        const employee = employeeInfo.get(option.value);
+                        const name = String(employee?.employee_name || "Unnamed");
+                        const no = String(option.value);
+                        return name.toLowerCase().includes(query) ||
+                               no.toLowerCase().includes(query);
+                    })
+                    .slice(0, 12);
+
+                matches.forEach(option => {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "salary-employee-suggestion";
+                    button.setAttribute("role", "option");
+                    button.textContent = option.textContent;
+
+                    button.addEventListener("click", function () {
+                        salarySearchInput.value = option.textContent;
+                        employeeSelect.value = option.value;
+                        hideSalarySuggestions();
+                        employeeSelect.dispatchEvent(new Event("change", {
+                            bubbles: true
+                        }));
+                    });
+
+                    salarySuggestions.appendChild(button);
                 });
-                employeeSelect.value = match ? match.value : "";
+
+                salarySuggestions.hidden = matches.length === 0;
+            });
+
+            salarySearchInput.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") hideSalarySuggestions();
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!salarySearchInput.contains(event.target) &&
+                    !salarySuggestions.contains(event.target)) {
+                    hideSalarySuggestions();
+                }
             });
         }
 
@@ -2803,14 +2847,12 @@ if (saveNewEmployeeButton) {
             const slipSearch = $("paySlipEmployeeSearch");
             const slipOptions = $("paySlipEmployeeOptions");
             const salarySearch = $("salaryEmployeeSearch");
-            const salaryDatalist = $("salaryEmployeeOptions");
 
             [employeeSelect, slipEmployee].forEach(select => {
                 if (select) select.replaceChildren(new Option("Select employee", ""));
             });
             if (slipOptions) slipOptions.replaceChildren();
             if (slipSearch) slipSearch.value = "";
-            if (salaryDatalist) salaryDatalist.replaceChildren();
             if (salarySearch) salarySearch.value = "";
 
             employees.sort((a, b) =>
@@ -2840,11 +2882,7 @@ if (saveNewEmployeeButton) {
                 if (employeeSelect) {
                     employeeSelect.add(new Option(salaryLabel, no));
                 }
-                if (salaryDatalist) {
-                    salaryDatalist.appendChild(new Option(salaryLabel, salaryLabel));
-                    salaryDatalist.appendChild(new Option(slipLabel, slipLabel));
-                }
-                if (slipEmployee) {
+if (slipEmployee) {
                     slipEmployee.add(new Option(slipLabel, no));
                 }
                 if (slipOptions) {

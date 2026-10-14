@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIVE TEST - Employee App</title>
-<link rel="stylesheet" href="style.css?v=20261014pdflinefix2">
-<link rel="stylesheet" href="salary-layout.css?v=20261014pdflinefix2">
+<link rel="stylesheet" href="style.css?v=20261014autocomplete3">
+<link rel="stylesheet" href="salary-layout.css?v=20261014autocomplete3">
 </head>
 
 <body>
@@ -302,7 +302,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="app.js?v=20261014salarysearch2"></script>
+<script src="app.js?v=20261014autocomplete3"></script>
 
 
 <div id="salaryPage" style="display:none;">
@@ -329,12 +329,13 @@
                     <div class="salary-entry-field">
                         <label for="salaryEmployeeSearch">Employee</label>
                         <input type="text" id="salaryEmployeeSearch"
-                               list="salaryEmployeeOptions"
-                               placeholder="Search Emp ID or Name"
+                               placeholder="Type employee ID or name"
                                autocomplete="off" required>
-                        <datalist id="salaryEmployeeOptions"></datalist>
-                        <select id="salaryEmployee" style="display:none"
-                                aria-hidden="true">
+                        <div id="salaryEmployeeSuggestions"
+                             class="salary-employee-suggestions"
+                             role="listbox" hidden></div>
+                        <select id="salaryEmployee" hidden
+                                aria-hidden="true" tabindex="-1">
                             <option value="">Select employee</option>
                         </select>
                     </div>

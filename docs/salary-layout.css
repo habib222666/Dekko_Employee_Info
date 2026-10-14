@@ -1168,3 +1168,43 @@
     background: #f3f7fc !important;
     border-color: #e2e8f0 !important;
 }
+
+
+/* Manual Salary Entry live employee autocomplete */
+#salaryPage .salary-entry-field {
+    position: relative;
+}
+#salaryPage #salaryEmployee[hidden],
+#salaryPage #salaryEmployeeSuggestions[hidden] {
+    display: none !important;
+}
+#salaryPage .salary-employee-suggestions {
+    position: absolute;
+    z-index: 9999;
+    top: calc(100% - 1px);
+    left: 0;
+    right: 0;
+    max-height: 240px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #b8c5d6;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, .14);
+}
+#salaryPage .salary-employee-suggestion {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-bottom: 1px solid #e5eaf0;
+    background: #fff;
+    color: #202938;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+}
+#salaryPage .salary-employee-suggestion:hover,
+#salaryPage .salary-employee-suggestion:focus {
+    background: #edf5ff;
+    outline: none;
+}
