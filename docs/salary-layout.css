@@ -1053,3 +1053,47 @@
         -webkit-print-color-adjust: exact;
     }
 }
+
+/* Remove unwanted lines below Net Pay in Words and at the bottom */
+.professional-payslip .payslip-words {
+    border-bottom: none !important;
+    box-shadow: none !important;
+    background-image: none !important;
+}
+
+.professional-payslip .payslip-words::after,
+.professional-payslip .payslip-words::before,
+.professional-payslip .payslip-footer::after,
+.professional-payslip .payslip-footer::before {
+    content: none !important;
+    display: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.professional-payslip .payslip-footer {
+    border-bottom: none !important;
+    box-shadow: none !important;
+    background-image: none !important;
+}
+
+/* All Pay Slip text stays black */
+.professional-payslip,
+.professional-payslip * {
+    color: #000000 !important;
+}
+
+/* Keep NET PAY background light */
+.professional-payslip .payslip-net {
+    background: #f3f7fc !important;
+    border-color: #e2e8f0 !important;
+}
+
+@media print {
+    .professional-payslip .payslip-words,
+    .professional-payslip .payslip-footer {
+        border-bottom: none !important;
+        box-shadow: none !important;
+        background-image: none !important;
+    }
+}
