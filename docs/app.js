@@ -3316,7 +3316,6 @@ if (slipEmployee) {
                         leave_days: leaveDays,
                         absent_days: absentDays,
                         payable_salary: payableSalary,
-                        net_pay: netPay,
                         basic_salary: basic,
                         house_rent_allowance: houseRent,
                         medical_allowance: medical,
