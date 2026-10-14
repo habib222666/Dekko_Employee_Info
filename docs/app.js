@@ -3094,24 +3094,27 @@ if (slipEmployee) {
         function updatePresentDays() {
             const workingInput = $("salaryWorkingDays");
             const presentInput = $("salaryPresentDays");
-            if (!workingInput || !presentInput) return;
+            const leaveInput = $("salaryLeaveDays");
+            const absentInput = $("salaryAbsentDays");
 
-            const rawWorking = workingInput.value.trim();
-            if (rawWorking === "") {
+            if (!workingInput || !presentInput || !leaveInput || !absentInput) return;
+
+            const workingText = workingInput.value.trim();
+            const leaveText = leaveInput.value.trim();
+            const absentText = absentInput.value.trim();
+
+            if (workingText === "") {
                 presentInput.value = "";
                 return;
             }
 
-            const readDays = id => {
-                const raw = $(id).value.trim();
-                return raw === "" ? 0 : Number(raw);
-            };
+            const working = Number(workingText);
+            const leave = leaveText === "" ? 0 : Number(leaveText);
+            const absent = absentText === "" ? 0 : Number(absentText);
 
-            const working = readDays("salaryWorkingDays");
-            const leave = readDays("salaryLeaveDays");
-            const absent = readDays("salaryAbsentDays");
-
-            if (![working, leave, absent].every(Number.isInteger)) {
+            if (![working, leave, absent].every(Number.isInteger) ||
+                working < 0 || leave < 0 || absent < 0 ||
+                leave + absent > working) {
                 presentInput.value = "";
                 return;
             }
