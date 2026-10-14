@@ -2830,3 +2830,39 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     max-width: 100% !important;
     box-sizing: border-box !important;
 }
+
+/* Manual Salary Entry: show 3 fields per row on phones */
+@media (max-width: 600px) {
+    #salaryPage .salary-entry-details-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px 8px !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #salaryPage .salary-entry-details-grid .salary-entry-field {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 5px !important;
+        min-width: 0 !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    #salaryPage .salary-entry-details-grid .salary-entry-field label {
+        font-size: 11px !important;
+        line-height: 1.3;
+        overflow-wrap: anywhere !important;
+    }
+
+    #salaryPage .salary-entry-details-grid .salary-entry-field input,
+    #salaryPage .salary-entry-details-grid .salary-entry-field select {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        font-size: 11px !important;
+        padding: 7px 4px !important;
+    }
+}
