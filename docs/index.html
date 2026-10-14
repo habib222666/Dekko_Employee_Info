@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIVE TEST - Employee App</title>
-<link rel="stylesheet" href="style.css?v=20261014payslipicons35">
-<link rel="stylesheet" href="salary-layout.css?v=20261014removeextrALines">
+<link rel="stylesheet" href="style.css?v=20261014pdflinefix2">
+<link rel="stylesheet" href="salary-layout.css?v=20261014pdflinefix2">
 </head>
 
 <body>
@@ -302,7 +302,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="app.js?v=20261014payslipicons35"></script>
+<script src="app.js?v=20261014salarysearch2"></script>
 
 
 <div id="salaryPage" style="display:none;">
@@ -327,8 +327,14 @@
 
                 <div class="salary-entry-details-grid">
                     <div class="salary-entry-field">
-                        <label for="salaryEmployee">Employee</label>
-                        <select id="salaryEmployee" required>
+                        <label for="salaryEmployeeSearch">Employee</label>
+                        <input type="text" id="salaryEmployeeSearch"
+                               list="salaryEmployeeOptions"
+                               placeholder="Search Emp ID or Name"
+                               autocomplete="off" required>
+                        <datalist id="salaryEmployeeOptions"></datalist>
+                        <select id="salaryEmployee" style="display:none"
+                                aria-hidden="true">
                             <option value="">Select employee</option>
                         </select>
                     </div>

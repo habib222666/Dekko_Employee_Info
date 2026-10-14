@@ -2719,6 +2719,23 @@ if (saveNewEmployeeButton) {
         const saveStatus = $("salarySaveStatus");
         const slipResult = $("paySlipResult");
         const slipSearchInput = $("paySlipEmployeeSearch");
+        const salarySearchInput = $("salaryEmployeeSearch");
+        const salaryOptions = $("salaryEmployeeOptions");
+
+        if (salarySearchInput && employeeSelect) {
+            salarySearchInput.addEventListener("input", function () {
+                const typedLabel = salarySearchInput.value.trim();
+                const match = Array.from(employeeSelect.options).find(option => {
+                    if (!option.value) return false;
+                    const employee = employeeInfo.get(option.value);
+                    const name = employee?.employee_name || "Unnamed";
+                    return option.textContent === typedLabel ||
+                           `${option.value} (${name})` === typedLabel;
+                });
+                employeeSelect.value = match ? match.value : "";
+            });
+        }
+
         if (slipSearchInput && slipEmployee) {
             slipSearchInput.addEventListener("input", function () {
                 const typedLabel = slipSearchInput.value.trim();
@@ -2785,12 +2802,16 @@ if (saveNewEmployeeButton) {
 
             const slipSearch = $("paySlipEmployeeSearch");
             const slipOptions = $("paySlipEmployeeOptions");
+            const salarySearch = $("salaryEmployeeSearch");
+            const salaryDatalist = $("salaryEmployeeOptions");
 
             [employeeSelect, slipEmployee].forEach(select => {
                 if (select) select.replaceChildren(new Option("Select employee", ""));
             });
             if (slipOptions) slipOptions.replaceChildren();
             if (slipSearch) slipSearch.value = "";
+            if (salaryDatalist) salaryDatalist.replaceChildren();
+            if (salarySearch) salarySearch.value = "";
 
             employees.sort((a, b) =>
                 String(a.employee_no || "").localeCompare(
@@ -2818,6 +2839,10 @@ if (saveNewEmployeeButton) {
 
                 if (employeeSelect) {
                     employeeSelect.add(new Option(salaryLabel, no));
+                }
+                if (salaryDatalist) {
+                    salaryDatalist.appendChild(new Option(salaryLabel, salaryLabel));
+                    salaryDatalist.appendChild(new Option(slipLabel, slipLabel));
                 }
                 if (slipEmployee) {
                     slipEmployee.add(new Option(slipLabel, no));

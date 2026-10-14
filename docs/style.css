@@ -2333,28 +2333,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     box-sizing: border-box;
 }
 
-@media print {
-    body * {
-        visibility: hidden !important;
-    }
-    #paySlipPage, #paySlipPage * {
-        visibility: visible !important;
-    }
-    #paySlipPage {
-        display: block !important;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        color: #000;
-        background: #fff;
-    }
-    .payslip-page-actions {
-        display: none !important;
-    }
-}
+/* Pay Slip print rules are in salary-layout.css. */
 
 
 /* Salary page centered layout */
