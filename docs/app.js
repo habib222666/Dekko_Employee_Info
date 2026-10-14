@@ -3293,6 +3293,20 @@ if (saveNewEmployeeButton) {
                         </div>`;
                     };
 
+                    const infoTable = (rows) => `
+                        <table class="payslip-info-table">
+                            <tbody>
+                                ${rows.map(([label, value, showEmpty = false]) => {
+                                    if (!showEmpty && (value === undefined || value === null || value === "" || value === "—")) return "";
+                                    return `<tr>
+                                        <th>${safe(label)}</th>
+                                        <td>${safe(value)}</td>
+                                    </tr>`;
+                                }).join("")}
+                            </tbody>
+                        </table>
+                    `;
+
                     slipResult.innerHTML = `
                         <article class="professional-payslip">
                             <header class="payslip-company">
@@ -3314,25 +3328,25 @@ if (saveNewEmployeeButton) {
                                 <span class="payslip-status">${safe(record.payment_method || "BANK")}</span>
                             </div>
 
-                            <section class="payslip-section">
-                                <h4>Emp. Information</h4>
-                                <div class="payslip-details-grid">
-                                    <div class="payslip-info-column">
-                                        ${detail("Employee ID", record.employee_no || employee.employee_no || "—")}
-                                        ${detail("Employee Name", employee.employee_name || "—")}
-                                        ${detail("Designation", optionalDetails[0][1])}
-                                        ${detail("Department", employee.department || "—")}
-                                        ${detail("Joining Date", optionalDetails[1][1])}
-                                        ${detail("Pay Period", period)}
-                                    </div>
-                                    <div class="payslip-info-column">
-                                        ${detail("Bank Name", getEmployeeValue("bank_name"), true)}
-                                        ${detail("Account No.", getEmployeeValue("account_no"), true)}
-                                        ${detail("Working Days", optionalDetails[2][1])}
-                                        ${detail("Present Days", optionalDetails[3][1])}
-                                        ${detail("Leave Days", optionalDetails[4][1])}
-                                        ${detail("Absent Days", optionalDetails[5][1])}
-                                    </div>
+                            <section class="payslip-section payslip-employee-section">
+                                <h4>Employee Information</h4>
+                                <div class="payslip-info-tables-grid">
+                                    ${infoTable([
+                                        ["Employee ID", record.employee_no || employee.employee_no || "—"],
+                                        ["Employee Name", employee.employee_name || "—"],
+                                        ["Designation", optionalDetails[0][1]],
+                                        ["Department", employee.department || "—"],
+                                        ["Joining Date", optionalDetails[1][1]],
+                                        ["Pay Period", period]
+                                    ])}
+                                    ${infoTable([
+                                        ["Bank Name", getEmployeeValue("bank_name"), true],
+                                        ["Account No.", getEmployeeValue("account_no"), true],
+                                        ["Working Days", optionalDetails[2][1]],
+                                        ["Present Days", optionalDetails[3][1]],
+                                        ["Leave Days", optionalDetails[4][1]],
+                                        ["Absent Days", optionalDetails[5][1]]
+                                    ])}
                                 </div>
                             </section>
 

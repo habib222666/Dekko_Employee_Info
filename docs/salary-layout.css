@@ -808,3 +808,62 @@
     min-width: 0 !important;
     box-sizing: border-box !important;
 }
+
+
+/* Employee Information: two bordered tables matching Earning/Deduct */
+.payslip-info-tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+    width: 100%;
+}
+
+.payslip-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+}
+
+.payslip-info-table th,
+.payslip-info-table td {
+    padding: 8px 7px;
+    border: 1px solid #dce4ed;
+    overflow-wrap: anywhere;
+    vertical-align: top;
+}
+
+.payslip-info-table th {
+    width: 48%;
+    background: #f1f5f9;
+    color: #334b68;
+    text-align: left;
+    font-weight: 700;
+}
+
+.payslip-info-table td {
+    color: #263449;
+    text-align: left;
+}
+
+@media (max-width: 600px) {
+    .payslip-info-tables-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .payslip-info-table {
+        font-size: 10px;
+    }
+
+    .payslip-info-table th,
+    .payslip-info-table td {
+        padding: 7px 4px;
+        overflow-wrap: anywhere;
+    }
+
+    .payslip-info-table th {
+        width: 48%;
+    }
+}
