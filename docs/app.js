@@ -3053,7 +3053,8 @@ if (saveNewEmployeeButton) {
                         other_deductions: otherDeductionsAmount,
                         allowances: allowances,
                         deductions: deductions,
-                        status: $("salaryPublishStatus").value
+                        payment_method: $("salaryPublishStatus").value,
+                        status: "Published"
                     }]);
 
                     saveStatus.textContent = "Salary saved successfully.";
@@ -3106,7 +3107,7 @@ if (saveNewEmployeeButton) {
                     }
 
                     const query = new URLSearchParams({
-                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days",
+                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,payment_method,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days",
                         employee_no: "eq." + employeeNo,
                         salary_month: "eq." + month
                     });
@@ -3310,7 +3311,7 @@ if (saveNewEmployeeButton) {
                             <div class="payslip-heading">
                                 <h3>Pay Slip</h3>
                                 <p>For the Month of ${safe(monthName)}</p>
-                                <span class="payslip-status">${safe(record.status || "—")}</span>
+                                <span class="payslip-status">${safe(record.payment_method || "BANK")}</span>
                             </div>
 
                             <section class="payslip-section">

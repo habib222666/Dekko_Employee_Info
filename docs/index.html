@@ -404,13 +404,13 @@
                 <input type="hidden" id="salaryDeductions" value="0">
 
 
-                <p>Net Pay: <strong id="salaryNetPreview">0.00</strong></p>
-
                 <label for="salaryPublishStatus">Status</label>
                 <select id="salaryPublishStatus">
-                    <option value="Draft">Draft</option>
-                    <option value="Published">Published</option>
+                    <option value="BANK" selected>BANK</option>
+                    <option value="CASH">CASH</option>
                 </select>
+
+                <p>Net Pay: <strong id="salaryNetPreview">0.00</strong></p>
 
                 <button type="submit" id="saveSalaryButton">
                     Save Salary
