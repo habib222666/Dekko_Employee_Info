@@ -302,7 +302,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="app.js?v=20261014payslipfix1"></script>
+<script defer src="app.js?v=20261014presentdaysfix1"></script>
 
 
 <div id="salaryPage" style="display:none;">
@@ -342,7 +342,7 @@
 
                     <div class="salary-entry-field">
                         <label for="salaryPresentDays">Present Days</label>
-                        <input type="number" id="salaryPresentDays" min="0" step="1">
+                        <input type="number" id="salaryPresentDays" min="0" step="1" readonly aria-readonly="true">
                     </div>
 
                     <div class="salary-entry-field">
