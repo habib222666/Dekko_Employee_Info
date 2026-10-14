@@ -2792,6 +2792,14 @@ if (saveNewEmployeeButton) {
             if (slipOptions) slipOptions.replaceChildren();
             if (slipSearch) slipSearch.value = "";
 
+            employees.sort((a, b) =>
+                String(a.employee_no || "").localeCompare(
+                    String(b.employee_no || ""),
+                    undefined,
+                    { numeric: true, sensitivity: "base" }
+                )
+            );
+
             employees.forEach(employee => {
                 if (!employee.employee_no) return;
 
