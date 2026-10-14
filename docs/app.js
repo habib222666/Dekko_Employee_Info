@@ -3660,11 +3660,12 @@ if (slipEmployee) {
                                         <tr><td>Basic Salary</td><td>${amount(basic)}</td></tr>
                                         <tr><td>House Rent Allowance</td><td>${amount(houseRent)}</td></tr>
                                         <tr><td>Medical Allowance</td><td>${amount(medical)}</td></tr>
-                                        <tr><td>Conveyance Allowance</td><td>${amount(conveyance)}</td></tr>
-                                        ${special ? `<tr><td>Special Allowance</td><td>${amount(special)}</td></tr>` : ""}
-                                        ${othersAllowance ? `<tr><td>Others Allowance</td><td>${amount(othersAllowance)}</td></tr>` : ""}
+                                        <tr><td>Conveyance Allowance</td><td>${Number(conveyance) ? amount(conveyance) : "-"}</td></tr>
+                                        <tr><td>Payable Salary</td><td>${Number(payableSalary) ? amount(payableSalary) : "-"}</td></tr>
+                                        <tr><td>Special Allowance</td><td>${Number(special) ? amount(special) : "-"}</td></tr>
+                                        <tr><td>Others Allowance</td><td>${Number(othersAllowance) ? amount(othersAllowance) : "-"}</td></tr>
                                         ${legacyAllowances ? `<tr><td>Allowances (legacy record)</td><td>${amount(legacyAllowances)}</td></tr>` : ""}
-                                        <tr class="payslip-total-row"><td>Total Earnings</td><td>${amount(totalEarnings)}</td></tr>
+                                        <tr class="payslip-total-row"><td>Total Earnings</td><td>${Number(totalEarnings) ? amount(totalEarnings) : "-"}</td></tr>
                                     </tbody>
                                 </table>
                             </section>
@@ -3676,16 +3677,16 @@ if (slipEmployee) {
                                         <tr><th>Particulars</th><th>Amount</th></tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Absent Amount</td><td>${amount(absentAmount)}</td></tr>
-                                        <tr><td>Advance Income Tax (AIT)</td><td>${amount(incomeTax)}</td></tr>
-                                        <tr><td>Lunch Bill</td><td>${amount(lunchBill)}</td></tr>
-                                        <tr><td>Excess Mobile Bill</td><td>${amount(excessMobileBill)}</td></tr>
+                                        <tr><td>Absent Amount</td><td>${Number(absentAmount) ? amount(absentAmount) : "-"}</td></tr>
+                                        <tr><td>Advance Income Tax (AIT)</td><td>${Number(incomeTax) ? amount(incomeTax) : "-"}</td></tr>
+                                        <tr><td>Lunch Bill</td><td>${Number(lunchBill) ? amount(lunchBill) : "-"}</td></tr>
+                                        <tr><td>Excess Mobile Bill</td><td>${Number(excessMobileBill) ? amount(excessMobileBill) : "-"}</td></tr>
                                         ${providentFund ? `<tr><td>Employee Provident Fund (legacy)</td><td>${amount(providentFund)}</td></tr>` : ""}
                                         ${healthInsurance ? `<tr><td>Health Insurance (legacy)</td><td>${amount(healthInsurance)}</td></tr>` : ""}
-                                        <tr><td>Loan Repayment</td><td>${amount(loanRepayment)}</td></tr>
-                                        <tr><td>Other Deductions</td><td>${amount(otherDeductions)}</td></tr>
+                                        <tr><td>Loan Repayment</td><td>${Number(loanRepayment) ? amount(loanRepayment) : "-"}</td></tr>
+                                        <tr><td>Other Deductions</td><td>${Number(otherDeductions) ? amount(otherDeductions) : "-"}</td></tr>
                                         ${legacyDeductions ? `<tr><td>Deductions (legacy record)</td><td>${amount(legacyDeductions)}</td></tr>` : ""}
-                                        <tr class="payslip-total-row"><td>Total Deductions</td><td>${amount(totalDeductions)}</td></tr>
+                                        <tr class="payslip-total-row"><td>Total Deductions</td><td>${Number(totalDeductions) ? amount(totalDeductions) : "-"}</td></tr>
                                     </tbody>
                                 </table>
                             </section>
@@ -3694,11 +3695,11 @@ if (slipEmployee) {
 
                             <section class="payslip-net">
                                 <span>NET PAY (BDT)</span>
-                                <strong>${amount(netPay)}</strong>
+                                <strong>${Number(netPay) ? amount(netPay) : "-"}</strong>
                             </section>
 
                             <section class="payslip-words">
-                                <p><strong>Net Pay (in Words):</strong> ${safe(amountInWords(netPay))}</p>
+                                <p><strong>Net Pay (in Words):</strong> ${Number(netPay) ? safe(amountInWords(netPay)) : "-"}</p>
                             </section>
 
                             <footer class="payslip-footer">
