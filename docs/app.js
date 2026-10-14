@@ -3047,41 +3047,47 @@ if (slipEmployee) {
             return Math.round(n * 100) / 100;
         }
 
-        const earningIds = [
-            "houseRentAllowance",
-            "medicalAllowance",
-            "conveyanceAllowance",
-            "specialAllowance"
-        ];
-
         const deductionIds = [
-            "employeeProvidentFund",
+            "absentAmount",
             "incomeTax",
-            "healthInsurance",
+            "lunchBill",
+            "excessMobileBill",
             "loanRepayment",
             "otherDeductions"
         ];
 
-        function componentTotal(ids) {
-            return ids.reduce((sum, id) => sum + getAmount(id), 0);
+        function roundedAmount(value) {
+            return Math.round((value + Number.EPSILON) * 100) / 100;
         }
 
         function updateNet() {
             try {
-                const basic = getAmount("basicSalary");
-                const allowances = componentTotal(earningIds);
-                const deductions = componentTotal(deductionIds);
+                const payable = getAmount("payableSalary");
+                const basic = roundedAmount(payable * 0.60);
+                const houseRent = roundedAmount(payable * 0.30);
+                const medical = roundedAmount(payable * 0.05);
+                const conveyance = roundedAmount(payable * 0.05);
+                const others = getAmount("othersAllowance");
+                const deductions = deductionIds.reduce(
+                    (sum, id) => sum + getAmount(id), 0
+                );
 
-                $("salaryAllowances").value = allowances.toFixed(2);
+                $("basicSalary").value = basic.toFixed(2);
+                $("houseRentAllowance").value = houseRent.toFixed(2);
+                $("medicalAllowance").value = medical.toFixed(2);
+                $("conveyanceAllowance").value = conveyance.toFixed(2);
+
+                $("salaryAllowances").value =
+                    (houseRent + medical + conveyance + others).toFixed(2);
                 $("salaryDeductions").value = deductions.toFixed(2);
                 $("salaryNetPreview").textContent =
-                    (basic + allowances - deductions).toFixed(2);
+                    (payable + others - deductions).toFixed(2);
             } catch (_) {
                 $("salaryNetPreview").textContent = "Invalid amount";
             }
         }
 
-        ["basicSalary", ...earningIds, ...deductionIds].forEach(id => {
+        ["payableSalary", "othersAllowance", ...deductionIds].forEach(id => {
             if ($(id)) $(id).addEventListener("input", updateNet);
         });
 
@@ -3105,6 +3111,131 @@ if (slipEmployee) {
             }
         }
 
+
+        let isEditingSalary = false;
+        let editingEmployeeNo = "";
+        let editingMonth = "";
+        let originalSalaryFormValues = null;
+
+        const editSalaryButton = $("editSalaryButton");
+        const cancelSalaryEditButton = $("cancelSalaryEditButton");
+        const saveSalaryButton = $("saveSalaryButton");
+
+        function setSalaryEditMode(enabled) {
+            isEditingSalary = enabled;
+            if (saveSalaryButton) {
+                saveSalaryButton.textContent =
+                    enabled ? "Update Salary" : "Save Salary";
+            }
+            if (cancelSalaryEditButton) {
+                cancelSalaryEditButton.hidden = !enabled;
+            }
+            if (editSalaryButton) {
+                editSalaryButton.disabled = enabled;
+            }
+        }
+
+        if (editSalaryButton) {
+            editSalaryButton.addEventListener("click", async function () {
+                saveStatus.textContent = "Loading saved salary...";
+
+                try {
+                    await checkAdmin();
+
+                    const employeeNo = employeeSelect.value;
+                    const month = monthInput.value;
+
+                    if (!employeeNumbers.has(employeeNo)) {
+                        throw new Error("Select an employee first.");
+                    }
+                    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+                        throw new Error("Select a valid salary month.");
+                    }
+
+                    const query = new URLSearchParams({
+                        select: "employee_no,salary_month,payable_salary,others_allowance,absent_amount,income_tax,lunch_bill,excess_mobile_bill,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days,payment_method",
+                        employee_no: "eq." + employeeNo,
+                        salary_month: "eq." + month,
+                        limit: "1"
+                    });
+
+                    const response = await fetch(
+                        SUPABASE_URL + "/rest/v1/salary_records?" + query,
+                        { headers: apiHeaders() }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Could not load salary: " + await response.text()
+                        );
+                    }
+
+                    const rows = await response.json();
+                    if (!rows.length) {
+                        throw new Error(
+                            "No saved salary found for this employee and month."
+                        );
+                    }
+
+                    const record = rows[0];
+                    const setValue = (id, value) => {
+                        const field = $(id);
+                        if (field) {
+                            field.value = value == null ? "" : String(value);
+                        }
+                    };
+
+                    setValue("salaryWorkingDays", record.working_days);
+                    setValue("salaryPresentDays", record.present_days);
+                    setValue("salaryLeaveDays", record.leave_days);
+                    setValue("salaryAbsentDays", record.absent_days);
+                    setValue("payableSalary", record.payable_salary ?? 0);
+                    setValue("othersAllowance", record.others_allowance ?? 0);
+                    setValue("absentAmount", record.absent_amount ?? 0);
+                    setValue("incomeTax", record.income_tax ?? 0);
+                    setValue("lunchBill", record.lunch_bill ?? 0);
+                    setValue("excessMobileBill", record.excess_mobile_bill ?? 0);
+                    setValue("loanRepayment", record.loan_repayment ?? 0);
+                    setValue("otherDeductions", record.other_deductions ?? 0);
+                    setValue("salaryPublishStatus", record.payment_method || "BANK");
+
+                    editingEmployeeNo = record.employee_no;
+                    editingMonth = record.salary_month;
+                    updateNet();
+
+                    const salaryForm = $("salaryEntryForm");
+                    originalSalaryFormValues = Array.from(
+                        salaryForm.querySelectorAll("input, select, textarea")
+                    ).map(field => [field.id, field.value]);
+
+                    setSalaryEditMode(true);
+                    saveStatus.textContent =
+                        "Salary loaded. Make changes and click Update Salary.";
+                } catch (error) {
+                    saveStatus.textContent = error.message;
+                }
+            });
+        }
+
+        if (cancelSalaryEditButton) {
+            cancelSalaryEditButton.addEventListener("click", function () {
+                if (originalSalaryFormValues) {
+                    originalSalaryFormValues.forEach(([id, value]) => {
+                        const field = $(id);
+                        if (field) field.value = value;
+                    });
+                    updateNet();
+                }
+
+                originalSalaryFormValues = null;
+                setSalaryEditMode(false);
+                editingEmployeeNo = "";
+                editingMonth = "";
+                saveStatus.textContent =
+                    "Edit cancelled. Original saved salary restored.";
+            });
+        }
+
         const form = $("salaryEntryForm");
         if (form) {
             form.addEventListener("submit", async function (event) {
@@ -3116,30 +3247,55 @@ if (slipEmployee) {
 
                     const employeeNo = employeeSelect.value;
                     const month = monthInput.value;
-                    const workingDays = Number($("salaryWorkingDays").value);
-                    const presentDays = Number($("salaryPresentDays").value);
-                    const leaveDays = Number($("salaryLeaveDays").value);
-                    const absentDays = Number($("salaryAbsentDays").value);
 
-                    const basic = getAmount("basicSalary");
+                    if (isEditingSalary &&
+                        (employeeNo !== editingEmployeeNo || month !== editingMonth)) {
+                        throw new Error(
+                            "Employee or month changed during editing. Cancel edit and load the correct salary again."
+                        );
+                    }
+                    const readOptionalDays = (id) => {
+                        const value = $(id).value.trim();
+                        if (value === "") return null;
+                        const number = Number(value);
+                        return Number.isFinite(number) && Number.isInteger(number) && number >= 0
+                            ? number
+                            : NaN;
+                    };
 
-                    const houseRent = getAmount("houseRentAllowance");
-                    const medical = getAmount("medicalAllowance");
-                    const conveyance = getAmount("conveyanceAllowance");
-                    const special = getAmount("specialAllowance");
-                    const allowances = houseRent + medical + conveyance + special;
+                    const workingDays = readOptionalDays("salaryWorkingDays");
+                    const presentDays = readOptionalDays("salaryPresentDays");
+                    const leaveDays = readOptionalDays("salaryLeaveDays");
+                    const absentDays = readOptionalDays("salaryAbsentDays");
 
-                    const providentFund = getAmount("employeeProvidentFund");
+                    if ([workingDays, presentDays, leaveDays, absentDays].some(Number.isNaN)) {
+                        alert("Attendance days must be non-negative whole numbers, or left blank.");
+                        return;
+                    }
+
+                    const payableSalary = getAmount("payableSalary");
+                    const basic = Math.round((payableSalary * 0.60 + Number.EPSILON) * 100) / 100;
+                    const houseRent = Math.round((payableSalary * 0.30 + Number.EPSILON) * 100) / 100;
+                    const medical = Math.round((payableSalary * 0.05 + Number.EPSILON) * 100) / 100;
+                    const conveyance = Math.round((payableSalary * 0.05 + Number.EPSILON) * 100) / 100;
+                    const othersAllowance = getAmount("othersAllowance");
+
+                    const absentAmount = getAmount("absentAmount");
                     const incomeTaxAmount = getAmount("incomeTax");
-                    const healthInsurance = getAmount("healthInsurance");
+                    const lunchBill = getAmount("lunchBill");
+                    const excessMobileBill = getAmount("excessMobileBill");
                     const loanRepayment = getAmount("loanRepayment");
                     const otherDeductionsAmount = getAmount("otherDeductions");
-                    const deductions = providentFund + incomeTaxAmount +
-                        healthInsurance + loanRepayment + otherDeductionsAmount;
+
+                    const allowances = houseRent + medical + conveyance + othersAllowance;
+                    const deductions = absentAmount + incomeTaxAmount + lunchBill +
+                        excessMobileBill + loanRepayment + otherDeductionsAmount;
+                    const totalEarnings = payableSalary + othersAllowance;
+                    const netPay = totalEarnings - deductions;
 
                     const attendance = [workingDays, presentDays, leaveDays, absentDays];
-                    if (!attendance.every(n => Number.isInteger(n) && n >= 0)) {
-                        throw new Error("Attendance days must be non-negative whole numbers.");
+                    if (!attendance.every(n => n === null || (Number.isInteger(n) && n >= 0))) {
+                        throw new Error("Attendance days must be non-negative whole numbers, or left blank.");
                     }
 
                     if (!employeeNumbers.has(employeeNo)) {
@@ -3148,7 +3304,7 @@ if (slipEmployee) {
                     if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
                         throw new Error("Select a valid salary month.");
                     }
-                    if (deductions > basic + allowances) {
+                    if (deductions > totalEarnings) {
                         throw new Error("Deductions cannot exceed total earnings.");
                     }
 
@@ -3159,14 +3315,20 @@ if (slipEmployee) {
                         present_days: presentDays,
                         leave_days: leaveDays,
                         absent_days: absentDays,
+                        payable_salary: payableSalary,
+                        net_pay: netPay,
                         basic_salary: basic,
                         house_rent_allowance: houseRent,
                         medical_allowance: medical,
                         conveyance_allowance: conveyance,
-                        special_allowance: special,
-                        employee_provident_fund: providentFund,
+                        special_allowance: 0,
+                        others_allowance: othersAllowance,
+                        employee_provident_fund: 0,
                         income_tax: incomeTaxAmount,
-                        health_insurance: healthInsurance,
+                        health_insurance: 0,
+                        absent_amount: absentAmount,
+                        lunch_bill: lunchBill,
+                        excess_mobile_bill: excessMobileBill,
                         loan_repayment: loanRepayment,
                         other_deductions: otherDeductionsAmount,
                         allowances: allowances,
@@ -3175,7 +3337,13 @@ if (slipEmployee) {
                         status: "Published"
                     }]);
 
-                    saveStatus.textContent = "Salary saved successfully.";
+                    saveStatus.textContent = isEditingSalary
+                        ? "Salary updated successfully."
+                        : "Salary saved successfully.";
+                    setSalaryEditMode(false);
+                    originalSalaryFormValues = null;
+                    editingEmployeeNo = "";
+                    editingMonth = "";
                 } catch (error) {
                     saveStatus.textContent = error.message;
                 }
@@ -3225,7 +3393,7 @@ if (slipEmployee) {
                     }
 
                     const query = new URLSearchParams({
-                        select: "employee_no,salary_month,basic_salary,allowances,deductions,net_pay,status,payment_method,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,employee_provident_fund,income_tax,health_insurance,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days",
+                        select: "employee_no,salary_month,payable_salary,basic_salary,allowances,deductions,net_pay,status,payment_method,house_rent_allowance,medical_allowance,conveyance_allowance,special_allowance,others_allowance,employee_provident_fund,income_tax,health_insurance,absent_amount,lunch_bill,excess_mobile_bill,loan_repayment,other_deductions,working_days,present_days,leave_days,absent_days",
                         employee_no: "eq." + employeeNo,
                         salary_month: "eq." + month
                     });
@@ -3300,16 +3468,20 @@ if (slipEmployee) {
                             year: "numeric"
                         });
 
+                    const payableSalary = Number(record.payable_salary || 0);
                     const basic = Number(record.basic_salary || 0);
-
                     const houseRent = Number(record.house_rent_allowance || 0);
                     const medical = Number(record.medical_allowance || 0);
                     const conveyance = Number(record.conveyance_allowance || 0);
                     const special = Number(record.special_allowance || 0);
+                    const othersAllowance = Number(record.others_allowance || 0);
 
                     const providentFund = Number(record.employee_provident_fund || 0);
                     const incomeTax = Number(record.income_tax || 0);
                     const healthInsurance = Number(record.health_insurance || 0);
+                    const absentAmount = Number(record.absent_amount || 0);
+                    const lunchBill = Number(record.lunch_bill || 0);
+                    const excessMobileBill = Number(record.excess_mobile_bill || 0);
                     const loanRepayment = Number(record.loan_repayment || 0);
                     const otherDeductions = Number(record.other_deductions || 0);
 
@@ -3318,25 +3490,35 @@ if (slipEmployee) {
 
                     const hasEarningComponents =
                         houseRent !== 0 || medical !== 0 ||
-                        conveyance !== 0 || special !== 0;
+                        conveyance !== 0 || special !== 0 || othersAllowance !== 0;
 
                     const hasDeductionComponents =
                         providentFund !== 0 || incomeTax !== 0 ||
-                        healthInsurance !== 0 || loanRepayment !== 0 ||
-                        otherDeductions !== 0;
+                        healthInsurance !== 0 || absentAmount !== 0 ||
+                        lunchBill !== 0 || excessMobileBill !== 0 ||
+                        loanRepayment !== 0 || otherDeductions !== 0;
 
-                    const legacyAllowances =
-                        !hasEarningComponents ? storedAllowances : 0;
+                    const legacyAllowances = payableSalary > 0
+                        ? 0
+                        : (!hasEarningComponents ? storedAllowances : 0);
+
                     const legacyDeductions =
                         !hasDeductionComponents ? storedDeductions : 0;
 
-                    const allowances = houseRent + medical + conveyance + special;
-                    const deductions = providentFund + incomeTax +
-                        healthInsurance + loanRepayment + otherDeductions;
+                    const allowances =
+                        houseRent + medical + conveyance + special + othersAllowance;
+                    const deductions = providentFund + incomeTax + healthInsurance +
+                        absentAmount + lunchBill + excessMobileBill +
+                        loanRepayment + otherDeductions;
 
-                    const totalEarnings = basic + allowances + legacyAllowances;
+                    const totalEarnings = payableSalary > 0
+                        ? payableSalary + othersAllowance
+                        : basic + allowances + legacyAllowances;
                     const totalDeductions = deductions + legacyDeductions;
-                    const netPay = Number(record.net_pay || 0);
+                    const savedNetPay = Number(record.net_pay || 0);
+                    const netPay = savedNetPay !== 0
+                        ? savedNetPay
+                        : totalEarnings - totalDeductions;
 
                     function wordsUnderThousand(number) {
                         const ones = [
@@ -3397,10 +3579,10 @@ if (slipEmployee) {
                     const optionalDetails = [
                         ["Designation", getEmployeeValue("designation", "job_title")],
                         ["Joining Date", getEmployeeValue("joining_date", "date_of_joining", "date_joined")],
-                        ["Working Days", record.working_days],
-                        ["Present Days", record.present_days],
-                        ["Leave Days", record.leave_days],
-                        ["Absent Days", record.absent_days]
+                        ["Working Days", record.working_days ?? "-"],
+                        ["Present Days", record.present_days ?? "-"],
+                        ["Leave Days", record.leave_days ?? "-"],
+                        ["Absent Days", record.absent_days ?? "-"]
                     ];
 
                     const detail = (label, value, showEmpty = false) => {
@@ -3428,7 +3610,7 @@ if (slipEmployee) {
                     slipResult.innerHTML = `
                         <article class="professional-payslip">
                             <header class="payslip-company">
-                                <img src="assets/icons/Dekko%20logo.jpg" alt="Dekko Logo" class="payslip-company-logo">
+                                <img src="assets/logo/Dekko%20logo.jpg" alt="Dekko Logo" class="payslip-company-logo">
                                 <div class="payslip-company-text">
                                     <h2>Dekko Accessories Ltd.</h2>
 
@@ -3480,7 +3662,8 @@ if (slipEmployee) {
                                         <tr><td>House Rent Allowance</td><td>${amount(houseRent)}</td></tr>
                                         <tr><td>Medical Allowance</td><td>${amount(medical)}</td></tr>
                                         <tr><td>Conveyance Allowance</td><td>${amount(conveyance)}</td></tr>
-                                        <tr><td>Special Allowance</td><td>${amount(special)}</td></tr>
+                                        ${special ? `<tr><td>Special Allowance</td><td>${amount(special)}</td></tr>` : ""}
+                                        ${othersAllowance ? `<tr><td>Others Allowance</td><td>${amount(othersAllowance)}</td></tr>` : ""}
                                         ${legacyAllowances ? `<tr><td>Allowances (legacy record)</td><td>${amount(legacyAllowances)}</td></tr>` : ""}
                                         <tr class="payslip-total-row"><td>Total Earnings</td><td>${amount(totalEarnings)}</td></tr>
                                     </tbody>
@@ -3494,9 +3677,12 @@ if (slipEmployee) {
                                         <tr><th>Particulars</th><th>Amount</th></tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td>Employee Provident Fund</td><td>${amount(providentFund)}</td></tr>
-                                        <tr><td>Income Tax</td><td>${amount(incomeTax)}</td></tr>
-                                        <tr><td>Health Insurance</td><td>${amount(healthInsurance)}</td></tr>
+                                        <tr><td>Absent Amount</td><td>${amount(absentAmount)}</td></tr>
+                                        <tr><td>Advance Income Tax (AIT)</td><td>${amount(incomeTax)}</td></tr>
+                                        <tr><td>Lunch Bill</td><td>${amount(lunchBill)}</td></tr>
+                                        <tr><td>Excess Mobile Bill</td><td>${amount(excessMobileBill)}</td></tr>
+                                        ${providentFund ? `<tr><td>Employee Provident Fund (legacy)</td><td>${amount(providentFund)}</td></tr>` : ""}
+                                        ${healthInsurance ? `<tr><td>Health Insurance (legacy)</td><td>${amount(healthInsurance)}</td></tr>` : ""}
                                         <tr><td>Loan Repayment</td><td>${amount(loanRepayment)}</td></tr>
                                         <tr><td>Other Deductions</td><td>${amount(otherDeductions)}</td></tr>
                                         ${legacyDeductions ? `<tr><td>Deductions (legacy record)</td><td>${amount(legacyDeductions)}</td></tr>` : ""}
