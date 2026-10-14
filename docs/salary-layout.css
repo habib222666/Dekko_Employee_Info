@@ -1215,3 +1215,25 @@
     background: #edf5ff;
     outline: none;
 }
+
+
+/* Monthly Pay Slip employee suggestions */
+#salaryPage .payslip-employee-field {
+    position: relative;
+}
+#salaryPage #paySlipEmployeeSuggestions[hidden] {
+    display: none !important;
+}
+#salaryPage #paySlipEmployeeSuggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    max-height: 240px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #b8c5d6;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, .14);
+}

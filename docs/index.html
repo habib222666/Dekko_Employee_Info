@@ -431,11 +431,14 @@
         <div class="admin-card">
             <h2>Monthly Pay Slip</h2>
             <label for="paySlipEmployeeSearch">Employee</label>
-            <input type="text" id="paySlipEmployeeSearch"
-                   list="paySlipEmployeeOptions"
-                   placeholder="Search Emp ID or Name"
-                   autocomplete="off" required>
-            <datalist id="paySlipEmployeeOptions"></datalist>
+            <div class="salary-entry-field payslip-employee-field">
+                <input type="text" id="paySlipEmployeeSearch"
+                       placeholder="Type employee ID or name"
+                       autocomplete="off" required>
+                <div id="paySlipEmployeeSuggestions"
+                     class="salary-employee-suggestions"
+                     role="listbox" hidden></div>
+            </div>
             <select id="paySlipEmployee" style="display:none"
                     aria-hidden="true">
                 <option value="">Select employee</option>

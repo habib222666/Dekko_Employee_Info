@@ -2783,15 +2783,68 @@ if (saveNewEmployeeButton) {
         }
 
         if (slipSearchInput && slipEmployee) {
+            const slipSuggestions = $("paySlipEmployeeSuggestions");
+
+            function hideSlipSuggestions() {
+                if (!slipSuggestions) return;
+                slipSuggestions.replaceChildren();
+                slipSuggestions.hidden = true;
+            }
+
             slipSearchInput.addEventListener("input", function () {
-                const typedLabel = slipSearchInput.value.trim();
-                const match = Array.from(slipEmployee.options).find(
-                    option => option.value && option.textContent === typedLabel
-                );
-                slipEmployee.value = match ? match.value : "";
+                const query = slipSearchInput.value.trim().toLowerCase();
+                slipEmployee.value = "";
+                hideSlipSuggestions();
+
+                if (!query || !slipSuggestions) return;
+
+                const matches = Array.from(slipEmployee.options)
+                    .filter(option => {
+                        if (!option.value) return false;
+                        const employee = employeeInfo.get(String(option.value));
+                        const no = String(option.value).toLowerCase();
+                        const name = String(employee?.employee_name || "Unnamed").toLowerCase();
+
+                        return no.includes(query) || name.includes(query);
+                    })
+                    .slice(0, 12);
+
+                matches.forEach(option => {
+                    const employee = employeeInfo.get(String(option.value));
+                    const name = String(employee?.employee_name || "Unnamed");
+                    const button = document.createElement("button");
+
+                    button.type = "button";
+                    button.className = "salary-employee-suggestion";
+                    button.setAttribute("role", "option");
+                    button.textContent = `${option.value} (${name})`;
+
+                    button.addEventListener("click", function () {
+                        slipSearchInput.value = button.textContent;
+                        slipEmployee.value = option.value;
+                        hideSlipSuggestions();
+                        slipEmployee.dispatchEvent(new Event("change", {
+                            bubbles: true
+                        }));
+                    });
+
+                    slipSuggestions.appendChild(button);
+                });
+
+                slipSuggestions.hidden = matches.length === 0;
+            });
+
+            slipSearchInput.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") hideSlipSuggestions();
+            });
+
+            document.addEventListener("click", function (event) {
+                if (!slipSearchInput.contains(event.target) &&
+                    (!slipSuggestions || !slipSuggestions.contains(event.target))) {
+                    hideSlipSuggestions();
+                }
             });
         }
-
 
         if (!salaryButton || !salaryPage || !management) {
             console.error("Salary HTML elements not found.");
