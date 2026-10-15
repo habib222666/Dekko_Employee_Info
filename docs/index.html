@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIVE TEST - Employee App</title>
-<link rel="stylesheet" href="style.css?v=20261014salarygrid2">
-<link rel="stylesheet" href="salary-layout.css?v=20261014salarygrid2">
+<link rel="stylesheet" href="style.css?v=20261015removeattendance1">
+<link rel="stylesheet" href="salary-layout.css?v=20261015removeattendance1">
 </head>
 
 <body>
@@ -25,7 +25,6 @@
         <button id="allEmployeesButton"><span class="dashboard-icon">👥</span><span class="dashboard-label">All Employees</span></button>
         <button id="favoriteEmployeesButton"><span class="dashboard-icon">❤️</span><span class="dashboard-label">Favorite Employees</span></button>
         <button id="birthdayButton"><span class="dashboard-icon">🎂</span><span class="dashboard-label">Birthday</span></button>
-        <button id="attendanceButton"><span id="attendanceCalendar"><span id="attendanceMonth"></span><span id="attendanceDate"></span></span><span class="dashboard-label">Attendance</span></button>
         <button id="salaryButton"><span class="dashboard-icon">💰</span><span class="dashboard-label">Salary 🔒</span></button>
     </div>
 </div>
@@ -87,32 +86,6 @@
 <div id="birthdayEmployeeList"></div>
 </div>
 
-<div id="attendancePage" style="display:none;">
-    <button id="attendanceBackButton">← Back</button>
-    <h1>🕒 Attendance</h1>
-
-    <div id="attendanceTodayCard">
-        <h2>Today's Attendance</h2>
-        <p id="attendanceTodayDate"></p>
-        <p>Status: <strong id="attendanceStatus">Not Checked In</strong></p>
-        <p>Check In: <span id="attendanceCheckInTime">—</span></p>
-        <p>Check Out: <span id="attendanceCheckOutTime">—</span></p>
-        <p>Working Hours: <span id="attendanceWorkingHours">—</span></p>
-
-        <button id="checkInButton" type="button">Check In</button>
-        <button id="checkOutButton" type="button" disabled>Check Out</button>
-        <p id="attendanceMessage" role="status"></p>
-    </div>
-
-    <div id="attendanceMonthlySummary">
-        <h2>Monthly Summary</h2>
-        <p>Present: <span id="attendancePresentDays">0</span></p>
-        <p>Attendance History</p>
-        <div id="attendanceHistory">
-            <p>No attendance records yet.</p>
-        </div>
-    </div>
-</div>
 
 <div id="detailsPage" style="display:none;">
 <button id="backButton">← Back</button>
@@ -302,7 +275,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script defer src="app.js?v=20261014presentdaysfix1"></script>
+<script defer src="app.js?v=20261015removeattendance1"></script>
 
 
 <div id="salaryPage" style="display:none;">

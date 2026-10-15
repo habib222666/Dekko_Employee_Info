@@ -2036,13 +2036,6 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     }
 }
 
-
-/* NEW HOME CARDS */
-#attendanceButton {
-    background: #1565c0 !important;
-    color: #ffffff !important;
-}
-
 #salaryButton {
     background: #b8860b !important;
     color: #ffffff !important;
@@ -2067,11 +2060,6 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 
 #allEmployeesButton {
     background: #1976d2 !important;
-    color: #ffffff !important;
-}
-
-#attendanceButton {
-    background: #e65100 !important;
     color: #ffffff !important;
 }
 
@@ -2166,87 +2154,10 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
 }
 
 
-/* ATTENDANCE BUTTON CALENDAR */
-#attendanceButton #attendanceCalendar {
-    display: inline-flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 2px !important;
-    line-height: 1 !important;
-    margin: 0 auto 5px !important;
-}
-
-#attendanceButton #attendanceMonth {
-    display: block !important;
-    color: #ffffff !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    line-height: 1.2 !important;
-    white-space: nowrap !important;
-}
-
-#attendanceButton #attendanceDate {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 38px !important;
-    height: 34px !important;
-    padding: 0 5px !important;
-    box-sizing: border-box !important;
-    background: #ffffff !important;
-    color: #e65100 !important;
-    border-radius: 4px !important;
-    font-size: 22px !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-}
-
-#attendanceButton {
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-
 /* Slightly taller six home dashboard buttons */
 #departmentHeader > button {
     min-height: 100px !important;
     box-sizing: border-box !important;
-}
-
-/* ATTENDANCE PAGE UI */
-#attendancePage {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 16px;
-    box-sizing: border-box;
-    color: #1f2937;
-}
-#attendancePage h1 {
-    margin: 18px 0;
-    font-size: 26px;
-}
-#attendanceTodayCard,
-#attendanceMonthlySummary {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 18px;
-    margin: 14px 0;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-}
-#attendanceTodayCard h2,
-#attendanceMonthlySummary h2 {
-    margin-top: 0;
-    font-size: 19px;
-}
-#attendancePage button {
-    padding: 11px 16px;
-    border: 0;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 15px;
 }
 #checkInButton {
     background: #15803d;
@@ -2257,30 +2168,7 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     color: #ffffff;
     margin-left: 8px;
 }
-#attendancePage button:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-}
-#attendanceMessage {
-    color: #64748b;
-    font-size: 13px;
-}
-#attendanceHistory {
-    border-top: 1px solid #e5e7eb;
-    padding-top: 8px;
-    overflow-wrap: anywhere;
-}
 @media (max-width: 480px) {
-    #attendancePage {
-        padding: 12px;
-    }
-    #attendanceTodayCard,
-    #attendanceMonthlySummary {
-        padding: 14px;
-    }
-    #attendancePage h1 {
-        font-size: 23px;
-    }
 }
 
 
@@ -2570,10 +2458,6 @@ button.department-card.department-color-30 { background-color: #ede9fe !importan
     #allEmployeesPage,
     #favoritePage,
     #birthdayPage,
-    #attendancePage {
-        max-width: 100%;
-        box-sizing: border-box;
-    }
 
     #salaryPage {
         width: 100% !important;
