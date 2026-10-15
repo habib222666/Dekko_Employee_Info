@@ -2447,6 +2447,38 @@ if (saveNewEmployeeButton) {
 
 
 
+
+/* ORGANOGRAM PAGE - BLANK WHITE PAGE */
+(function () {
+    const button = document.getElementById("organogramButton");
+    const page = document.getElementById("organogramPage");
+    const backButton = document.getElementById("organogramBackButton");
+    const dashboard = document.getElementById("departmentSection");
+    const appTitle = document.getElementById("appTitle");
+    const bottomLogo = document.getElementById("homeBottomLogo");
+    const employeeList = document.getElementById("employeeList");
+
+    if (!button || !page || !backButton) return;
+
+    button.addEventListener("click", function () {
+        if (dashboard) dashboard.style.display = "none";
+        if (appTitle) appTitle.style.display = "none";
+        if (bottomLogo) bottomLogo.style.display = "none";
+        if (employeeList) employeeList.style.display = "none";
+        page.style.display = "block";
+        page.style.background = "#fff";
+        page.style.minHeight = "100vh";
+    });
+
+    backButton.addEventListener("click", function () {
+        page.style.display = "none";
+        if (dashboard) dashboard.style.display = "";
+        if (appTitle) appTitle.style.display = "";
+        if (bottomLogo) bottomLogo.style.display = "";
+        if (employeeList) employeeList.style.display = "";
+    });
+})();
+
 /* SALARY MANAGEMENT - ADMIN ONLY */
 (function () {
     "use strict";
